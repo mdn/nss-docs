@@ -1,0 +1,120 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>NSS 3.41 release notes - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>NSS 3.41 release notes</h1><h2 id="introduction"><a href="#introduction" title="Permalink to Introduction">Introduction</a></h2><div><p>The NSS team has released Network Security Services (NSS) 3.41 on 7 December 2018, which is a minor release.</p></div><h2 id="distribution_information"><a href="#distribution_information" title="Permalink to Distribution Information">Distribution Information</a></h2><div><p>The HG tag is NSS_3_41_RTM. NSS 3.41 requires NSPR 4.20 or newer.</p>
+
+<p>NSS 3.41 source distributions are available on ftp.mozilla.org for secure HTTPS download:</p>
+
+<ul>
+	<li>Source tarballs:<br>
+	<a href="https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_41_RTM/src/" class="external" rel=" noopener">https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_41_RTM/src/</a></li>
+</ul></div><h2 id="new_in_nss_3.41"><a href="#new_in_nss_3.41" title="Permalink to New in NSS 3.41">New in NSS 3.41</a></h2><div></div><h3 id="new_functionality"><a href="#new_functionality" title="Permalink to New Functionality">New Functionality</a></h3><div><ul>
+	<li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1252891" class="external" rel=" noopener">Bug 1252891</a> - Implemented EKU handling for IPsec IKE.</li>
+	<li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1423043" class="external" rel=" noopener">Bug 1423043</a> - Enable half-closed states for TLS.</li>
+	<li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1493215" class="external" rel=" noopener">Bug 1493215 </a>- Enabled the following ciphersuites by default:
+	<ul>
+		<li>TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384</li>
+		<li>TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384</li>
+		<li>TLS_DHE_RSA_WITH_AES_256_GCM_SHA384</li>
+		<li>TLS_RSA_WITH_AES_256_GCM_SHA384</li>
+	</ul>
+	</li>
+</ul>
+
+<h4 id="new_functions">New Functions</h4>
+
+<ul>
+	<li>none</li>
+</ul></div><h2 id="notable_changes_in_nss_3.41"><a href="#notable_changes_in_nss_3.41" title="Permalink to Notable Changes in NSS 3.41">Notable Changes in NSS 3.41</a></h2><div><ul>
+	<li>The following CA certificates were <strong>Added</strong>:
+
+	<ul>
+		<li>CN = Certigna Root CA
+		<ul>
+			<li>SHA-256 Fingerprint: D48D3D23EEDB50A459E55197601C27774B9D7B18C94D5A059511A10250B93168</li>
+		</ul>
+		</li>
+		<li>CN = GTS Root R1
+		<ul>
+			<li>SHA-256 Fingerprint: 2A575471E31340BC21581CBD2CF13E158463203ECE94BCF9D3CC196BF09A5472</li>
+		</ul>
+		</li>
+		<li>CN = GTS Root R2
+		<ul>
+			<li>SHA-256 Fingerprint: C45D7BB08E6D67E62E4235110B564E5F78FD92EF058C840AEA4E6455D7585C60</li>
+		</ul>
+		</li>
+		<li>CN = GTS Root R3
+		<ul>
+			<li>SHA-256 Fingerprint: 15D5B8774619EA7D54CE1CA6D0B0C403E037A917F131E8A04E1E6B7A71BABCE5</li>
+		</ul>
+		</li>
+		<li>CN = GTS Root R4
+		<ul>
+			<li>SHA-256 Fingerprint: 71CCA5391F9E794B04802530B363E121DA8A3043BB26662FEA4DCA7FC951A4BD</li>
+		</ul>
+		</li>
+		<li>CN = UCA Global G2 Root
+		<ul>
+			<li>SHA-256 Fingerprint: 9BEA11C976FE014764C1BE56A6F914B5A560317ABD9988393382E5161AA0493C</li>
+		</ul>
+		</li>
+		<li>CN = UCA Extended Validation Root
+		<ul>
+			<li>SHA-256 Fingerprint: D43AF9B35473755C9684FC06D7D8CB70EE5C28E773FB294EB41EE71722924D24</li>
+		</ul>
+		</li>
+	</ul>
+	</li>
+	<li>The following CA certificates were <strong>Removed</strong>:
+	<ul>
+		<li>CN = AC Raíz Certicámara S.A.
+		<ul>
+			<li>SHA-256 Fingerprint: A6C51E0DA5CA0A9309D2E4C0E40C2AF9107AAE8203857FE198E3E769E343085C</li>
+		</ul>
+		</li>
+		<li>CN = Certplus Root CA G1
+		<ul>
+			<li>SHA-256 Fingerprint: 152A402BFCDF2CD548054D2275B39C7FCA3EC0978078B0F0EA76E561A6C7433E</li>
+		</ul>
+		</li>
+		<li>CN = Certplus Root CA G2
+		<ul>
+			<li>SHA-256 Fingerprint: 6CC05041E6445E74696C4CFBC9F80F543B7EABBB44B4CE6F787C6A9971C42F17</li>
+		</ul>
+		</li>
+		<li>CN = OpenTrust Root CA G1
+		<ul>
+			<li>SHA-256 Fingerprint: 56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4</li>
+		</ul>
+		</li>
+		<li>CN = OpenTrust Root CA G2
+		<ul>
+			<li>SHA-256 Fingerprint: 27995829FE6A7515C1BFE848F9C4761DB16C225929257BF40D0894F29EA8BAF2</li>
+		</ul>
+		</li>
+		<li>CN = OpenTrust Root CA G3
+		<ul>
+			<li>SHA-256 Fingerprint: B7C36231706E81078C367CB896198F1E3208DD926949DD8F5709A410F75B6292</li>
+		</ul>
+		</li>
+	</ul>
+	</li>
+</ul></div><h2 id="bugs_fixed_in_nss_3.41"><a href="#bugs_fixed_in_nss_3.41" title="Permalink to Bugs fixed in NSS 3.41">Bugs fixed in NSS 3.41</a></h2><div><ul>
+	<li>
+	<p><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1412829" class="external" rel=" noopener">Bug 1412829</a>, Reject empty supported_signature_algorithms in Certificate Request in TLS 1.2</p>
+	</li>
+	<li>
+	<p><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1485864" rel="noopener" class="external">Bug 1485864</a> - Cache side-channel variant of the&nbsp;Bleichenbacher attack (CVE-2018-12404)</p>
+	</li>
+	<li>
+	<p><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1481271" class="external" rel=" noopener">Bug 1481271</a> - Resend the same ticket in ClientHello after HelloRetryRequest</p>
+	</li>
+	<li>
+	<p><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1493769" class="external" rel=" noopener">Bug 1493769</a> - Set session_id for external resumption tokens</p>
+	</li>
+	<li>
+	<p><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1507179" class="external" rel=" noopener">Bug 1507179</a> - Reject CCS after handshake is complete in TLS 1.3</p>
+	</li>
+</ul>
+
+<p>This Bugzilla query returns all the bugs fixed in NSS 3.41:</p>
+
+<p><a href="https://bugzilla.mozilla.org/buglist.cgi?resolution=FIXED&amp;classification=Components&amp;query_format=advanced&amp;product=NSS&amp;target_milestone=3.41" class="external" rel=" noopener">https://bugzilla.mozilla.org/buglist.cgi?resolution=FIXED&amp;classification=Components&amp;query_format=advanced&amp;product=NSS&amp;target_milestone=3.41</a></p></div><h2 id="compatibility"><a href="#compatibility" title="Permalink to Compatibility">Compatibility</a></h2><div><p>NSS 3.41 shared libraries are backward compatible with all older NSS 3.x shared libraries. A program linked with older NSS 3.x shared libraries will work with NSS 3.41 shared libraries without recompiling or relinking. Furthermore, applications that restrict their use of NSS APIs to the functions listed in NSS Public Functions will remain compatible with future versions of the NSS shared libraries.</p></div><h2 id="feedback"><a href="#feedback" title="Permalink to Feedback">Feedback</a></h2><div><p>Bugs discovered should be reported by filing a bug report with<a href="https://bugzilla.mozilla.org/enter_bug.cgi?product=NSS" class="external" rel=" noopener"> bugzilla.mozilla.org</a> (product NSS).</p></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/nss_3.41_release_notes/index.html" title="Folder: en-us/mozilla/projects/nss/nss_3.41_release_notes (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_3.41_release_notes%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_3.41_release_notes%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_3.41_release_notes%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_3.41_release_notes%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2F2b7177d176999a0291d681289dc3132412097f3b%0A*+Document+last+modified%3A+2021-01-07T08%3A27%3A04.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22NSS+3.41+release+notes%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2021-01-07T08:27:04.000Z">Jan 7, 2021</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/NSS_3.41_release_notes/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

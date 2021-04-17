@@ -1,0 +1,155 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>NSS_3.12.2_release_notes.html - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>NSS_3.12.2_release_notes.html</h1><h2 id="nss_3.12.2_release_notes"><a href="#nss_3.12.2_release_notes" title="Permalink to  NSS 3.12.2 Release Notes"> NSS 3.12.2 Release Notes</a></h2><div></div><h3 id="2008-10-20"><a href="#2008-10-20" title="Permalink to 2008-10-20">2008-10-20</a></h3><div><p>
+  Newsgroup: <a href="news://news.mozilla.org/mozilla.dev.tech.crypto">mozilla.dev.tech.crypto</a>
+</p></div><h3 id="contents"><a href="#contents" title="Permalink to  Contents"> Contents</a></h3><div><ul>
+  <li> <a href="#introduction">Introduction</a></li>
+  <li> <a href="#distribution_information">Distribution Information</a></li>
+  <li> <a href="#new_in_nss_3.12.2">New in NSS 3.12.2</a></li>
+  <li> <a href="#bugs_fixed">Bugs Fixed</a></li>
+  <li> <a href="#documentation">Documentation</a></li>
+  <li> <a href="#compatibility">Compatibility</a></li>
+  <li> <a href="#feedback">Feedback</a></li>
+</ul>
+<hr></div><h3 id="introduction"><a href="#introduction" title="Permalink to  Introduction"> Introduction</a></h3><div>Network Security Services (NSS) 3.12.2 is a patch release for NSS 3.12.
+The bug fixes in NSS
+3.12.2 are described in the "<a href="#bugs_fixed">Bugs Fixed</a>"
+section below.<p>
+  NSS 3.12.2 is tri-licensed under the MPL 1.1/GPL 2.0/LGPL 2.1.
+</p>
+<hr></div><h3 id="distribution_information"><a href="#distribution_information" title="Permalink to  Distribution Information"> Distribution Information</a></h3><div>The CVS tag for the NSS 3.12.2 release is NSS_3_12_2_RTM.
+NSS 3.12.2 requires <a href="https://www.mozilla.org/projects/nspr/release-notes/nspr471.html" class="external" rel=" noopener">NSPR
+  4.7.1</a>.<br>
+<br>
+See the <a href="#documentation">Documentation</a> section for the build
+instructions.<br>
+<p>NSS 3.12.2 source and binary distributions are also available on ftp.mozilla.org
+  for secure HTTPS download: </p>
+<ul>
+  <li> Source tarballs: <a href="https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_12_2_RTM/src/" class="external" rel=" noopener">https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_12_2_RTM/src/</a>.
+  </li>
+  <li> Binary distributions: <a href="https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_12_2_RTM/" class="external" rel=" noopener">https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_12_2_RTM/</a>.
+    Both debug and optimized builds are provided. Go to the subdirectory
+    for your platform, DBG (debug) or OPT (optimized), to get the tar.gz
+    or zip file. The tar.gz or zip file expands to an nss-3.12.2
+    directory containing three subdirectories:
+    <ul>
+      <li> include - NSS header files</li>
+      <li> lib - NSS shared libraries</li>
+      <li> bin&lt; - <a href="https://www.mozilla.org/projects/security/pki/nss/tools/" class="external" rel=" noopener">NSS
+          Tools</a> and test
+        programs</li>
+    </ul>
+  </li>
+</ul>
+You also need to download the NSPR 4.7.1 binary distributions to get
+the NSPR 4.7.1 header files and shared libraries, which NSS 3.12.2
+requires. NSPR 4.7.1 binary distributions are in <a href="https://ftp.mozilla.org/pub/mozilla.org/nspr/releases/v4.7.1/" class="external" rel=" noopener">https://ftp.mozilla.org/pub/mozilla.org/nspr/releases/v4.7.1/</a>.<br>
+
+<hr></div><h3 id="new_in_nss_3.12.2"><a href="#new_in_nss_3.12.2" title="Permalink to New in NSS 3.12.2">New in NSS 3.12.2</a></h3><div><ul>
+  <li>New functions in the nss shared library:
+    <ul>
+      <li>SEC_PKCS12AddCertOrChainAndKey (see p12.h)</li>
+    </ul>
+  </li>
+  <li>New PKCS11 errors (see secerr.h)
+    <ul>
+      <li>SEC_ERROR_PKCS11_GENERAL_ERROR</li>
+      <li>SEC_ERROR_PKCS11_FUNCTION_FAILED</li>
+      <li>SEC_ERROR_PKCS11_DEVICE_ERROR</li>
+    </ul>
+  </li>
+</ul>
+
+
+<hr></div><h3 id="bugs_fixed"><a href="#bugs_fixed" title="Permalink to  Bugs Fixed"> Bugs Fixed</a></h3><div>The following bugs have been fixed in NSS 3.12.2.<br>
+<ul>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=200704" class="external" rel=" noopener">Bug 200704</a>: PKCS11: invalid session handle 0
+  </li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=205434" class="external" rel=" noopener">Bug 205434</a>: Fully implement new libPKIX cert
+    verification API from bug 294531</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=302670" class="external" rel=" noopener">Bug 302670</a>: Use the installed libz.so where
+    available</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=305693" class="external" rel=" noopener">Bug 305693</a>: shlibsign generates PQG for every
+    run</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=311483" class="external" rel=" noopener">Bug 311483</a>: exposing includeCertChain as a
+    parameter to SEC_PKCS12AddCertAndKey</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=390527" class="external" rel=" noopener">Bug 390527</a>: get rid of pkixErrorMsg variable in
+    PKIX_Error</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=391560" class="external" rel=" noopener">Bug 391560</a>: libpkix does not consistently return
+    PKIX_ValidateNode tree that truly represent failure reasons</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=408260" class="external" rel=" noopener">Bug 408260</a>: certutil usage doesn't give enough
+    information about trust arguments</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=412311" class="external" rel=" noopener">Bug 412311</a>: Replace PR_INTERVAL_NO_WAIT with
+    PR_INTERVAL_NO_TIMEOUT in client initialization calls</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=423839" class="external" rel=" noopener">Bug 423839</a>: Add multiple PKCS#11 token password
+    command line option to NSS tools.</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=432260" class="external" rel=" noopener">Bug 432260</a>: [[@
+    pkix_pl_HttpDefaultClient_HdrCheckComplete - PKIX_PL_Memcpy] crashes when there is no content-length header in the
+    http response</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=436599" class="external" rel=" noopener">Bug 436599</a>: PKIX: AIA extension is not used in
+    some Bridge CA / known certs configuration</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=437804" class="external" rel=" noopener">Bug 437804</a>: certutil -R for cert renewal should
+    derive the subject from the cert if none is specified.</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=444974" class="external" rel=" noopener">Bug 444974</a>: Crash upon reinsertion of E-Identity
+    smartcard</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=447563" class="external" rel=" noopener">Bug 447563</a>: modutil -add prints no error
+    explanation on failure</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=448431" class="external" rel=" noopener">Bug 448431</a>: PK11_CreateMergeLog() declaration
+    causes gcc warning when compiling with -Wstrict-prototypes</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=449334" class="external" rel=" noopener">Bug 449334</a>: pk12util has duplicate options
+    letters</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=449725" class="external" rel=" noopener">Bug 449725</a>: signver is still using static
+    libraries.</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=450427" class="external" rel=" noopener">Bug 450427</a>: Add COMODO ECC Certification
+    Authority certificate to NSS</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=450536" class="external" rel=" noopener">Bug 450536</a>: Remove obsolete XP_MAC code</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=451024" class="external" rel=" noopener">Bug 451024</a>: certutil.exe crashes with
+    Segmentation fault inside PR_Cleanup</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=451927" class="external" rel=" noopener">Bug 451927</a>: security/coreconf/WINNT6.0.mk has
+    invalid defines</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=452751" class="external" rel=" noopener">Bug 452751</a>: Slot leak in PK11_FindSlotsByNames
+  </li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=452865" class="external" rel=" noopener">Bug 452865</a>: Remove obsolete linker flags needed
+    when libnss3 was linked with libsoftokn3</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=454961" class="external" rel=" noopener">Bug 454961</a>: Fix the implementation and use of
+    pr_fgets in signtool</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=455348" class="external" rel=" noopener">Bug 455348</a>: Change hyphens to underscores in
+    DEBUG_$(shell whoami).</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=455424" class="external" rel=" noopener">Bug 455424</a>: nssilckt.h defines the enumeration
+    constant 'Lock'</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=456036" class="external" rel=" noopener">Bug 456036</a>: Stubs for deprecated functions in
+    lib/certdb/stanpcertdb.c should set the PR_NOT_IMPLEMENTED_ERROR error.</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=456854" class="external" rel=" noopener">Bug 456854</a>: CERT_DecodeCertPackage does not set
+    NSPR error code upon error</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=457980" class="external" rel=" noopener">Bug 457980</a>: hundreds of kilobytes of useless
+    strings in libPKIX</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=457984" class="external" rel=" noopener">Bug 457984</a>: Enable PKCS11 module logging in
+    optimized builds</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=458905" class="external" rel=" noopener">Bug 458905</a>: Memory leaks in PKIX bridge
+    certificates.</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=459231" class="external" rel=" noopener">Bug 459231</a>: Memory leak in cert fetching - AIA
+    extension.</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=459248" class="external" rel=" noopener">Bug 459248</a>: Support Intel AES extensions.</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=459359" class="external" rel=" noopener">Bug 459359</a>: ForwardBuilderState object is leaked
+    when AIA path incorrect</li>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=459481" class="external" rel=" noopener">Bug 459481</a>: NSS build problem with GCC 3.4.6 on
+    OS/2</li>
+</ul>
+<hr></div><h3 id="documentation"><a href="#documentation" title="Permalink to  Documentation"> Documentation</a></h3><div>For a list of the primary NSS documentation pages on mozilla.org, see <a href="../index.html#Documentation">NSS
+  Documentation</a>. New and
+revised documents available since the release of NSS 3.11 include the
+following:
+<ul>
+  <li> <a href="../nss-3.11.4/nss-3.11.4-build.html">Build Instructions for NSS
+      3.11.4 and above</a></li>
+  <li><a href="http://wiki.mozilla.org/NSS_Shared_DB" class="external" rel=" noopener">NSS Shared DB</a></li>
+</ul>
+<hr></div><h3 id="compatibility"><a href="#compatibility" title="Permalink to  Compatibility"> Compatibility</a></h3><div>NSS 3.12.2 shared libraries are backward compatible with all older NSS
+3.x shared libraries. A program linked with older NSS 3.x shared
+libraries will work with NSS 3.12.2 shared libraries without
+recompiling or relinking.&nbsp; Furthermore, applications that restrict
+their use of NSS APIs to the functions listed in <a href="../ref/nssfunctions.html">NSS Public Functions</a>
+will remain compatible with future versions of the NSS shared
+libraries.
+<hr></div><h3 id="feedback"><a href="#feedback" title="Permalink to  Feedback"> Feedback</a></h3><div>Bugs discovered should be reported by filing a bug report with <a href="https://bugzilla.mozilla.org/" class="external" rel=" noopener">mozilla.org
+  Bugzilla</a> (product
+NSS).</div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/nss_3.12.2_release_notes.html/index.html" title="Folder: en-us/mozilla/projects/nss/nss_3.12.2_release_notes.html (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_3.12.2_release_notes.html%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_3.12.2_release_notes.html%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_3.12.2_release_notes.html%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_3.12.2_release_notes.html%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2F8c1ca6575872d0de37e76f859e8e535638322bb5%0A*+Document+last+modified%3A+2021-02-02T17%3A19%3A18.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22NSS_3.12.2_release_notes.html%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2021-02-02T17:19:18.000Z">Feb 2, 2021</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/NSS_3.12.2_release_notes.html/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

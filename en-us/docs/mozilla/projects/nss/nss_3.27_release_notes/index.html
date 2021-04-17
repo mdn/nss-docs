@@ -1,0 +1,89 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>NSS 3.27 release notes - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>NSS 3.27 release notes</h1><h2 id="introduction"><a href="#introduction" title="Permalink to Introduction">Introduction</a></h2><div><p><span class="seoSummary">The Network Security Services (NSS) team has released NSS 3.27, which is a minor release.</span></p></div><h2 id="distribution_information"><a href="#distribution_information" title="Permalink to Distribution information">Distribution information</a></h2><div><p>The hg tag is NSS_3_27_RTM. NSS 3.27 requires <span style="background-color: #ffffff; color: #545454; display: inline !important; float: none; font-family: arial,sans-serif; font-size: small; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 18.2px; text-align: left; text-indent: 0px; text-transform: none; white-space: normal;">Netscape Portable Runtime </span>(NSPR) 4.13 or newer.</p>
+
+<p>NSS 3.27 source distributions are available on ftp.mozilla.org for secure HTTPS download:</p>
+
+<ul>
+ <li>Source tarballs:<br>
+  <a href="https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_27_RTM/src/" class="external" rel=" noopener">https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_27_RTM/src/</a></li>
+</ul></div><h2 id="new_in_nss_3.27"><a href="#new_in_nss_3.27" title="Permalink to New in NSS 3.27">New in NSS 3.27</a></h2><div></div><h3 id="new_functionality"><a href="#new_functionality" title="Permalink to New Functionality">New Functionality</a></h3><div><ul>
+ <li>Allow custom named group priorities for TLS key exchange handshake (SSL_NamedGroupConfig).</li>
+ <li>Added support for RSA-PSS signatures in TLS 1.2 and TLS 1.3</li>
+</ul>
+
+<h4 id="new_functions">New Functions</h4>
+
+<ul>
+ <li>in ssl.h
+  <ul>
+   <li>SSL_NamedGroupConfig</li>
+  </ul>
+ </li>
+</ul></div><h2 id="notable_changes_in_nss_3.27"><a href="#notable_changes_in_nss_3.27" title="Permalink to Notable Changes in NSS 3.27">Notable Changes in NSS 3.27</a></h2><div><ul>
+ <li><u><strong>UPDATE 2016-10-02:</strong></u>
+
+  <ul>
+   <li>The maximum TLS version supported has been increased to TLS 1.3 (draft).</li>
+   <li>Although the maximum TLS version enabled by default is still TLS 1.2, there are applications that query the list of TLS protocol versions supported by NSS, and enable all supported versions. For those applications, updating to NSS 3.27 may result in TLS 1.3 (draft) to be enabled.</li>
+   <li>The TLS 1.3 (draft) protocol can be disabled, by defining symbol NSS_DISABLE_TLS_1_3 when building NSS.</li>
+  </ul>
+ </li>
+ <li>NPN can not be enabled anymore.</li>
+ <li>Hard limits on the maximum number of TLS records encrypted with the same key are enforced.</li>
+ <li>Disabled renegotiation in DTLS.</li>
+ <li>The following CA certificates were <strong>Removed</strong>
+  <ul>
+   <li>CN = IGC/A, O = PM/SGDN, OU = DCSSI
+    <ul>
+     <li>SHA256 Fingerprint: B9:BE:A7:86:0A:96:2E:A3:61:1D:AB:97:AB:6D:A3:E2:1C:10:68:B9:7D:55:57:5E:D0:E1:12:79:C1:1C:89:32</li>
+    </ul>
+   </li>
+   <li>CN = Juur-SK, O = AS Sertifitseerimiskeskus
+    <ul>
+     <li>SHA256 Fingerprint: EC:C3:E9:C3:40:75:03:BE:E0:91:AA:95:2F:41:34:8F:F8:8B:AA:86:3B:22:64:BE:FA:C8:07:90:15:74:E9:39</li>
+    </ul>
+   </li>
+   <li>CN = EBG Elektronik Sertifika Hizmet Sağlayıcısı
+    <ul>
+     <li>SHA-256 Fingerprint: 35:AE:5B:DD:D8:F7:AE:63:5C:FF:BA:56:82:A8:F0:0B:95:F4:84:62:C7:10:8E:E9:A0:E5:29:2B:07:4A:AF:B2</li>
+    </ul>
+   </li>
+   <li>CN = S-TRUST Authentication and Encryption Root CA 2005:PN
+    <ul>
+     <li>SHA-256 Fingerprint: 37:D8:DC:8A:F7:86:78:45:DA:33:44:A6:B1:BA:DE:44:8D:8A:80:E4:7B:55:79:F9:6B:F6:31:76:8F:9F:30:F6</li>
+    </ul>
+   </li>
+   <li>O = VeriSign, Inc., OU = Class 1 Public Primary Certification Authority
+    <ul>
+     <li>SHA-256 Fingerprint: 51:84:7C:8C:BD:2E:9A:72:C9:1E:29:2D:2A:E2:47:D7:DE:1E:3F:D2:70:54:7A:20:EF:7D:61:0F:38:B8:84:2C</li>
+    </ul>
+   </li>
+   <li>O = VeriSign, Inc., OU = Class 2 Public Primary Certification Authority - G2
+    <ul>
+     <li>SHA-256 Fingerprint: 3A:43:E2:20:FE:7F:3E:A9:65:3D:1E:21:74:2E:AC:2B:75:C2:0F:D8:98:03:05:BC:50:2C:AF:8C:2D:9B:41:A1</li>
+    </ul>
+   </li>
+   <li>O = VeriSign, Inc., OU = Class 3 Public Primary Certification Authority
+    <ul>
+     <li>SHA-256 Fingerprint: E7:68:56:34:EF:AC:F6:9A:CE:93:9A:6B:25:5B:7B:4F:AB:EF:42:93:5B:50:A2:65:AC:B5:CB:60:27:E4:4E:70</li>
+    </ul>
+   </li>
+   <li>O = Equifax, OU = Equifax Secure Certificate Authority
+    <ul>
+     <li>SHA-256 Fingerprint: 08:29:7A:40:47:DB:A2:36:80:C7:31:DB:6E:31:76:53:CA:78:48:E1:BE:BD:3A:0B:01:79:A7:07:F9:2C:F1:78</li>
+    </ul>
+   </li>
+   <li>CN = Equifax Secure eBusiness CA-1
+    <ul>
+     <li>SHA-256 Fingerprint: CF:56:FF:46:A4:A1:86:10:9D:D9:65:84:B5:EE:B5:8A:51:0C:42:75:B0:E5:F9:4F:40:BB:AE:86:5E:19:F6:73</li>
+    </ul>
+   </li>
+   <li>CN = Equifax Secure Global eBusiness CA-1
+    <ul>
+     <li>SHA-256 Fingerprint: 5F:0B:62:EA:B5:E3:53:EA:65:21:65:16:58:FB:B6:53:59:F4:43:28:0A:4A:FB:D1:04:D7:7D:10:F9:F0:4C:07</li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul></div><h2 id="bugs_fixed_in_nss_3.27"><a href="#bugs_fixed_in_nss_3.27" title="Permalink to Bugs fixed in NSS 3.27">Bugs fixed in NSS 3.27</a></h2><div><p>This Bugzilla query returns all the bugs fixed in NSS 3.27:</p>
+
+<p><a href="https://bugzilla.mozilla.org/buglist.cgi?resolution=FIXED&amp;classification=Components&amp;query_format=advanced&amp;product=NSS&amp;target_milestone=3.27" class="external" rel=" noopener">https://bugzilla.mozilla.org/buglist.cgi?resolution=FIXED&amp;classification=Components&amp;query_format=advanced&amp;product=NSS&amp;target_milestone=3.27</a></p></div><h2 id="compatibility"><a href="#compatibility" title="Permalink to Compatibility">Compatibility</a></h2><div><p>NSS 3.27 shared libraries are backwards compatible with all older NSS 3.x shared libraries. A program linked with older NSS 3.x shared libraries will work with NSS 3.27 shared libraries without recompiling or relinking. Applications that restrict their use of NSS APIs to the functions listed in NSS Public Functions will remain compatible with future versions of the NSS shared libraries.</p></div><h2 id="feedback"><a href="#feedback" title="Permalink to Feedback">Feedback</a></h2><div><p>Bugs discovered should be reported by filing a bug report with<a href="https://bugzilla.mozilla.org/enter_bug.cgi?product=NSS" class="external" rel=" noopener"> bugzilla.mozilla.org</a> (product NSS).</p></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/nss_3.27_release_notes/index.html" title="Folder: en-us/mozilla/projects/nss/nss_3.27_release_notes (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_3.27_release_notes%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_3.27_release_notes%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_3.27_release_notes%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_3.27_release_notes%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2Fc562f18870c7d1e06aa2b338ecbe93e3fd890a7b%0A*+Document+last+modified%3A+2020-12-22T07%3A08%3A04.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22NSS+3.27+release+notes%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2020-12-22T07:08:04.000Z">Dec 21, 2020</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/NSS_3.27_release_notes/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

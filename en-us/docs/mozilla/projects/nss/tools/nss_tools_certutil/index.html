@@ -1,0 +1,606 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>NSS Tools certutil - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>NSS Tools certutil</h1><h2 id="using_the_certificate_database_tool"><a href="#using_the_certificate_database_tool" title="Permalink to Using the Certificate Database Tool">Using the Certificate Database Tool</a></h2><div><p>The Certificate Database Tool is a command-line utility that can create and modify the Netscape Communicator <code>cert8.db</code> and <code>key3.db </code>database files. It can also list, generate, modify, or delete certificates within the <code>cert8.db </code>file and create or change the password, generate new public and private key pairs, display the contents of the key database, or delete key pairs within the <code>key3.db</code> file.</p>
+
+<p>Starting from NSS 3.35, the database format was upgraded to support SQLite as described in this <a href="https://wiki.mozilla.org/NSS_Shared_DB" class="external" rel=" noopener">document</a>. It means that <code>cert9.db</code> and <code>key4.db</code> files may be targeted instead.</p>
+
+<p>The key and certificate management process generally begins with creating keys in the key database, then generating and managing certificates in the certificate database.</p>
+
+<p>This document discusses certificate and key database management. For information security module database management, see <a href="/en-US/docs/Mozilla/Projects/NSS/Reference/NSS_tools_:_modutil">Using the Security Module Database Tool.</a></p></div><h2 id="availability"><a href="#availability" title="Permalink to Availability">Availability</a></h2><div><p>See the release notes for the platforms this tool is available on.</p></div><h2 id="syntax"><a href="#syntax" title="Permalink to Syntax">Syntax</a></h2><div><p>To run the Certificate Database Tool, type the command</p>
+
+<pre class="notranslate"><code>certutil </code><em>option</em> [<em>arguments</em> ]</pre>
+
+<p>where<em> options</em> and<em> arguments</em> are combinations of the options and arguments listed in the following section. Each command takes one option. Each option may take zero or more arguments. To see a usage string, issue the command without options, or with the <code>-H</code> option.</p></div><h3 id="options_and_arguments"><a href="#options_and_arguments" title="Permalink to Options and Arguments">Options and Arguments</a></h3><div><p>Options specify an action and are uppercase. Option arguments modify an action and are lowercase. Certificate Database Tool command options and their arguments are defined as follows:</p>
+
+<table>
+ <tbody>
+  <tr>
+   <td>&nbsp;<strong>Options </strong></td>
+   <td></td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-N</code></p>
+   </td>
+   <td>
+    <p>Create new certificate and key databases.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-S</code></p>
+   </td>
+   <td>
+    <p>Create an individual certificate and add it to a certificate database.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-R</code></p>
+   </td>
+   <td>
+    <p>Create a certificate-request file that can be submitted to a Certificate Authority (CA) for processing into a finished certificate. Output defaults to standard out unless you use <code>-o</code><em>output-file</em> argument. Use the <code>-a</code> argument to specify ASCII output.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-C</code></p>
+   </td>
+   <td>
+    <p>Create a new binary certificate file from a binary certificate-request file. Use the <code>-i</code> argument to specify the certificate-request file. If this argument is not used Certificate Database Tool prompts for a filename.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-G</code></p>
+   </td>
+   <td>
+    <p>Generate a new public and private key pair within a key database. The key database should already exist; if one is not present, this option will initialize one by default. Some smart cards (for example, the Litronic card) can store only one key pair. If you create a new key pair for such a card, the previous pair is overwritten.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-F</code></p>
+   </td>
+   <td>
+    <p>Delete a private key from a key database. Specify the key to delete with the <code>-n</code> argument. Specify the database from which to delete the key with the <code>-d</code> argument.</p>
+
+    <p>Use the <code>-k</code> argument to specify explicitly whether to delete a DSA or an RSA key. If you don't use the <code>-k</code> argument, the option looks for an RSA key matching the specified nickname.</p>
+
+    <p>When you delete keys, be sure to also remove any certificates associated with those keys from the certificate database, by using <code>-D</code>.</p>
+
+    <p>Some smart cards (for example, the Litronic card) do not let you remove a public key you have generated. In such a case, only the private key is deleted from the key pair. You can display the public key with the command <code>certutil -K -h</code><em>tokenname</em> .</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-K</code></p>
+   </td>
+   <td>
+    <p>List the keyID of keys in the key database. A keyID is the modulus of the RSA key or the <code>publicValue</code> of the DSA key. IDs are displayed in hexadecimal ("0x" is not shown).</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-A</code></p>
+   </td>
+   <td>
+    <p>Add an existing certificate to a certificate database. The certificate database should already exist; if one is not present, this option will initialize one by default.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-D</code></p>
+   </td>
+   <td>
+    <p>Delete a certificate from the certificate database.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-L</code></p>
+   </td>
+   <td>
+    <p>List all the certificates, or display information about a named certificate, in a certificate database.</p>
+
+    <p>Use the <code>-h</code><em>tokenname</em> argument to specify the certificate database on a particular hardware or software token.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-V</code></p>
+   </td>
+   <td>
+    <p>Check the validity of a certificate and its attributes.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-M</code></p>
+   </td>
+   <td>
+    <p>Modify a certificate's trust attributes using the values of the <code>-t</code> argument.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-H</code></p>
+   </td>
+   <td>
+    <p>Display a list of the options and arguments used by the Certificate Database Tool.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-W</code></p>
+   </td>
+   <td>
+    <p>Change the password to a key database.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-U</code></p>
+   </td>
+   <td>
+    <p>List all available modules or print a single named module.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><strong>Arguments</strong></p>
+   </td>
+   <td></td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-a</code></p>
+   </td>
+   <td>
+    <p>Use ASCII format or allow the use of ASCII format for input or output. This formatting follows <a href="https://tools.ietf.org/html/rfc1113" class="external" rel=" noopener">RFC 1113</a>. For certificate requests, ASCII output defaults to standard output unless redirected.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-b </code><em>validity-time</em></p>
+   </td>
+   <td>
+    <p>Specify a time at which a certificate is required to be valid. Use when checking certificate validity with the <code>-V</code> option. The format of the<em>validity-time</em> argument is "YYMMDDHHMMSS[+HHMM|-HHMM|Z]". Specifying seconds (SS) is optional. When specifying an explicit time, use "YYMMDDHHMMSSZ". When specifying an offset time, use "YYMMDDHHMMSS+HHMM" or "YYMMDDHHMMSS-HHMM". If this option is not used, the validity check defaults to the current system time.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-c </code><em>issuer</em></p>
+   </td>
+   <td>
+    <p>Identify the certificate of the CA from which a new certificate will derive its authenticity. Use the exact nickname or alias of the CA certificate, or use the CA's email address. Bracket the<em>issuer</em> string with quotation marks if it contains spaces.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-d </code><em>directory</em></p>
+   </td>
+   <td>
+    <p>Specify the database directory containing the certificate and key database files. On Unix the Certificate Database Tool defaults to <code>$HOME/.netscape</code> (that is, <code>~/.netscape</code>). On Windows NT the default is the current directory.</p>
+
+    <p>The <code>cert8.db</code> and <code>key3.db</code> database files must reside in the same directory.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-P </code><em>dbprefix</em></p>
+   </td>
+   <td>
+    <p>Specify the prefix used on the <code>cert8.db</code> and <code>key3.db</code> files (for example, <code>my_cert8.db</code> and <code>my_key3.db</code>). This option is provided as a special case. Changing the names of the certificate and key databases is not recommended.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-e</code></p>
+   </td>
+   <td>
+    <p>Check a certificate's signature during the process of validating a certificate.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-f </code><em>password-file</em></p>
+   </td>
+   <td>
+    <p>Specify a file that will automatically supply the password to include in a certificate or to access a certificate database. This is a plain-text file containing one password. Be sure to prevent unauthorized access to this file.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-g </code><em>keysize</em></p>
+   </td>
+   <td>
+    <p>Set a key size to use when generating new public and private key pairs. The minimum is 512 bits and the maximum is 8192 bits. The default is 1024 bits. Any size that is a multiple of 8 between the minimum and maximum is allowed.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-h </code><em>tokenname</em></p>
+   </td>
+   <td>
+    <p>Specify the name of a token to use or act on. Unless specified otherwise the default token is an internal slot (specifically, internal slot 2). This slot can also be explicitly named with the string <code>"internal"</code>. An internal slots is a virtual slot maintained in software, rather than a hardware device. Internal slot 2 is used by key and certificate services. Internal slot 1 is used by cryptographic services.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-i </code><em>cert|cert-request-file</em></p>
+   </td>
+   <td>
+    <p>Specify a specific certificate, or a certificate-request file.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-k rsa|dsa|all</code></p>
+   </td>
+   <td>
+    <p>Specify the type of a key: RSA, DSA or both. The default value is <code>rsa</code>. By specifying the type of key you can avoid mistakes caused by duplicate nicknames.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-l</code></p>
+   </td>
+   <td>
+    <p>Display detailed information when validating a certificate with the <code>-V</code> option.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-m </code><em>serial-number</em></p>
+   </td>
+   <td>
+    <p>Assign a unique serial number to a certificate being created. This operation should be performed by a CA. The default serial number is 0 (zero). Serial numbers are limited to integers.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-n </code><em>nickname</em></p>
+   </td>
+   <td>
+    <p>Specify the nickname of a certificate or key to list, create, add to a database, modify, or validate. Bracket the <em>nickname</em> string with quotation marks if it contains spaces.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-o </code><em>output-file</em></p>
+   </td>
+   <td>
+    <p>Specify the output file name for new certificates or binary certificate requests. Bracket the<em>output-file</em> string with quotation marks if it contains spaces. If this argument is not used the output destination defaults to standard output.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-p </code><em>phone</em></p>
+   </td>
+   <td>
+    <p>Specify a contact telephone number to include in new certificates or certificate requests. Bracket this string with quotation marks if it contains spaces.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-q </code><em>pqgfile</em></p>
+   </td>
+   <td>
+    <p>Read an alternate PQG value from the specified file when generating DSA key pairs. If this argument is not used, the Key Database Tool generates its own PQG value. PQG files are created with a separate DSA utility.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-r</code></p>
+   </td>
+   <td>
+    <p>Display a certificate's binary DER encoding when listing information about that certificate with the <code>-L</code> option.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-s </code><em>subject</em></p>
+   </td>
+   <td>
+    <p>Identify a particular certificate owner for new certificates or certificate requests. Bracket this string with quotation marks if it contains spaces. The subject identification format follows <a href="https://tools.ietf.org/html/rfc1485" class="external" rel=" noopener">RFC 1485</a>.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-t </code><em>trustargs</em></p>
+   </td>
+   <td>
+    <p>Specify the trust attributes to modify in an existing certificate or to apply to a certificate when creating it or adding it to a database.</p>
+
+    <p>There are three available trust categories for each certificate, expressed in this order: "<em>SSL</em> ,<em>email</em> ,<em>object signing</em> ". In each category position use zero or more of the following attribute codes:</p>
+
+    <p><code>p</code>&nbsp;&nbsp;&nbsp;&nbsp;prohibited (explicitly distrusted)<br>
+     <code>P</code>&nbsp;&nbsp;&nbsp;&nbsp;Trusted peer<br>
+     <code>c</code>&nbsp;&nbsp;&nbsp;&nbsp;Valid CA<br>
+     <code>T</code>&nbsp;&nbsp;&nbsp;&nbsp;Trusted CA to issue client certificates (implies <code>c</code>)<br>
+     <code>C</code>&nbsp;&nbsp;&nbsp;&nbsp;Trusted CA to issue server certificates (SSL only)<br>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(implies <code>c</code>)<br>
+     <code>u</code>&nbsp;&nbsp;&nbsp;&nbsp;Certificate can be used for authentication or signing<br>
+     <code>w</code>&nbsp;&nbsp;&nbsp;&nbsp;Send warning (use with other attributes to include a warning when the certificate is used in that context)</p>
+
+    <p>The attribute codes for the categories are separated by commas, and the entire set of attributes enclosed by quotation marks. For example:</p>
+
+    <p><code>-t "TCu,Cu,Tuw"</code></p>
+
+    <p>Use the <code>-L</code> option to see a list of the current certificates and trust attributes in a certificate database.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-u </code><em>certusage</em></p>
+   </td>
+   <td>
+    <p>Specify a usage context to apply when validating a certificate with the <code>-V</code> option. The contexts are the following:</p>
+
+    <p><code>C</code> (as an SSL client)<br>
+     <code>V</code> (as an SSL server)<br>
+     <code>S</code> (as an email signer)<br>
+     <code>R</code> (as an email recipient)</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-v </code><em>valid-months</em></p>
+   </td>
+   <td>
+    <p>Set the number of months a new certificate will be valid. The validity period begins at the current system time unless an offset is added or subtracted with the <code>-w</code> option. If this argument is not used, the default validity period is three months. When this argument is used, the default three-month period is automatically added to any value given in the<em>valid-month</em> argument. For example, using this option to set a value of <code>3</code> would cause 3 to be added to the three-month default, creating a validity period of six months. You can use negative values to reduce the default period. For example, setting a value of <code>-2</code> would subtract 2 from the default and create a validity period of one month.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-w </code><em>offset-months</em></p>
+   </td>
+   <td>
+    <p>Set an offset from the current system time, in months, for the beginning of a certificate's validity period. Use when creating the certificate or adding it to a database. Express the offset in integers, using a minus sign (<code>-</code>) to indicate a negative offset. If this argument is not used, the validity period begins at the current system time. The length of the validity period is set with the <code>-v</code> argument.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-x</code></p>
+   </td>
+   <td>
+    <p>Use the Certificate Database Tool to generate the signature for a certificate being created or added to a database, rather than obtaining a signature from a separate CA.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-y </code><em>exp</em></p>
+   </td>
+   <td>
+    <p>Set an alternate exponent value to use in generating a new RSA public key for the database, instead of the default value of 65537. The available alternate values are 3 and 17.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-z </code><em>noise-file</em></p>
+   </td>
+   <td>
+    <p>Read a seed value from the specified binary file to use in generating a new RSA private and public key pair. This argument makes it possible to use hardware-generated seed values and unnecessary to manually create a value from the keyboard. The minimum file size is 20 bytes.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-1</code></p>
+   </td>
+   <td>
+    <p>Add a key usage extension to a certificate that is being created or added to a database. This extension allows a certificate's key to be dedicated to supporting specific operations such as SSL server or object signing. The Certificate Database Tool will prompt you to select a particular usage for the certificate's key. These usages are described under <a href="https://access.redhat.com/documentation/en-US/Red_Hat_Certificate_System/9/html/Administration_Guide/Standard_X.509_v3_Certificate_Extensions.html" class="external" rel=" noopener">Standard X.509 v3 Certificate Extensions</a> in Appendix A.3 of the<em>Red Hat Certificate System Administration Guide.</em></p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-2</code></p>
+   </td>
+   <td>
+    <p>Add a basic constraint extension to a certificate that is being created or added to a database. This extension supports the certificate chain verification process. The Certificate Database Tool will prompt you to select the certificate constraint extension. Constraint extensions are described in <a href="https://access.redhat.com/documentation/en-US/Red_Hat_Certificate_System/9/html/Administration_Guide/Standard_X.509_v3_Certificate_Extensions.html" class="external" rel=" noopener">Standard X.509 v3 Certificate Extensions</a> in Appendix A.3 of the<em>Red Hat Certificate System Administration Guide.</em></p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-3</code></p>
+   </td>
+   <td>
+    <p>Add an authority keyID extension to a certificate that is being created or added to a database. This extension supports the identification of a particular certificate, from among multiple certificates associated with one subject name, as the correct issuer of a certificate. The Certificate Database Tool will prompt you to select the authority keyID extension. Authority key ID extensions are described under <a href="https://access.redhat.com/documentation/en-us/red_hat_certificate_system/9/html/administration_guide/standard_x.509_v3_certificate_extensions" class="external" rel=" noopener">Standard X.509 v3 Certificate Extensions</a> in Appendix B.3 of the<em>Red Hat Certificate System Administration Guide.</em></p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-4</code></p>
+   </td>
+   <td>
+    <p>Add a CRL distribution point extension to a certificate that is being created or added to a database. This extension identifies the URL of a certificate's associated certificate revocation list (CRL). The Certificate Database Tool prompts you to enter the URL. CRL distribution point extensions are described in <a href="https://access.redhat.com/documentation/en-US/Red_Hat_Certificate_System/9/html/Administration_Guide/Standard_X.509_v3_Certificate_Extensions.html" class="external" rel=" noopener">Standard X.509 v3 Certificate Extensions</a> in Appendix A.3 of the<em>Red Hat Certificate System Administration Guide.</em></p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-5</code></p>
+   </td>
+   <td>
+    <p>Add a Netscape certificate type extension to a certificate that is being created or added to the database. Netscape certificate type extensions are described in <a href="https://access.redhat.com/documentation/en-US/Red_Hat_Certificate_System/9/html/Administration_Guide/Standard_X.509_v3_Certificate_Extensions.html" class="external" rel=" noopener">Standard X.509 v3 Certificate Extensions</a> in Appendix A.3 of the<em>Red Hat Certificate System Administration Guide.</em></p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-6</code></p>
+   </td>
+   <td>
+    <p>Add an extended key usage extension to a certificate that is being created or added to the database. Extended key usage extensions are described in <a href="https://access.redhat.com/documentation/en-US/Red_Hat_Certificate_System/9/html/Administration_Guide/Standard_X.509_v3_Certificate_Extensions.html" class="external" rel=" noopener">Standard X.509 v3 Certificate Extensions</a> in Appendix A.3 of the<em>Red Hat Certificate System Administration Guide.</em></p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-7 </code><em>emailAddrs</em></p>
+   </td>
+   <td>
+    <p>Add a comma-separated list of email addresses to the subject alternative name extension of a certificate or certificate request that is being created or added to the database. Subject alternative name extensions are described in Section 4.2.1.7 of <a href="https://tools.ietf.org/html/rfc32800" class="external" rel=" noopener">RFC 32800</a>.</p>
+   </td>
+  </tr>
+  <tr>
+   <td>
+    <p><code>-8 </code><em>dns-names</em></p>
+   </td>
+   <td>
+    <p>Add a comma-separated list of DNS names to the subject alternative name extension of a certificate or certificate request that is being created or added to the database. Subject alternative name extensions are described in Section 4.2.1.7 of <a href="https://tools.ietf.org/html/rfc32800" class="external" rel=" noopener">RFC 32800</a></p>
+   </td>
+  </tr>
+ </tbody>
+</table></div><h2 id="usage"><a href="#usage" title="Permalink to Usage">Usage</a></h2><div><p>The Certificate Database Tool's capabilities are grouped as follows, using these combinations of options and arguments. Options and arguments in square brackets are optional, those without square brackets are required.</p>
+
+<pre class="notranslate"><code>-N [-d </code><em>certdir</em> <code>] </code></pre>
+
+<pre class="notranslate"><code>-S -k rsa|dsa -n </code><em>certname</em> <code>-s </code><em>subject</em>
+<code>[-c </code><em>issuer</em> <code>|-x] -t </code><em>trustargs</em> <code>[-h </code><em>tokenname</em> <code>]
+[-m </code><em>serial-number</em> <code>] [-v </code><em>valid-months</em> <code>] [-w </code><em>offset-months</em> <code>]
+[-d </code><em>certdir</em> <code>] [-p </code><em>phone</em> <code>] [-f </code><em>password-file</em> <code>] [-1] [-2] [-3] [-4] </code></pre>
+
+<pre class="notranslate"><code>-R -k rsa|dsa -s </code><em>subject</em> <code>[-h </code><em>tokenname</em> <code>]
+[-d </code><em>certdir</em> <code>] [-p </code><em>phone</em> <code>] [-o </code><em>output-file</em> <code>] [-f </code><em>password-file</em> <code>] </code></pre>
+
+<pre class="notranslate"><code>-C -c </code><em>issuer</em> <code>[-f </code><em>password-file</em> <code>]
+[-h </code><em>tokenname</em> <code>] -i </code><em>cert-request-file</em> <code>-o </code><em>output-file</em> <code>[-m </code><em>serial-number</em> <code>]
+[-v </code><em>valid-months</em> <code>] [-w </code><em>offset-months</em> <code>] [-d </code><em>certdir</em> <code>] [-1] [-2] [-3]
+[-4] </code></pre>
+
+<pre class="notranslate"><code>-A -n </code><em>certname</em> <code>-t </code><em>trustargs</em> <code>[-h </code><em>tokenname</em> <code>] [-d </code><em>certdir</em> <code>] [-a]
+[-i </code><em>cert-request-file</em> <code>] </code></pre>
+
+<pre class="notranslate"><code>-L [-n </code><em>certname</em> <code>] [-d </code><em>certdir</em> <code>] [-r] [-a] </code></pre>
+
+<pre class="notranslate"><code>-V -n </code><em>certname</em> <code>-b </code><em>validity-time</em> <code>-u </code><em>certusage</em> <code>[-e] [-l] [-d </code><em>certdir</em> <code>] </code></pre>
+
+<pre class="notranslate"><code>-M -n </code><em>certname</em> <code>-t </code><em>trustargs</em> <code>[-d </code><em>certdir</em> <code>] </code></pre>
+
+<pre class="notranslate"><code>-H </code></pre>
+
+<ul>
+ <li>Creating a new <code>cert8.db</code> file:</li>
+ <li>Creating a new certificate and adding it to the database with one command:</li>
+ <li>Making a separate certificate request:</li>
+ <li>Creating a new binary certificate from a binary certificate request:</li>
+ <li>Adding a certificate to an existing database:</li>
+ <li>Listing all certificates or a named certificate:</li>
+ <li>Validating a certificate:</li>
+ <li>Modifying a certificate's trust attribute:</li>
+ <li>Displaying a list of the options and arguments used by the Certificate Database Tool:</li>
+</ul></div><h2 id="examples"><a href="#examples" title="Permalink to Examples">Examples</a></h2><div></div><h3 id="creating_a_new_certificate_database"><a href="#creating_a_new_certificate_database" title="Permalink to Creating a New Certificate Database">Creating a New Certificate Database</a></h3><div><p>This example creates a new certificate database (<code>cert8.db</code> file) in the specified directory:</p>
+
+<pre class="notranslate"><code>certutil -N -d </code><em>certdir</em></pre>
+
+<p>You must generate the associated <code>key3.db</code> and <code>secmod.db</code> files by using the Key Database Tool or other tools.</p></div><h3 id="listing_certificates_in_a_database"><a href="#listing_certificates_in_a_database" title="Permalink to Listing Certificates in a Database">Listing Certificates in a Database</a></h3><div><p>This example lists all the certificates in the <code>cert8.db</code> file in the specified directory:</p>
+
+<pre class="notranslate"><code>certutil -L -d </code><em>certdir</em></pre>
+
+<p>The Certificate Database Tool displays output similar to the following:</p>
+
+<p><code>Certificate Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Trust Attributes </code><br>
+ <code>Uptime Group Plc. Class 1 CA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C,C,<br>
+ VeriSign Class 1 Primary CA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;,C,<br>
+ VeriSign Class 2 Primary CA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C,C,C<br>
+ AT&amp;T Certificate Services&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C,C,<br>
+ GTE CyberTrust Secure Server CA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C,,<br>
+ Verisign/RSA Commercial CA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C,C,<br>
+ AT&amp;T Directory Services&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C,C,<br>
+ BelSign Secure Server CA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C,,<br>
+ Verisign/RSA Secure Server CA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C,C,<br>
+ GTE CyberTrust Root CA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C,C,<br>
+ Uptime Group Plc. Class 4 CA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;,C,<br>
+ VeriSign Class 3 Primary CA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C,C,C<br>
+ Canada Post Corporation CA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C,C,<br>
+ Integrion CA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C,C,C<br>
+ IBM World Registry CA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C,C,C<br>
+ GTIS/PWGSC, Canada Gov. Web CA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C,C,<br>
+ GTIS/PWGSC, Canada Gov. Secure CA&nbsp;&nbsp;&nbsp;C,C,C<br>
+ MCI Mall CA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C,C,<br>
+ VeriSign Class 4 Primary CA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C,C,C<br>
+ KEYWITNESS, Canada CA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C,C,<br>
+ BelSign Object Publishing CA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;,,C<br>
+ BBN Certificate Services CA Root 1&nbsp;&nbsp;C,C,<br>
+ p&nbsp;&nbsp;&nbsp;&nbsp;prohibited (explicitly distrusted)<br>
+ P&nbsp;&nbsp;&nbsp;&nbsp;Trusted peer<br>
+ c&nbsp;&nbsp;&nbsp;&nbsp;Valid CA<br>
+ T&nbsp;&nbsp;&nbsp;&nbsp;Trusted CA to issue client certs (implies c)<br>
+ C&nbsp;&nbsp;&nbsp;&nbsp;Trusted CA to issue server certs(for ssl only) (implies c)<br>
+ u&nbsp;&nbsp;&nbsp;&nbsp;User cert<br>
+ w&nbsp;&nbsp;&nbsp;&nbsp;Send warning </code></p></div><h3 id="creating_a_certificate_request"><a href="#creating_a_certificate_request" title="Permalink to Creating a Certificate Request">Creating a Certificate Request</a></h3><div><p>This example generates a binary certificate request file named <code>e95c.req</code> in the specified directory:</p>
+
+<pre class="notranslate"><code>certutil -R -s "CN=John Smith, O=Netscape, L=Mountain View, ST=California, C=US" -p "650-555-8888" -o mycert.req -d </code><em>certdir</em></pre>
+
+<p>Before it creates the request file, the Certificate Database Tool prompts you for a password:</p>
+
+<pre class="notranslate"><code>Enter Password or Pin for "Communicator Certificate DB": </code></pre></div><h3 id="creating_a_certificate"><a href="#creating_a_certificate" title="Permalink to Creating a Certificate">Creating a Certificate</a></h3><div><p>A valid certificate must be issued by a trusted CA. If a CA key pair is not available, you can create a self-signed certificate (for purposes of illustration) with the <code>-x</code> argument. This example creates a new binary, self-signed CA certificate named <code>myissuer</code>, in the specified directory.</p>
+
+<pre class="notranslate"><code>certutil -S -s "CN=My Issuer" -n myissuer -x -t "C,C,C" -1 -2 -5 -m 1234 -f </code><em>password-file</em> <code>-d </code><em>certdir</em></pre>
+
+<p>The following example creates a new binary certificate named <code>mycert.crt</code>, from a binary certificate request named <code>mycert.req</code>, in the specified directory. It is issued by the self-signed certificate created above, <code>myissuer</code>.</p>
+
+<pre class="notranslate"><code>certutil -C -m 2345 -i mycert.req -o mycert.crt -c myissuer -d </code><em>certdir</em></pre></div><h3 id="adding_a_certificate_to_the_database"><a href="#adding_a_certificate_to_the_database" title="Permalink to Adding a Certificate to the Database">Adding a Certificate to the Database</a></h3><div><p>This example adds a certificate to the certificate database:</p>
+
+<pre class="notranslate"><code>certutil -A -n jsmith@netscape.com -t "p,p,p" -i mycert.crt -d </code><em>certdir</em></pre>
+
+<p>You can see this certificate in the database with this command:</p>
+
+<pre class="notranslate"><code>certutil -L -n jsmith@netscape.com -d </code><em>certdir</em></pre>
+
+<p>The Certificate Database Tool displays output similar to the following:</p>
+
+<p><code>Certificate:<br>
+ &nbsp;&nbsp;Data:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;Version: 3 (0x2)<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;Serial Number: 0 (0x0)<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;Signature Algorithm: PKCS #1 MD5 With RSA Encryption<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;Issuer: CN=John Smith, O=Netscape, L=Mountain View, ST=California, C=US<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;Validity:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Not Before: Thu Mar 12 00:10:40 1998<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Not After: Sat Sep 12 00:10:40 1998<br>
+ Subject: CN=John Smith, O=Netscape, L=Mountain View, ST=California, C=US </code><br>
+ <code>Subject Public Key Info:<br>
+ &nbsp;&nbsp;Public Key Algorithm: PKCS #1 RSA Encryption<br>
+ &nbsp;&nbsp;RSA Public Key:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;Modulus:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;00:da:53:23:58:00:91:6a:d1:a2:39:26:2f:06:3a:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;38:eb:d4:c1:54:a3:62:00:b9:f0:7f:d6:00:76:aa:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;18:da:6b:79:71:5b:d9:8a:82:24:07:ed:49:5b:33:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bf:c5:79:7c:f6:22:a7:18:66:9f:ab:2d:33:03:ec:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;63:eb:9d:0d:02:1b:da:32:ae:6c:d4:40:95:9f:b3:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;44:8b:8e:8e:a3:ae:ad:08:38:4f:2e:53:e9:e1:3f:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8e:43:7f:51:61:b9:0f:f3:a6:25:1e:0b:93:74:8f:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c6:13:a3:cd:51:40:84:0e:79:ea:b7:6b:d1:cc:6b:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;78:d0:5d:da:be:2b:57:c2:6f<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;Exponent: 65537 (0x10001)<br>
+ Signature Algorithm: PKCS #1 MD5 With RSA Encryption<br>
+ Signature:<br>
+ &nbsp;&nbsp;44:15:e5:ae:c4:30:2c:cd:60:89:f1:1d:22:ed:5e:5b:10:c8:<br>
+ &nbsp;&nbsp;7e:5f:56:8c:b4:00:12:ed:5f:a4:6a:12:c3:0d:01:03:09:f2:<br>
+ &nbsp;&nbsp;2f:e7:fd:95:25:47:80:ea:c1:25:5a:33:98:16:52:78:24:80:<br>
+ &nbsp;&nbsp;c9:53:11:40:99:f5:bd:b8:e9:35:0e:5d:3e:38:6a:5c:10:d1:<br>
+ &nbsp;&nbsp;c6:f9:54:af:28:56:62:f4:2f:b3:9b:50:e1:c3:a2:ba:27:ee:<br>
+ &nbsp;&nbsp;07:9f:89:2e:78:5c:6d:46:b6:5e:99:de:e6:9d:eb:d9:ff:b2:<br>
+ &nbsp;&nbsp;5f:c6:f6:c6:52:4a:d4:67:be:8d:fc:dd:52:51:8e:a2:d7:15:<br>
+ &nbsp;&nbsp;71:3e </code><br>
+ <code>Certificate Trust Flags:<br>
+ &nbsp;&nbsp;SSL Flags:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;Valid CA<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;Trusted CA<br>
+ &nbsp;&nbsp;Email Flags:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;Valid CA<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;Trusted CA<br>
+ &nbsp;&nbsp;Object Signing Flags:<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;Valid CA<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;Trusted CA </code></p></div><h3 id="validating_a_certificate"><a href="#validating_a_certificate" title="Permalink to Validating a Certificate">Validating a Certificate</a></h3><div><p>This example validates a certificate:</p>
+
+<pre class="notranslate"><code>certutil -V -n jsmith@netscape.com -b 9803201212Z -u SR -e -l -d </code><em>certdir</em></pre>
+
+<p>The Certificate Database Tool shows results similar to</p>
+
+<pre class="notranslate"><code>Certificate:'jsmith@netscape.com' is valid.</code></pre>
+
+<p>or</p>
+
+<pre class="notranslate"><code>UID=jsmith, E=jsmith@netscape.com, CN=John Smith, O=Netscape Communications Corp., C=US : Expired certificate</code></pre>
+
+<p>or</p>
+
+<pre class="notranslate"><code>UID=jsmith, E=jsmith@netscape.com, CN=John Smith, O=Netscape Communications Corp., C=US : Certificate not approved for this operation</code></pre></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/tools/nss_tools_certutil/index.html" title="Folder: en-us/mozilla/projects/nss/tools/nss_tools_certutil (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2Ftools%2FNSS_Tools_certutil%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Ftools%2Fnss_tools_certutil%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2Ftools%2FNSS_Tools_certutil%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Ftools%2Fnss_tools_certutil%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2Fcec9e8ed306805d484e197fdc153f7305d69ce83%0A*+Document+last+modified%3A+2021-03-09T20%3A34%3A57.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22NSS+Tools+certutil%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2021-03-09T20:34:57.000Z">Mar 9, 2021</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_certutil/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

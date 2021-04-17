@@ -1,0 +1,66 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>NSS Tools sslstrength - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>NSS Tools sslstrength</h1><h2 id="sslstrength"><a href="#sslstrength" title="Permalink to sslstrength">sslstrength</a></h2><div></div><h3 id="summary"><a href="#summary" title="Permalink to 
+Summary">
+Summary</a></h3><div>A simple command-line client which connects to an SSL-server, and reports
+back the encryption cipher and strength used.</div><h3 id="synopsis"><a href="#synopsis" title="Permalink to 
+Synopsis">
+Synopsis</a></h3><div>1) sslstrength ciphers
+<p>2) sslstrength hostname[:port] [ciphers=xyz] [debug] [verbose] [policy=export|domestic]
+</p></div><h3 id="description"><a href="#description" title="Permalink to 
+Description">
+Description</a></h3><div>The first form simple lists out the possible ciphers. The letter in the
+first column of the output is used to identify the cipher preferences in
+the ciphers=&nbsp; command.
+<p>The second form attempts to connect to the named ssl host. The hostname
+argument must be present. However, the port number is an optional argument,
+and if not given, will default to the https port (443).
+</p><h4 id="restricting_ciphers">
+Restricting Ciphers</h4>
+By default, sslstrength assumes that all the preferences are on, so it
+will use any preferences in your policy. The enabled ciphersuites will
+always be printed out before the connection is made. If you want to test
+out a particular cipher, there are two ways to affect which ciphers are
+available. Firstly, you can set <b>policy</b> to be either domestic
+or export. This restricts the available ciphers to the same set used by
+Communicator. In addition to this, the <b>ciphers</b> command
+can be used to further restrict the ciphers available. The argument to
+the ciphers command is a string of characters, where each single character
+represents a cipher. You can obtain this list of character-&gt;cipher mappings
+by doing 'sslstrength ciphers'. For example,
+<p><b>&nbsp;&nbsp;&nbsp; ciphers=bfi</b> will turn on these cipher
+preferences and turn off all others.
+</p><p><b>&nbsp;&nbsp;&nbsp; policy=export</b> or <b>policy=domestic</b>
+will set your policies appropriately.
+</p><p><b>&nbsp;&nbsp;&nbsp; policy</b> will default to domestic if not specified.
+<br>
+</p><h4 id="step-up">
+Step-up</h4>
+Step up is a mode where the connection starts out with 40-bit encryption,
+but due to a 'change-cipher-spec' handshake, changes to 128-bit encryption.
+This is only done in 'export mode', with servers with a special certificate.
+You can tell if you stepped-up, because the output will says 'using export
+policy', and you'll find the secret key size was 128-bits.</div><h3 id="prerequisites"><a href="#prerequisites" title="Permalink to 
+Prerequisites">
+Prerequisites</a></h3><div>You should have a cert7.db in the directory in which you run sslstrength.
+<br></div><h3 id="other"><a href="#other" title="Permalink to 
+Other">
+Other</a></h3><div>For references, here is a table of well-known SSL port numbers:
+<br>
+<table>
+<tbody><tr>
+<td>HTTPS</td>
+
+<td>443</td>
+</tr>
+
+<tr>
+<td>IMAPS</td>
+
+<td>993</td>
+</tr>
+
+<tr>
+<td>NNTPS</td>
+
+<td>563</td>
+</tr>
+</tbody></table></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/nss_tools_sslstrength/index.html" title="Folder: en-us/mozilla/projects/nss/nss_tools_sslstrength (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_Tools_sslstrength%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_tools_sslstrength%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_Tools_sslstrength%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_tools_sslstrength%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2F94fcf42284061ea5b05acd59e3008f5888ea46c3%0A*+Document+last+modified%3A+2020-12-31T13%3A09%3A15.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22NSS+Tools+sslstrength%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2020-12-31T13:09:15.000Z">Dec 31, 2020</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/NSS_Tools_sslstrength/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

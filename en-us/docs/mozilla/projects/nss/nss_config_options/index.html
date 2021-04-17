@@ -1,0 +1,180 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>NSS Config Options - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>NSS Config Options</h1><h2 id="nss_config_options_format"><a href="#nss_config_options_format" title="Permalink to &nbsp;NSS Config Options Format">&nbsp;NSS Config Options Format</a></h2><div><p>The specified ciphers will be allowed by policy, but an application may allow more by policy explicitly:</p>
+
+<pre class="notranslate">config="allow=curve1:curve2:hash1:hash2:rsa-1024..."</pre>
+
+<p>Only the specified hashes and curves will be allowed:</p>
+
+<pre class="notranslate">config="disallow=all allow=sha1:sha256:secp256r1:secp384r1"
+</pre>
+
+<p>Only the specified hashes and curves will be allowed, and RSA keys of 2048 or more will be accepted, and DH key exchange with 1024-bit primes or more:</p>
+
+<pre class="notranslate">config="disallow=all allow=sha1:sha256:secp256r1:secp384r1:min-rsa=2048:min-dh=1024"</pre>
+
+<p>A policy that enables the AES ciphersuites and the SECP256/384 curves:</p>
+
+<pre class="notranslate">config="allow=aes128-cbc:aes128-gcm::HMAC-SHA1:SHA1:SHA256:SHA384:RSA:ECDHE-RSA:SECP256R1:SECP384R1"</pre>
+
+<p>Turn off md5</p>
+
+<pre class="notranslate">config="disallow=MD5"</pre>
+
+<p>Turn off md5 and sha1 only for SSL</p>
+
+<pre class="notranslate">config="disallow=MD5(SSL):SHA1(SSL)"</pre>
+
+<p>Disallow values are parsed first, and then allow values, independent of the order in which they appear.</p>
+
+<pre class="notranslate">Future key words (not yet implemented):
+enable: turn on ciphersuites by default.
+disable: turn off ciphersuites by default without disallowing them by policy.
+flags: turn on the following flags:
+     ssl-lock: turn off the ability for applications to change policy with
+               the SSL_SetCipherPolicy (or SSL_SetPolicy).
+     policy-lock: turn off the ability for applications to change policy with
+               the call NSS_SetAlgorithmPolicy.
+     ssl-default-lock: turn off the ability for applications to change cipher
+               suite states with SSL_EnableCipher, SSL_DisableCipher.</pre>
+
+<h4 id="ecc_curves">&nbsp;ECC Curves</h4>
+
+<p><br>
+ PRIME192V1<br>
+ PRIME192V2<br>
+ PRIME192V3<br>
+ PRIME239V1<br>
+ PRIME239V2<br>
+ PRIME239V3<br>
+ PRIME256V1<br>
+ SECP112R1<br>
+ SECP112R2<br>
+ SECP128R1<br>
+ SECP128R2<br>
+ SECP160K1<br>
+ SECP160R1<br>
+ SECP160R2<br>
+ SECP192K1<br>
+ SECP192R1<br>
+ SECP224K1<br>
+ SECP256K1<br>
+ SECP256R1<br>
+ SECP384R1<br>
+ SECP521R1<br>
+ C2PNB163V1<br>
+ C2PNB163V2<br>
+ C2PNB163V3<br>
+ C2PNB176V1<br>
+ C2TNB191V1<br>
+ C2TNB191V2<br>
+ C2TNB191V3<br>
+ C2ONB191V4<br>
+ C2ONB191V5<br>
+ C2PNB208W1<br>
+ C2TNB239V1<br>
+ C2TNB239V2<br>
+ C2TNB239V3<br>
+ C2ONB239V4<br>
+ C2ONB239V5<br>
+ C2PNB272W1<br>
+ C2PNB304W1<br>
+ C2TNB359V1<br>
+ C2PNB368W1<br>
+ C2TNB431R1<br>
+ SECT113R1<br>
+ SECT131R1<br>
+ SECT131R1<br>
+ SECT131R2<br>
+ SECT163K1<br>
+ SECT163R1<br>
+ SECT163R2<br>
+ SECT193R1<br>
+ SECT193R2<br>
+ SECT233K1<br>
+ SECT233R1<br>
+ SECT239K1<br>
+ SECT283K1<br>
+ SECT283R1<br>
+ SECT409K1<br>
+ SECT409R1<br>
+ SECT571K1<br>
+ SECT571R1</p>
+
+<h4 id="hashes">Hashes</h4>
+
+<p><br>
+ MD2<br>
+ MD4<br>
+ MD5<br>
+ SHA1<br>
+ SHA224<br>
+ SHA256<br>
+ SHA384<br>
+ SHA512</p>
+
+<h4 id="macs">MACS</h4>
+
+<p>HMAC-SHA1<br>
+ HMAC-SHA224<br>
+ HMAC-SHA256<br>
+ HMAC-SHA384<br>
+ HMAC-SHA512<br>
+ HMAC-MD5</p>
+
+<h4 id="ciphers">Ciphers</h4>
+
+<p>AES128-CBC<br>
+ AES192-CBC<br>
+ AES256-CBC<br>
+ AES128-GCM<br>
+ AES192-GCM<br>
+ AES256-GCM<br>
+ CAMELLIA128-CBC<br>
+ CAMELLIA192-CBC<br>
+ CAMELLIA256-CBC<br>
+ SEED-CBC<br>
+ DES-EDE3-CBC<br>
+ DES-40-CBC<br>
+ DES-CBC<br>
+ NULL-CIPHER<br>
+ RC2<br>
+ RC4<br>
+ IDEA</p>
+
+<h4 id="ssl_key_exchanges">SSL Key exchanges</h4>
+
+<p>RSA<br>
+ RSA-EXPORT<br>
+ DHE-RSA<br>
+ DHE-DSS<br>
+ DH-RSA<br>
+ DH-DSS<br>
+ ECDHE-ECDSA<br>
+ ECDHE-RSA<br>
+ ECDH-ECDSA<br>
+ ECDH-RSA</p>
+
+<h4 id="restrictions_for_asymmetric_keys_(integers)">Restrictions for asymmetric keys (integers)</h4>
+
+<p>RSA-MIN<br>
+ DH-MIN<br>
+ DSA-MIN</p>
+
+<h4 id="constraints_on_ssl_protocols_versions_(integers)">Constraints on SSL Protocols Versions (integers)</h4>
+
+<p>TLS-VERSION-MIN<br>
+ TLS-VERSION-MAX</p>
+
+<h4 id="constraints_on_dtls_protocols_versions_(integers)">Constraints on DTLS Protocols Versions (integers)</h4>
+
+<p>DTLS-VERSION-MIN<br>
+ DTLS-VERSION-MAX</p>
+
+<h4 id="policy_flags_for_algorithms">Policy flags for algorithms</h4>
+
+<p>SSL<br>
+ SSL-KEY-EXCHANGE<br>
+ KEY-EXCHANGE<br>
+ CERT-SIGNATURE<br>
+ SIGNATURE<br>
+ ALL<br>
+ NONE</p></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/nss_config_options/index.html" title="Folder: en-us/mozilla/projects/nss/nss_config_options (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_Config_Options%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_config_options%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_Config_Options%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_config_options%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2F94fcf42284061ea5b05acd59e3008f5888ea46c3%0A*+Document+last+modified%3A+2020-12-31T13%3A09%3A15.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22NSS+Config+Options%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2020-12-31T13:09:15.000Z">Dec 31, 2020</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/NSS_Config_Options/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

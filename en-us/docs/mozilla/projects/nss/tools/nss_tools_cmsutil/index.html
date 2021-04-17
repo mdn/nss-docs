@@ -1,0 +1,283 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>NSS Tools cmsutil - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>NSS Tools cmsutil</h1><h2 id="using_cmsutil"><a href="#using_cmsutil" title="Permalink to Using cmsutil">Using cmsutil</a></h2><div>Newsgroup: <a href="news://news.mozilla.org/mozilla.dev.tech.crypto">mozilla.dev.tech.crypto</a><br>
+
+<p>
+    The cmsutil command-line utility uses the <a href="../smime/">S/MIME Toolkit</a> to perform basic operations, such
+    as encryption and decryption, on
+    <a href="http://www.ietf.org/rfc/rfc2630.txt" class="external" rel=" noopener">Cryptographic Message Syntax&nbsp;(CMS)</a> messages.
+
+</p></div><h2 id="syntax_2"><a href="#syntax_2" title="Permalink to 
+    
+        Syntax
+    
+"></a><a id="Syntax"></a>
+    <a id="1028268">
+        Syntax
+    </a>
+</h2><div><a id="1033678">
+    To run cmsutil, type the command</a>
+<a id="1033679">
+    <code>cmsutil </code><i>option</i><code> [</code><i>arguments</i><code>]</code></a>
+<a id="1028271">
+    where <i>option</i> and <i>arguments</i> are combinations of the options and arguments listed in the following
+    section.
+    Each command takes one option. Each option may take zero or more arguments. To see a usage string, issue the command
+    without options. </a></div><h3 id="options_and_arguments"><a href="#options_and_arguments" title="Permalink to 
+    
+        Options and Arguments
+    
+">
+    
+        Options and Arguments
+    
+</a></h3><div><a id="1028291"></a>
+Options specify an action. Option arguments modify an action. The options and arguments for the <code>cmsutil</code>
+command are defined as follows:
+<table>
+    <tbody>
+        <tr>
+            <td><a id="1043286">
+                    <b>Options
+                    </b></a></td>
+            <td>
+                <p><a id="1043288">
+                    </a></p>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p><a id="1032245">
+                        <code>-D</code></a></p>
+            </td>
+            <td>
+                <p>Decode a message.</p>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <p><a id="1032249">
+                        <code>-C</code></a></p>
+            </td>
+            <td>
+                <p><a id="1038844">
+                        Encrypt a message. </a></p>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <p><a id="1038660">
+                        <code>-E </code></a></p>
+            </td>
+            <td>
+                <p><a id="1038851">
+                        Envelope a message. </a></p>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <p><a id="1038656">
+                        <code>-O </code></a></p>
+            </td>
+            <td>
+                <p><a id="1038943">
+                        Create a certificates-only message. </a></p>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <p><a id="1038652">
+                        <code>-S </code></a></p>
+            </td>
+            <td>
+                <p><a id="1038654">
+                        Sign a message.</a></p>
+            </td>
+        </tr>
+
+        <tr>
+            <td><b>Arguments</b></td>
+            <td>
+                <p><a id="1043284">
+                    </a></p>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p><a id="1038834">
+                        <code>-c</code> <i>content</i></a></p>
+            </td>
+            <td>
+                <p><a id="1039085">
+                        Use this detached content (decode only). </a></p>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <p>
+                        <code>-d</code> <i>dbdir</i></p>
+            </td>
+            <td>
+                <p>
+                    Specify the key/certificate database directory (default is ".")</p>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <p><a id="1037903">
+                        <code>-e</code> <i>envfile</i></a></p>
+            </td>
+            <td>
+                <p><a id="1039095">
+                        Specify a file containing an enveloped message for a set of recipients to which you would
+                        like to send an encrypted message.
+                        If this is the first encrypted message for that set of recipients, a new enveloped message
+                        will be created
+                        that you can then use for future messages (encrypt only).</a></p>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p><a id="1037899">
+                        <code>-G</code></a></p>
+            </td>
+            <td>
+                <p><a id="1039102">
+                        Include a signing time attribute (sign only).</a></p>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p><a id="1038731">
+                        <code>-h</code> <i>num</i></a></p>
+            </td>
+            <td>
+                <p><a id="1039116">
+                        Generate email headers with info about CMS message (decode only).</a></p>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p><a id="1038727">
+                        <code>-i</code> <i>infile</i></a></p>
+            </td>
+            <td>
+                <p><a id="1039213">
+                        Use <i>infile</i> as a source of data (default is stdin).</a></p>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p><a id="1038723">
+                        <code>-N</code> <i>nickname</i></a></p>
+            </td>
+            <td>
+                <p><a id="1039235">
+                        Specify nickname of certificate to sign with (sign only).</a></p>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p><a id="1038719">
+                        <code>-n</code> </a></p>
+            </td>
+            <td>
+                <p><a id="1039652">
+                        Suppress output of contents (decode only).</a></p>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p><a id="1038715">
+                        <code>-o</code> <i>outfile</i></a></p>
+            </td>
+            <td>
+                <p><a id="1038717">
+                        Use outfile as a destination of data (default is stdout). </a></p>
+
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p><a id="1038711">
+                        <code>-P</code> </a></p>
+            </td>
+            <td>
+                <p><a id="1038713">
+                        Include an S/MIME capabilities attribute. </a></p>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p><a id="1043973">
+                        -p <i>password</i>
+                    </a></p>
+            </td>
+            <td>
+                <p><a id="1043985">
+                        Use password as key database password. </a></p>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                -r&amp;nbsp<i>recipient1</i>,<i>recipient2,&nbsp;.&nbsp;.&amp;nbsp.
+                </i></td>
+            <td>
+                Specify list of recipients (email addresses) for an encrypted or enveloped message.
+                For certificates-only message, list of certificates to send.</td>
+        </tr>
+
+        <tr>
+            <td>
+                -T
+            </td>
+            <td>Suppress content in CMS message (sign only).</td>
+        </tr>
+
+        <tr>
+            <td>
+                -u <i>certusage</i>
+            </td>
+            <td>Set type of cert usage (default is &lt;tt&gt;certUsageEmailSigner)&lt;/tt&gt;.</td>
+        </tr>
+
+        <tr>
+            <td>
+                &lt;-Y <i>ekprefnick</i>
+            </td>
+            <td>Specify an encryption key preference by nickname.</td>
+        </tr>
+
+
+    </tbody>
+</table></div><h2 id="usage"><a href="#usage" title="Permalink to Usage">Usage</a></h2><div>cmsutil -C [-i <i>infile</i>] [-o <i>outfile</i>]
+[-d <i>dbdir</i>] [-p <i>password</i>] -r "<i>recipient1</i>,<i>recipient2</i>,&nbsp;.&nbsp;.&nbsp;." -e <i>envfile</i>
+
+<p>cmsutil -D [-i <i>infile</i>] [-o <i>outfile</i>]
+    [-d <i>dbdir</i>] [-p <i>password</i>] [-c <i>content</i>] [-n] [-h <i>num</i>]
+
+</p>
+<p>cmsutil -E [-i <i>infile</i>] [-o <i>outfile</i>]
+    [-d <i>dbdir</i>] [-p <i>password</i>] -r "<i>recipient1</i>,<i>recipient2</i>,&amp;nbsp.&amp;nbsp.&amp;nbsp."
+</p>
+<p>cmsutil -O [-i <i>infile</i>] [-o <i>outfile</i>]
+    [-d <i>dbdir</i>] [-p <i>password</i>] -r "<i>cert1</i>,<i>cert2</i>,&nbsp;.&nbsp;.&nbsp;."
+
+</p>
+<p>cmsutil -S [-i <i>infile</i>] [-o <i>outfile</i>]
+    [-d <i>dbdir</i>] [-p <i>password</i>] -N <i>nickname</i>[-TGP] [-Y <i>ekprefnick</i>]</p></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/tools/nss_tools_cmsutil/index.html" title="Folder: en-us/mozilla/projects/nss/tools/nss_tools_cmsutil (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2Ftools%2FNSS_Tools_cmsutil%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Ftools%2Fnss_tools_cmsutil%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2Ftools%2FNSS_Tools_cmsutil%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Ftools%2Fnss_tools_cmsutil%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2Ffc36604b19a172f3fbedb2629e2403180f2eda55%0A*+Document+last+modified%3A+2021-03-19T23%3A16%3A59.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22NSS+Tools+cmsutil%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2021-03-19T23:16:59.000Z">Mar 19, 2021</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/tools/NSS_Tools_cmsutil/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

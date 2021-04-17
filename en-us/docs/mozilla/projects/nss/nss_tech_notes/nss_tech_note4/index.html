@@ -1,0 +1,299 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>nss tech note4 - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>nss tech note4</h1><h2 id="pulling_certificate_extension_information_out_of_ssl_certificates"><a href="#pulling_certificate_extension_information_out_of_ssl_certificates" title="Permalink to Pulling certificate extension information out of SSL certificates">Pulling certificate extension information out of SSL certificates</a></h2><div></div><h3 id="nss_technical_note_4"><a href="#nss_technical_note_4" title="Permalink to  NSS Technical Note: 4"> NSS Technical Note: 4</a></h3><div><b>Note</b><b>: </b>This document contains code snippets that focus on essential
+aspects of the task and often do not illustrate all the cleanup that needs
+to be done. Also, this document does not attempt to be an exhaustive survey
+of all possible ways to do a certain task; it merely tries to show a certain
+way.<br>
+    <br>
+
+<h4 id="include_these_files">Include these files<br>
+       </h4>
+       #include "ssl.h"<br>
+       #include "cert.h"<br>
+       <br>
+       <br>
+
+<h4 id="get_the_handle_of_the_cert_associated_with_an_ssl_connection">Get the handle of the cert associated with an SSL connection</h4>
+   <br>
+       <i>CERTCertificate* &nbsp;cert =&nbsp; SSL_PeerCertificate(PRFileDesc
+  *fd);  </i><br>
+       &nbsp; &nbsp; &nbsp; &nbsp; If SSL client, this will get you the server's
+   cert handle; <br>
+       &nbsp; &nbsp; &nbsp; &nbsp; If SSL server, this will get you the client's
+   cert handle IF client auth is enabled<br>
+       <br>
+       <i>CERTCertificate* cert = SSL_LocalCertificate(PRFileDesc *fd); </i><br>
+       &nbsp; &nbsp; &nbsp; &nbsp; If SSL client, this will get you the client
+   cert's handle, IF client auth happened <br>
+        &nbsp; &nbsp; &nbsp; &nbsp; If SSL server, this will get you the
+server's    cert handle <br>
+
+<h4 id="don't_forget_to_clean_up_the_cert_handle_when_you're_done_with_it">Don't forget to clean up the cert handle when you're done with it</h4>
+       <i>void CERT_DestroyCertificate(CERTCertificate *cert);</i><br>
+       <br>
+       <br>
+
+<h4 id="some_info_is_readily_available">Some info is readily available&nbsp;</h4>
+       cert-&gt;subjectName (char*)<br>
+       cert-&gt;issuerName (char*)<br>
+       cert-&gt;emailAddr (char*)<br>
+       &nbsp;&nbsp;&nbsp; &nbsp;OR char *CERT_GetCertificateEmailAddress(CERTCertificate
+   *cert);<br>
+       cert-&gt;keyUsage (unsigned int)<br>
+       <br>
+       <br>
+
+<h4 id="to_break_the_issuer_and_subject_names_into_components">To break the issuer and subject names into components</h4>
+       Pass &nbsp;&amp;(cert-&gt;issuer) or &amp;(cert-&gt;subject) to the
+ following   functions<br>
+
+<blockquote><i>char *CERT_GetCommonName(CERTName *name);<br>
+       char *CERT_GetCertEmailAddress(CERTName *name);<br>
+       char *CERT_GetCountryName(CERTName *name);<br>
+       char *CERT_GetLocalityName(CERTName *name);<br>
+       char *CERT_GetStateName(CERTName *name);<br>
+       char *CERT_GetOrgName(CERTName *name);<br>
+       char *CERT_GetOrgUnitName(CERTName *name);<br>
+       char *CERT_GetDomainComponentName(CERTName *name);<br>
+       char *CERT_GetCertUid(CERTName *name);</i><br>
+       </blockquote>
+       <br>
+              Example code to illustrate access to the info is given below.<br>
+
+<h4 id="background_on_cert_extensions">Background on cert extensions</h4>
+   An extension has the following attributes<br>
+
+<ul>
+         <li>Object Id (OID) : A unique OID represents an algorithm, a mechanism,
+   a piece of information, etc. Examples: X500 RSA Encryption,&nbsp; Certificate
+   Basic Constraints, PKCS#7 Digested Data, etc. <br>
+       There is a long list of pre-defined OIDs, and new ones can be <em>added dynamically by an application.</em><br>
+       The OID data structure contains an array of identifier bytes (each
+byte   is a "level" in a hierarchical namespace), a text description, and
+some other  things.<br>
+         </li>
+         <li>Critical : indicates whether the extension is critical</li>
+         <li>Value : The value of the extension</li>
+
+</ul>
+   <br>
+
+<h4 id="looping_through_all_extensions">Looping through all extensions<br>
+   </h4>
+
+<blockquote><small><i>CERTCertExtension** extensions =cert-&gt;extensions;</i></small><br>
+         <small><i>if (extensions)</i></small><br>
+         <small><i>{</i></small><br>
+         <small><i>&nbsp;&nbsp;&nbsp; while (*extensions)</i></small><br>
+         <small><i>&nbsp;&nbsp;&nbsp; {</i></small><br>
+         <small><i>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; SECItem *ext_oid
+=  &amp;(*extensions)-&gt;id;</i></small><br>
+         <small><i>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; SECItem *ext_critical
+   = &amp;(*extensions)-&gt;critical;</i></small><br>
+         <small><i>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; SECItem *ext_value
+ =  &amp;(*extensions)-&gt;value;</i></small><br>
+<br>
+         <small><i>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /* id attribute
+of  the   extension */</i></small><br>
+         <small><i>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; SECOidData *oiddata
+  =  SECOID_FindOID(ext_oid);</i></small><br>
+         <small><i>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (oiddata == NULL)</i></small><br>
+         <small><i>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</i></small><br>
+         <small><i>
+ /*  OID not found */</i></small><br>
+         <small><i>
+ /*  SECItem ext_oid has type (SECItemType), data (unsigned char *) and len
+ (unsigned   int) fields </i></small><br>
+         <small><i>
+ &nbsp;&nbsp;   - the application interprets these */</i></small><br>
+         <small><i>
+ .......</i></small><br>
+         <small><i>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</i></small><br>
+         <small><i>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; else</i></small><br>
+         <small><i>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</i></small><br>
+         <small><i>
+ char   *name = oiddata-&gt;desc; /* name of the extension */</i></small><br>
+         <small><i>
+ .......</i></small><br>
+         <small><i>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</i></small><br>
+         <br>
+         <small><i>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /* critical attribute
+   of the extension */</i></small><br>
+         <small><i>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (ext_critical-&gt;len
+   &gt; 0)</i></small><br>
+         <small><i>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;{</i></small><br>
+         <small><i>
+ if  (ext_critical-&gt;data[0])</i></small><br>
+         <small><i>
+ &nbsp;&nbsp;&nbsp;   /* the extension is critical */</i></small><br>
+         <small><i>
+ else</i></small><br>
+         <small><i>
+ &nbsp;&nbsp;&nbsp;   /* the extension is not critical */</i></small><br>
+         <small><i>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;}</i></small><br>
+         <br>
+         <br>
+         <small><i>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /* value attribute
+ of  the extension */</i></small><br>
+         <small><i>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /* SECItem ext_value
+  has  type (SECItemType), data (unsigned char *) and len (unsigned int) fields
+    </i></small><br>
+         <small><i>
+  -  the application interprets these */</i></small><br>
+         <small><i>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; SECOidTag oidtag
+=  SECOID_FindOIDTag(ext_oid);</i></small><br>
+         <small><i>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;switch (oidtag)</i></small><br>
+         <small><i>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;{</i></small><br>
+         <small><i>
+ case   a_tag_that_app_recognizes:</i></small><br>
+         <small><i>
+ &nbsp;&nbsp;&nbsp;   .....</i></small><br>
+         <br>
+         <small><i>
+ case   .....</i></small><br>
+         <small><i>
+ &nbsp;&nbsp;&nbsp;   ......</i></small><br>
+         <small><i>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;} </i></small><br>
+         <br>
+         <small><i>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; extensions++;</i></small><br>
+         <small><i>&nbsp;&nbsp;&nbsp; }</i></small><br>
+         <small><i>}</i></small><br>
+       </blockquote>
+       <br>
+
+<h4 id="an_example_custom_cert_extension">An example custom cert extension</h4>
+
+<blockquote><small><i>struct _myCertExtData </i><br>
+        <i>{</i><br>
+        <i>&nbsp;&nbsp;&nbsp; SECItem version;</i><br>
+        <i>&nbsp;&nbsp;&nbsp; SECItem streetaddress;</i><br>
+        <i>&nbsp;&nbsp;&nbsp; SECItem phonenum;</i><br>
+        <i>&nbsp;&nbsp;&nbsp; SECItem rfc822name;</i><br>
+        <i>&nbsp;&nbsp;&nbsp; SECItem id;</i><br>
+        <i>&nbsp;&nbsp;&nbsp; SECItem maxusers;</i><br>
+        <i>};</i><br>
+        <br>
+        <i>typedef struct _myCertExtData myCertExtData;</i><br>
+        <br>
+        <i>/* template used for decoding the extension */</i><br>
+        <i>const SEC_ASN1Template myCertExtTemplate[] = {</i><br>
+        <i>&nbsp;&nbsp;&nbsp; { SEC_ASN1_SEQUENCE, 0, NULL, sizeof( myCertExtData
+   ) },</i><br>
+        <i>&nbsp;&nbsp;&nbsp; { SEC_ASN1_INTEGER, offsetof(myCertExtData,
+version)   },</i><br>
+        <i>&nbsp;&nbsp;&nbsp; { SEC_ASN1_OCTET_STRING, offsetof(&nbsp;myCertExtData,
+   streetaddress ) },</i><br>
+        <i>&nbsp;&nbsp;&nbsp; { SEC_ASN1_OCTET_STRING, offsetof(&nbsp;myCertExtData,
+   phonenum ) },</i><br>
+        <i>&nbsp;&nbsp;&nbsp; { SEC_ASN1_OCTET_STRING, offsetof(&nbsp;myCertExtData,
+   rfc822name ) },</i><br>
+        <i>&nbsp;&nbsp;&nbsp; { SEC_ASN1_OCTET_STRING, offsetof(&nbsp;myCertExtData,
+   id ) },</i><br>
+        <i>&nbsp;&nbsp;&nbsp; { SEC_ASN1_INTEGER, offsetof(myCertExtData,
+maxusers   ) },</i><br>
+        <i>&nbsp;&nbsp;&nbsp; { 0 }</i><br>
+        <i>};</i><br>
+        <br>
+        <i>/* OID for my cert extension - replace 0xff with appropriate values*/</i><br>
+        <i>static const unsigned char myoid[] = { 0xff, 0xff, 0xff, 0xff,
+....   };</i><br>
+        <i>static const SECItem myoidItem = { (SECItemType) 0, (unsigned
+char   *)myoid, sizeof(myoid) };</i><br>
+        <br>
+        <br>
+        <i>SECItem myextvalue;<br>
+      myCertExtData data;</i><br>
+        <i>SECStatus rv = CERT_FindCertExtensionByOID(cert, &amp;myoidItem,
+ &amp;myextvalue);<br>
+      if (rv == SECSuccess)<br>
+      {<br>
+      &nbsp;&nbsp;&nbsp; SEC_ASN1DecoderContext * context = SEC_ASN1DecoderStart(NULL,
+   &amp;data, myCertExtTemplate);<br>
+      &nbsp;&nbsp;&nbsp; rv = SEC_ASN1DecoderUpdate( context, (const char
+*)(myextvalue.data),   myextvalue.len);<br>
+      &nbsp;&nbsp;&nbsp; if (rv == SECSuccess)<br>
+      &nbsp;&nbsp;&nbsp; {<br>
+      &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /* Now you can extract info from
+  SECItem  fields of your extension data structure */<br>
+      &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /* See "Misc helper functions"
+ below   */<br>
+      &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; .......<br>
+        <br>
+      &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /* free the SECItem fields */<br>
+      &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; SECITEM_FreeItem(&amp;data.version,
+   PR_FALSE);<br>
+      &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; SECITEM_FreeItem(&amp;data.streetaddress,
+   PR_FALSE);<br>
+      &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ......<br>
+      &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; SECITEM_FreeItem(&amp;data.maxusers,
+   PR_FALSE);<br>
+      &nbsp;&nbsp;&nbsp; }<br>
+      }</i><br>
+        </small></blockquote>
+      <br>
+      <br>
+
+<h4 id="some_miscellaneous_helper_functions">Some miscellaneous helper functions</h4>
+
+<ul>
+        <li>Compare two SECItems (e.g., two OIDs)<br>
+          <i>PRBool SECITEM_ItemsAreEqual(const SECItem *a, const SECItem
+*b);</i></li>
+        <li>Interpreting a SECItem value as an integer<br>
+      If SECItem *item-&gt;len &lt;=4, then int value = <i>DER_GetInteger(item)</i>;</li>
+        <li>Interpreting a SECItem value as a string<br>
+      Use string copy functions to copy item-&gt;len bytes from item-&gt;data
+  and null terminate explicitly<br>
+        </li>
+
+</ul>
+      <br>
+      <br>
+
+<h4 id="some_higher_level_extension_functions">Some higher level extension functions</h4>
+
+<ul>
+         <li>Get a specific extension from the list of extensions, given
+the   extension  tag<br>
+           <i>SECStatus CERT_FindCertExtension&nbsp; (CERTCertificate *cert,
+  int  tag, SECItem *value);</i></li>
+         <li>Get a specific extension from the ISSUER's cert<i><br>
+       SECStatus CERT_FindIssuerCertExtension&nbsp; (CERTCertificate *cert,
+ int   tag, SECItem *value);</i></li>
+         <li>Get the value of an extension with the given OID<br>
+           <i>SECStatus CERT_FindCertExtensionByOID (CERTCertificate *cert,
+ SECItem   *oid, SECItem *value);</i><br>
+         </li>
+         <li>Get the decoded value of the "Basic Constraints" extension<br>
+           <i>SECStatus CERT_FindBasicConstraintExten (CERTCertificate *cert,
+  CERTBasicConstraints  *value);</i><br>
+         </li>
+         <li>Get value of the keyUsage extension.&nbsp; This uses PR_Alloc
+ to  allocate  buffer for the decoded value, The&nbsp; caller should free
+up the  storage  allocated in value-&gt;data.<br>
+           <i>SECStatus CERT_FindKeyUsageExtension (CERTCertificate *cert,
+ SECItem   *value);</i><br>
+         </li>
+         <li>Get decoded value of the subjectKeyID extension.&nbsp; This
+uses   PR_Alloc  to allocate buffer for the decoded value, The&nbsp; caller
+should   free up  the storage allocated in value-&gt;data.<br>
+           <i>SECStatus CERT_FindSubjectKeyIDExten (CERTCertificate *cert,
+   SECItem *retItem);</i></li>
+
+</ul>
+   <i><br>
+   </i></div><h2 id="for_more_information"><a href="#for_more_information" title="Permalink to For more information">For more information</a></h2><div><ul>
+         <li>Browse through the NSS source code online at <a href="http://lxr.mozilla.org/mozilla/source/security/nss/" class="external" rel=" noopener">http://lxr.mozilla.org/mozilla/source/security/nss/</a>
+  &nbsp;and <a href="http://lxr.mozilla.org/security/" class="external" rel=" noopener">http://lxr.mozilla.org/security/</a></li>
+         <li>documentation on some cert funcs <a href="https://www.mozilla.org/projects/security/pki/nss/ref/ssl/sslcrt.html" class="external" rel=" noopener">http://www.mozilla.org/projects/security/pki/nss/ref/ssl/sslcrt.html</a><br>
+         </li>
+
+</ul>
+       <br>
+       <br>
+       <br>
+      <br>
+     <br>
+    <br>
+   <br>
+  <br>
+ <br></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/nss_tech_notes/nss_tech_note4/index.html" title="Folder: en-us/mozilla/projects/nss/nss_tech_notes/nss_tech_note4 (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_Tech_Notes%2Fnss_tech_note4%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_tech_notes%2Fnss_tech_note4%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_Tech_Notes%2Fnss_tech_note4%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_tech_notes%2Fnss_tech_note4%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2F78b274bd51286dd74dd34b8ccc0f02cc0bf9c116%0A*+Document+last+modified%3A+2021-01-05T07%3A42%3A29.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22nss+tech+note4%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2021-01-05T07:42:29.000Z">Jan 4, 2021</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/NSS_Tech_Notes/nss_tech_note4/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

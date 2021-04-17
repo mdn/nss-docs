@@ -1,0 +1,129 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>NSS Developer Tutorial - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>NSS Developer Tutorial</h1><h2 id="nss_coding_style"><a href="#nss_coding_style" title="Permalink to NSS Coding Style">NSS Coding Style</a></h2><div></div><h3 id="formatting"><a href="#formatting" title="Permalink to Formatting">Formatting</a></h3><div><p><strong>Line length</strong> should not exceed 80 characters.</p>
+
+<p><strong>Indentation level</strong> is 4.</p>
+
+<p><strong>Tabs</strong> are used heavily in many NSS source files. Try to stay consistent when you modify existing code. The proper use of tabs has often been confusing for new NSS developers, so in <code>nss/lib/ssl</code>, we're gradually removing the use of tabs.</p>
+
+<p><strong>Curly braces</strong>: both of the following styles are allowed:</p>
+
+<pre class="brush: cpp notranslate"><code><span class="token keyword">if</span> <span class="token punctuation">(</span>condition<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">action1</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    <span class="token function">action2</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p>Or:</p>
+
+<pre class="brush: cpp notranslate"><code><span class="token keyword">if</span> <span class="token punctuation">(</span>condition<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">action1</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">else</span>
+<span class="token punctuation">{</span>
+    <span class="token function">action2</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+
+<p>The former style is more common. When modifying existing code, try to stay consistent. In new code, prefer the former style, as it conserves vertical space.</p>
+
+<p>When a block of code consists of a single statement, NSS doesn’t require curly braces, so both of these examples are fine:</p>
+
+<pre class="brush: cpp notranslate"><code><span class="token keyword">if</span> <span class="token punctuation">(</span>condition<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">action</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+
+<p>Or:</p>
+
+<pre class="brush: cpp notranslate"><code><span class="token keyword">if</span> <span class="token punctuation">(</span>condition<span class="token punctuation">)</span>
+    <span class="token function">action</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+
+<p>although the use of curly braces is more common.</p>
+
+<p><strong>Multiple-line comments</strong> should be formatted as follows:</p>
+
+<pre class="brush: cpp notranslate"><code><span class="token comment">/*
+ * Line1
+ * Line2
+ */</span> </code></pre>
+
+<p>or</p>
+
+<pre class="brush: cpp notranslate"><code><span class="token comment">/*
+** Line 1
+** Line 2
+*/</span>
+</code></pre>
+
+<p>The following styles are also common, because they conserve vertical space:</p>
+
+<pre class="brush: cpp notranslate"><code><span class="token comment">/* Line1
+ * Line2
+ */</span></code></pre>
+
+<p>or</p>
+
+<pre class="brush: cpp notranslate"><code><span class="token comment">/* Line1
+** Line2
+*/</span></code></pre>
+
+<p>or</p>
+
+<pre class="brush: cpp notranslate"><code><span class="token comment">/* Line1
+ * Line2 */</span></code></pre></div><h3 id="naming"><a href="#naming" title="Permalink to Naming">Naming</a></h3><div><p>Public functions are named <code>FOO_DoOneAction</code>.</p>
+
+<p>Global, but unexported functions, are usually named <code>foo_DoOneAction</code>.</p>
+
+<p>Variable, and function parameter names, always start with a lowercase letter. The most common style is <code>fooBarBaz</code>, although <code>foobarbaz</code> and <code>foo_bar_baz</code> are also used.</p></div><h3 id="miscellaneous"><a href="#miscellaneous" title="Permalink to Miscellaneous">Miscellaneous</a></h3><div><p><strong>goto</strong> can be used, to simplify resource deallocation, before returning from a function.</p>
+
+<p>A data buffer is usually represented as:</p>
+
+<pre class="brush: cpp notranslate"><code><span class="token keyword">unsigned</span> <span class="token keyword">char</span> <span class="token operator">*</span>data<span class="token punctuation">;</span>
+<span class="token keyword">unsigned</span> <span class="token keyword">int</span> len<span class="token punctuation">;</span></code></pre>
+
+<p>The buffer pointer is <code>unsigned char *</code>, as opposed to <code>void *</code>, so we can perform pointer arithmetic without casting. Use <code>char *</code> only if the data is interpreted as text characters.</p>
+
+<p>For historical reasons, the buffer length is <code>unsigned int</code>, as opposed to <code>size_t</code>. Unfortunately, this can be a source of integer overflow bugs on 64-bit systems.</p></div><h2 id="c_features"><a href="#c_features" title="Permalink to C Features">C Features</a></h2><div><p>NSS requires C99.&nbsp; However, not all features from C99 are equally available.</p>
+
+<ul>
+ <li>Variables can be declared, at the point they are first used.</li>
+ <li>The <code>inline</code> keyword can be used.</li>
+ <li>Variadic macro arguments are permitted, but their use should be limited to using <code>__VA_ARGS__</code>.</li>
+ <li>The exact-width integer types in NSPR should be used, in preference to those declared in <code>&lt;stdint.h&gt;</code> (which will be&nbsp;used by NSPR in the future).</li>
+ <li>Universal character names are not permitted, as are wide character types (<code>char16_t</code> and <code>char32_t</code>).&nbsp; NSS source should only include ASCII text.&nbsp; Escape non-printing characters (with <code>\x</code> if there is no special escape such as \r, \n, and \t) and avoid defining string literals that use non-ASCII characters.</li>
+ <li>One line comments starting with <code>//</code> are permitted.</li>
+</ul>
+
+<p>Check with nss-dev@ before using a language feature not already used, if you are uncertain. Please update this list if you do.</p>
+
+<p>These restrictions are different for C++ unit tests, which can use most C++11 features.&nbsp; The <a href="/en-US/docs/Using_CXX_in_Mozilla_code" data-flaw="link1">Mozilla C++ language features guide</a>, and the <a href="https://chromium-cpp.appspot.com/" class="external" rel=" noopener">Chromium C++ usage guide</a>, list C++ features that are known to be widely available and compatible. You should limit features to those that appear in both guides. Ask on nss-dev@ if you think this is restrictive, or if you wish to prohibit a specific feature.</p></div><h2 id="nss_c_abi_backward_compatibility"><a href="#nss_c_abi_backward_compatibility" title="Permalink to NSS C ABI backward compatibility">NSS C ABI backward compatibility</a></h2><div></div><h3 id="functions"><a href="#functions" title="Permalink to Functions">Functions</a></h3><div><p>Exported functions cannot be removed.</p>
+
+<p>The function prototype of an exported function, cannot be changed, with these exceptions:</p>
+
+<ul>
+ <li>
+  <p>A <code>Foo *</code> parameter can be changed to <code>const Foo *</code>. This change is always safe.</p>
+ </li>
+ <li>
+  <p>Sometimes an <code>int</code> parameter can be changed to <code>unsigned int</code>, or an <code>int *</code> parameter can be changed to <code>unsigned int *</code>. Whether such a change is safe needs to be reviewed on a case-by-case basis.</p>
+ </li>
+</ul></div><h2 id="types"><a href="#types" title="Permalink to Types">Types</a></h2><div></div><h3 id="structs"><a href="#structs" title="Permalink to Structs">Structs</a></h3><div><p>Members of an exported struct, cannot be reordered or removed.</p>
+
+<p>Under certain circumstances, it is safe to add new members to an exported struct at the end.</p>
+
+<p>Opaque structs give us complete freedom to change them, but require applications to call NSS functions, to allocate and free them.</p></div><h3 id="enums"><a href="#enums" title="Permalink to Enums">Enums</a></h3><div><p>The numeric values of public enumerators cannot be changed. To stress this fact, we often explicitly assign numeric values to enumerators, rather than relying on the values assigned by the compiler.</p></div><h3 id="symbol_export_lists"><a href="#symbol_export_lists" title="Permalink to Symbol export lists">Symbol export lists</a></h3><div><p>The <code>manifest.mn</code> file, in a directory in the NSS source tree, specifies which headers are public, and which headers are private.</p>
+
+<p>Public headers are in the <code>EXPORTS</code> variable.</p>
+
+<p>Private headers,which may be included by files in other directories, are in the <code>PRIVATE_EXPORTS</code> variable.</p>
+
+<p>Private headers, that are only included by files in the same directory, are not listed in either variable.</p>
+
+<p>Only functions listed in the symbol export lists (<code>nss.def</code>, <code>ssl.def</code>, <code>smime.def</code>, etc.) are truly public functions. Unfortunately, public headers may declare private functions, for historical reasons. The symbol export lists are the authoritative source of public functions.</p></div><h3 id="behavioral_changes"><a href="#behavioral_changes" title="Permalink to Behavioral changes">Behavioral changes</a></h3><div><p><strong>Bug/quirk compatible</strong>: Occasionally we cannot fix a bug, because applications may depend on the buggy behavior. We would need to add a new function to provide the desired behavior.</p>
+
+<p>Similarly, <strong>new options</strong> often need to be disabled by default.</p></div><h2 id="nss_reviewfeature_approval_process"><a href="#nss_reviewfeature_approval_process" title="Permalink to NSS review/feature approval process">NSS review/feature approval process</a></h2><div><p>NSS doesn’t have 'super reviewers'. We wish to increase the number of NSS developers, who have broad understanding of NSS.</p>
+
+<p>One review is usually enough for the review to pass. For critical code reviews, such as a patch release of a stable branch, two reviews may be more reasonable.</p>
+
+<p>For new features, especially those that appear controversial, try to find a reviewer from a different company or organization than your own, to avoid any perceptions of bias.</p></div><h2 id="update_nss_in_mozilla-inbound_and_mozilla-central"><a href="#update_nss_in_mozilla-inbound_and_mozilla-central" title="Permalink to Update NSS in mozilla-inbound and mozilla-central">Update NSS in mozilla-inbound and mozilla-central</a></h2><div><p>The procedure is documented at <a href="/en-US/docs/Mozilla/Developer_guide/Build_Instructions/Updating_NSPR_or_NSS_in_mozilla-central">https://developer.mozilla.org//en-US/docs/Mozilla/Developer_guide/Build_Instructions/Updating_NSPR_or_NSS_in_mozilla-central</a>.</p>
+
+<p>If it is necessary to apply private patches, please document them in <code>&lt;tree&gt;/security/patches/README</code>.</p></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/nss_developer_tutorial/index.html" title="Folder: en-us/mozilla/projects/nss/nss_developer_tutorial (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_Developer_Tutorial%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_developer_tutorial%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_Developer_Tutorial%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_developer_tutorial%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2F49f606217b82a761b6b52946ea4da3752d2375ee%0A*+Document+last+modified%3A+2021-02-09T19%3A08%3A28.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22NSS+Developer+Tutorial%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2021-02-09T19:08:28.000Z">Feb 9, 2021</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/NSS_Developer_Tutorial/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

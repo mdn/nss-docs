@@ -1,0 +1,875 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>NSS tools : modutil - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>NSS tools : modutil</h1><div><p>Name<br>
+<br>
+&nbsp;&nbsp; modutil — Manage PKCS #11 module information within the security module<br>
+&nbsp;&nbsp; database.<br>
+<br>
+Synopsis<br>
+<br>
+&nbsp;&nbsp; modutil [options] <a href="arguments">arguments</a><br>
+<br>
+Description<br>
+<br>
+&nbsp;&nbsp; The Security Module Database Tool, modutil, is a command-line utility for<br>
+&nbsp;&nbsp; managing PKCS #11 module information both within secmod.db files and<br>
+&nbsp;&nbsp; within hardware tokens. modutil can add and delete PKCS #11 modules,<br>
+&nbsp;&nbsp; change passwords on security databases, set defaults, list module<br>
+&nbsp;&nbsp; contents, enable or disable slots, enable or disable FIPS 140-2<br>
+&nbsp;&nbsp; compliance, and assign default providers for cryptographic operations.<br>
+&nbsp;&nbsp; This tool can also create certificate, key, and module security database<br>
+&nbsp;&nbsp; files.<br>
+<br>
+&nbsp;&nbsp; The tasks associated with security module database management are part of<br>
+&nbsp;&nbsp; a process that typically also involves managing key databases and<br>
+&nbsp;&nbsp; certificate databases.<br>
+<br>
+Options<br>
+<br>
+&nbsp;&nbsp; Running modutil always requires one (and only one) option to specify the<br>
+&nbsp;&nbsp; type of module operation. Each option may take arguments, anywhere from<br>
+&nbsp;&nbsp; none to multiple arguments.<br>
+<br>
+&nbsp;&nbsp; Options<br>
+<br>
+&nbsp;&nbsp; -add modulename<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add the named PKCS #11 module to the database. Use this option<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; with the -libfile, -ciphers, and -mechanisms arguments.<br>
+<br>
+&nbsp;&nbsp; -changepw tokenname<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Change the password on the named token. If the token has not been<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; initialized, this option initializes the password. Use this option<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; with the -pwfile and -newpwfile arguments. A password is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; equivalent to a personal identification number (PIN).<br>
+<br>
+&nbsp;&nbsp; -chkfips<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Verify whether the module is in the given FIPS mode. true means to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; verify that the module is in FIPS mode, while false means to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; verify that the module is not in FIPS mode.<br>
+<br>
+&nbsp;&nbsp; -create<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Create new certificate, key, and module databases. Use the -dbdir<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; directory argument to specify a directory. If any of these<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; databases already exist in a specified directory, modutil returns<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; an error message.<br>
+<br>
+&nbsp;&nbsp; -default modulename<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Specify the security mechanisms for which the named module will be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a default provider. The security mechanisms are specified with the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -mechanisms argument.<br>
+<br>
+&nbsp;&nbsp; -delete modulename<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Delete the named module. The default NSS PKCS #11 module cannot be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; deleted.<br>
+<br>
+&nbsp;&nbsp; -disable modulename<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Disable all slots on the named module. Use the -slot argument to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; disable a specific slot.<br>
+<br>
+&nbsp;&nbsp; -enable modulename<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Enable all slots on the named module. Use the -slot argument to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; enable a specific slot.<br>
+<br>
+&nbsp;&nbsp; -fips [true | false]<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Enable (true) or disable (false) FIPS 140-2 compliance for the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; default NSS module.<br>
+<br>
+&nbsp;&nbsp; -force<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Disable modutil's interactive prompts so it can be run from a<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; script. Use this option only after manually testing each planned<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; operation to check for warnings and to ensure that bypassing the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; prompts will cause no security lapses or loss of database<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; integrity.<br>
+<br>
+&nbsp;&nbsp; -jar JAR-file<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add a new PKCS #11 module to the database using the named JAR<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; file. Use this command with the -installdir and -tempdir<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; arguments. The JAR file uses the NSS PKCS #11 JAR format to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; identify all the files to be installed, the module's name, the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mechanism flags, and the cipher flags, as well as any files to be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; installed on the target machine, including the PKCS #11 module<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; library file and other files such as documentation. This is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; covered in the JAR installation file section in the man page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; which details the special script needed to perform an installation<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; through a server or with modutil.<br>
+<br>
+&nbsp;&nbsp; -list [modulename]<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Display basic information about the contents of the secmod.db<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; file. Specifying a modulename displays detailed information about<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a particular module and its slots and tokens.<br>
+<br>
+&nbsp;&nbsp; -rawadd<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add the module spec string to the secmod.db database.<br>
+<br>
+&nbsp;&nbsp; -rawlist<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Display the module specs for a specified module or for all<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; loadable modules.<br>
+<br>
+&nbsp;&nbsp; -undefault modulename<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Specify the security mechanisms for which the named module will<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; not be a default provider. The security mechanisms are specified<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; with the -mechanisms argument.<br>
+<br>
+&nbsp;&nbsp; Arguments<br>
+<br>
+&nbsp;&nbsp; MODULE<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Give the security module to access.<br>
+<br>
+&nbsp;&nbsp; MODULESPEC<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Give the security module spec to load into the security database.<br>
+<br>
+&nbsp;&nbsp; -ciphers cipher-enable-list<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Enable specific ciphers in a module that is being added to the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; database. The cipher-enable-list is a colon-delimited list of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cipher names. Enclose this list in quotation marks if it contains<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; spaces.<br>
+<br>
+&nbsp;&nbsp; -dbdir [sql:]directory<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Specify the database directory in which to access or create<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; security module database files.<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; modutil supports two types of databases: the legacy security<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; databases (cert8.db, key3.db, and secmod.db) and new SQLite<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; databases (cert9.db, key4.db, and pkcs11.txt). If the prefix sql:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; is not used, then the tool assumes that the given databases are in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; the old format.<br>
+<br>
+&nbsp;&nbsp; --dbprefix prefix<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Specify the prefix used on the database files, such as my_ for<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; my_cert8.db. This option is provided as a special case. Changing<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; the names of the certificate and key databases is not recommended.<br>
+<br>
+&nbsp;&nbsp; -installdir root-installation-directory<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Specify the root installation directory relative to which files<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; will be installed by the -jar option. This directory should be one<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; below which it is appropriate to store dynamic library files, such<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; as a server's root directory.<br>
+<br>
+&nbsp;&nbsp; -libfile library-file<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Specify a path to a library file containing the implementation of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; the PKCS #11 interface module that is being added to the database.<br>
+<br>
+&nbsp;&nbsp; -mechanisms mechanism-list<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Specify the security mechanisms for which a particular module will<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; be flagged as a default provider. The mechanism-list is a<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; colon-delimited list of mechanism names. Enclose this list in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; quotation marks if it contains spaces.<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The module becomes a default provider for the listed mechanisms<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; when those mechanisms are enabled. If more than one module claims<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; to be a particular mechanism's default provider, that mechanism's<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; default provider is undefined.<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; modutil supports several mechanisms: RSA, DSA, RC2, RC4, RC5, AES,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DES, DH, SHA1, SHA256, SHA512, SSL, TLS, MD5, MD2, RANDOM (for<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; random number generation), and FRIENDLY (meaning certificates are<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; publicly readable).<br>
+<br>
+&nbsp;&nbsp; -newpwfile new-password-file<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Specify a text file containing a token's new or replacement<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; password so that a password can be entered automatically with the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -changepw option.<br>
+<br>
+&nbsp;&nbsp; -nocertdb<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Do not open the certificate or key databases. This has several<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; effects:<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;With the -create command, only a module security file is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; created; certificate and key databases are not created.<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;With the -jar command, signatures on the JAR file are not<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; checked.<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;With the -changepw command, the password on the NSS internal<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; module cannot be set or changed, since this password is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; stored in the key database.<br>
+<br>
+&nbsp;&nbsp; -pwfile old-password-file<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Specify a text file containing a token's existing password so that<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a password can be entered automatically when the -changepw option<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; is used to change passwords.<br>
+<br>
+&nbsp;&nbsp; -secmod secmodname<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Give the name of the security module database (like secmod.db) to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; load.<br>
+<br>
+&nbsp;&nbsp; -slot slotname<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Specify a particular slot to be enabled or disabled with the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -enable or -disable options.<br>
+<br>
+&nbsp;&nbsp; -string CONFIG_STRING<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pass a configuration string for the module being added to the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; database.<br>
+<br>
+&nbsp;&nbsp; -tempdir temporary-directory<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Give a directory location where temporary files are created during<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; the installation by the -jar option. If no temporary directory is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; specified, the current directory is used.<br>
+<br>
+Usage and Examples<br>
+<br>
+&nbsp;&nbsp; Creating Database Files<br>
+<br>
+&nbsp;&nbsp; Before any operations can be performed, there must be a set of security<br>
+&nbsp;&nbsp; databases available. modutil can be used to create these files. The only<br>
+&nbsp;&nbsp; required argument is the database that where the databases will be<br>
+&nbsp;&nbsp; located.<br>
+<br>
+&nbsp;modutil -create -dbdir [sql:]directory<br>
+<br>
+&nbsp;&nbsp; Adding a Cryptographic Module<br>
+<br>
+&nbsp;&nbsp; Adding a PKCS #11 module means submitting a supporting library file,<br>
+&nbsp;&nbsp; enabling its ciphers, and setting default provider status for various<br>
+&nbsp;&nbsp; security mechanisms. This can be done by supplying all of the information<br>
+&nbsp;&nbsp; through modutil directly or by running a JAR file and install script. For<br>
+&nbsp;&nbsp; the most basic case, simply upload the library:<br>
+<br>
+&nbsp;modutil -add modulename -libfile library-file [-ciphers cipher-enable-list] [-mechanisms mechanism-list]<br>
+<br>
+&nbsp;&nbsp; For example:<br>
+<br>
+&nbsp;modutil -dbdir sql:/home/my/sharednssdb -add "Example PKCS #11 Module" -libfile "/tmp/crypto.so" -mechanisms RSA:DSA:RC2:RANDOM<br>
+<br>
+&nbsp;Using database directory ...<br>
+&nbsp;Module "Example PKCS #11 Module" added to database.<br>
+<br>
+&nbsp;&nbsp; Installing a Cryptographic Module from a JAR File<br>
+<br>
+&nbsp;&nbsp; PKCS #11 modules can also be loaded using a JAR file, which contains all<br>
+&nbsp;&nbsp; of the required libraries and an installation script that describes how to<br>
+&nbsp;&nbsp; install the module. The JAR install script is described in more detail in<br>
+&nbsp;&nbsp; [1]the section called “JAR Installation File Format”.<br>
+<br>
+&nbsp;&nbsp; The JAR installation script defines the setup information for each<br>
+&nbsp;&nbsp; platform that the module can be installed on. For example:<br>
+<br>
+&nbsp;Platforms {<br>
+&nbsp;&nbsp;&nbsp; Linux:5.4.08:x86 {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ModuleName { "Example PKCS #11 Module" }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ModuleFile { crypto.so }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DefaultMechanismFlags{0x0000}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CipherEnableFlags{0x0000}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Files {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; crypto.so {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Path{ /tmp/crypto.so }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; setup.sh {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Executable<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Path{ /tmp/setup.sh }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; Linux:6.0.0:x86 {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EquivalentPlatform { Linux:5.4.08:x86 }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;}<br>
+<br>
+&nbsp;&nbsp; Both the install script and the required libraries must be bundled in a<br>
+&nbsp;&nbsp; JAR file, which is specified with the -jar argument.<br>
+<br>
+&nbsp;modutil -dbdir sql:/home/mt"jar-install-filey/sharednssdb -jar install.jar -installdir sql:/home/my/sharednssdb<br>
+<br>
+&nbsp;This installation JAR file was signed by:<br>
+&nbsp;----------------------------------------------<br>
+<br>
+&nbsp;**SUBJECT NAME**<br>
+<br>
+&nbsp;C=US, ST=California, L=Mountain View, CN=Cryptorific Inc., OU=Digital ID<br>
+&nbsp;Class 3 - Netscape Object Signing, OU="www.verisign.com/repository/CPS<br>
+&nbsp;Incorp. by Ref.,LIAB.LTD(c)9 6", OU=www.verisign.com/CPS Incorp.by Ref<br>
+&nbsp;. LIABILITY LTD.(c)97 VeriSign, OU=VeriSign Object Signing CA - Class 3<br>
+&nbsp;Organization, OU="VeriSign, Inc.", O=VeriSign Trust Network **ISSUER<br>
+&nbsp;NAME**, OU=www.verisign.com/CPS Incorp.by Ref. LIABILITY LTD.(c)97<br>
+&nbsp;VeriSign, OU=VeriSign Object Signing CA - Class 3 Organization,<br>
+&nbsp;OU="VeriSign, Inc.", O=VeriSign Trust Network<br>
+&nbsp;----------------------------------------------<br>
+<br>
+&nbsp;Do you wish to continue this installation? (y/n) y<br>
+&nbsp;Using installer script "installer_script"<br>
+&nbsp;Successfully parsed installation script<br>
+&nbsp;Current platform is Linux:5.4.08:x86<br>
+&nbsp;Using installation parameters for platform Linux:5.4.08:x86<br>
+&nbsp;Installed file crypto.so to /tmp/crypto.so<br>
+&nbsp;Installed file setup.sh to ./pk11inst.dir/setup.sh<br>
+&nbsp;Executing "./pk11inst.dir/setup.sh"...<br>
+&nbsp;"./pk11inst.dir/setup.sh" executed successfully<br>
+&nbsp;Installed module "Example PKCS #11 Module" into module database<br>
+<br>
+&nbsp;Installation completed successfully<br>
+<br>
+&nbsp;&nbsp; Adding Module Spec<br>
+<br>
+&nbsp;&nbsp; Each module has information stored in the security database about its<br>
+&nbsp;&nbsp; configuration and parameters. These can be added or edited using the<br>
+&nbsp;&nbsp; -rawadd command. For the current settings or to see the format of the<br>
+&nbsp;&nbsp; module spec in the database, use the -rawlist option.<br>
+<br>
+&nbsp;modutil -rawadd modulespec<br>
+<br>
+&nbsp;&nbsp; Deleting a Module<br>
+<br>
+&nbsp;&nbsp; A specific PKCS #11 module can be deleted from the secmod.db database:<br>
+<br>
+&nbsp;modutil -delete modulename -dbdir [sql:]directory<br>
+<br>
+&nbsp;&nbsp; Displaying Module Information<br>
+<br>
+&nbsp;&nbsp; The secmod.db database contains information about the PKCS #11 modules<br>
+&nbsp;&nbsp; that are available to an application or server to use. The list of all<br>
+&nbsp;&nbsp; modules, information about specific modules, and database configuration<br>
+&nbsp;&nbsp; specs for modules can all be viewed.<br>
+<br>
+&nbsp;&nbsp; To simply get a list of modules in the database, use the -list command.<br>
+<br>
+&nbsp;modutil -list [modulename] -dbdir [sql:]directory<br>
+<br>
+&nbsp;&nbsp; Listing the modules shows the module name, their status, and other<br>
+&nbsp;&nbsp; associated security databases for certificates and keys. For example:<br>
+<br>
+&nbsp;modutil -list -dbdir sql:/home/my/sharednssdb<br>
+<br>
+&nbsp;Listing of PKCS #11 Modules<br>
+&nbsp;-----------------------------------------------------------<br>
+&nbsp;&nbsp; 1. NSS Internal PKCS #11 Module<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; slots: 2 slots attached<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; status: loaded<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; slot: NSS Internal Cryptographic Services<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; token: NSS Generic Crypto Services<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; slot: NSS User Private Key and Certificate Services<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; token: NSS Certificate DB<br>
+&nbsp;-----------------------------------------------------------<br>
+<br>
+&nbsp;&nbsp; Passing a specific module name with the -list returns details information<br>
+&nbsp;&nbsp; about the module itself, like supported cipher mechanisms, version<br>
+&nbsp;&nbsp; numbers, serial numbers, and other information about the module and the<br>
+&nbsp;&nbsp; token it is loaded on. For example:<br>
+<br>
+&nbsp; modutil -list "NSS Internal PKCS #11 Module" -dbdir sql:/home/my/sharednssdb<br>
+<br>
+&nbsp;-----------------------------------------------------------<br>
+&nbsp;Name: NSS Internal PKCS #11 Module<br>
+&nbsp;Library file: **Internal ONLY module**<br>
+&nbsp;Manufacturer: Mozilla Foundation<br>
+&nbsp;Description: NSS Internal Crypto Services<br>
+&nbsp;PKCS #11 Version 2.20<br>
+&nbsp;Library Version: 3.11<br>
+&nbsp;Cipher Enable Flags: None<br>
+&nbsp;Default Mechanism Flags: RSA:RC2:RC4:DES:DH:SHA1:MD5:MD2:SSL:TLS:AES<br>
+<br>
+&nbsp;&nbsp; Slot: NSS Internal Cryptographic Services<br>
+&nbsp;&nbsp; Slot Mechanism Flags: RSA:RC2:RC4:DES:DH:SHA1:MD5:MD2:SSL:TLS:AES<br>
+&nbsp;&nbsp; Manufacturer: Mozilla Foundation<br>
+&nbsp;&nbsp; Type: Software<br>
+&nbsp;&nbsp; Version Number: 3.11<br>
+&nbsp;&nbsp; Firmware Version: 0.0<br>
+&nbsp;&nbsp; Status: Enabled<br>
+&nbsp;&nbsp; Token Name: NSS Generic Crypto Services<br>
+&nbsp;&nbsp; Token Manufacturer: Mozilla Foundation<br>
+&nbsp;&nbsp; Token Model: NSS 3<br>
+&nbsp;&nbsp; Token Serial Number: 0000000000000000<br>
+&nbsp;&nbsp; Token Version: 4.0<br>
+&nbsp;&nbsp; Token Firmware Version: 0.0<br>
+&nbsp;&nbsp; Access: Write Protected<br>
+&nbsp;&nbsp; Login Type: Public (no login required)<br>
+&nbsp;&nbsp; User Pin: NOT Initialized<br>
+<br>
+&nbsp;&nbsp; Slot: NSS User Private Key and Certificate Services<br>
+&nbsp;&nbsp; Slot Mechanism Flags: None<br>
+&nbsp;&nbsp; Manufacturer: Mozilla Foundation<br>
+&nbsp;&nbsp; Type: Software<br>
+&nbsp;&nbsp; Version Number: 3.11<br>
+&nbsp;&nbsp; Firmware Version: 0.0<br>
+&nbsp;&nbsp; Status: Enabled<br>
+&nbsp;&nbsp; Token Name: NSS Certificate DB<br>
+&nbsp;&nbsp; Token Manufacturer: Mozilla Foundation<br>
+&nbsp;&nbsp; Token Model: NSS 3<br>
+&nbsp;&nbsp; Token Serial Number: 0000000000000000<br>
+&nbsp;&nbsp; Token Version: 8.3<br>
+&nbsp;&nbsp; Token Firmware Version: 0.0<br>
+&nbsp;&nbsp; Access: NOT Write Protected<br>
+&nbsp;&nbsp; Login Type: Login required<br>
+&nbsp;&nbsp; User Pin: Initialized<br>
+<br>
+&nbsp;&nbsp; A related command, -rawlist returns information about the database<br>
+&nbsp;&nbsp; configuration for the modules. (This information can be edited by loading<br>
+&nbsp;&nbsp; new specs using the -rawadd command.)<br>
+<br>
+&nbsp; modutil -rawlist -dbdir sql:/home/my/sharednssdb<br>
+&nbsp; name="NSS Internal PKCS #11 Module" parameters="configdir=. certPrefix= keyPrefix= secmod=secmod.db flags=readOnly " NSS="trustOrder=75 cipherOrder=100 slotParams={0x00000001=[slotFlags=RSA,RC4,RC2,DES,DH,SHA1,MD5,MD2,SSL,TLS,AES,RANDOM askpw=any timeout=30 ] }&nbsp; Flags=internal,critical"<br>
+<br>
+&nbsp;&nbsp; Setting a Default Provider for Security Mechanisms<br>
+<br>
+&nbsp;&nbsp; Multiple security modules may provide support for the same security<br>
+&nbsp;&nbsp; mechanisms. It is possible to set a specific security module as the<br>
+&nbsp;&nbsp; default provider for a specific security mechanism (or, conversely, to<br>
+&nbsp;&nbsp; prohibit a provider from supplying those mechanisms).<br>
+<br>
+&nbsp;modutil -default modulename -mechanisms mechanism-list<br>
+<br>
+&nbsp;&nbsp; To set a module as the default provider for mechanisms, use the -default<br>
+&nbsp;&nbsp; command with a colon-separated list of mechanisms. The available<br>
+&nbsp;&nbsp; mechanisms depend on the module; NSS supplies almost all common<br>
+&nbsp;&nbsp; mechanisms. For example:<br>
+<br>
+&nbsp;modutil -default "NSS Internal PKCS #11 Module" -dbdir -mechanisms RSA:DSA:RC2<br>
+<br>
+&nbsp;Using database directory c:\databases...<br>
+<br>
+&nbsp;Successfully changed defaults.<br>
+<br>
+&nbsp;&nbsp; Clearing the default provider has the same format:<br>
+<br>
+&nbsp;modutil -undefault "NSS Internal PKCS #11 Module" -dbdir -mechanisms MD2:MD5<br>
+<br>
+&nbsp;&nbsp; Enabling and Disabling Modules and Slots<br>
+<br>
+&nbsp;&nbsp; Modules, and specific slots on modules, can be selectively enabled or<br>
+&nbsp;&nbsp; disabled using modutil. Both commands have the same format:<br>
+<br>
+&nbsp;modutil -enable|-disable modulename [-slot slotname]<br>
+<br>
+&nbsp;&nbsp; For example:<br>
+<br>
+&nbsp;modutil -enable "NSS Internal PKCS #11 Module" -slot "NSS Internal Cryptographic Services&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; " -dbdir .<br>
+<br>
+&nbsp;Slot "NSS Internal Cryptographic Services&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; " enabled.<br>
+<br>
+&nbsp;&nbsp; Be sure that the appropriate amount of trailing whitespace is after the<br>
+&nbsp;&nbsp; slot name. Some slot names have a significant amount of whitespace that<br>
+&nbsp;&nbsp; must be included, or the operation will fail.<br>
+<br>
+&nbsp;&nbsp; Enabling and Verifying FIPS Compliance<br>
+<br>
+&nbsp;&nbsp; The NSS modules can have FIPS 140-2 compliance enabled or disabled using<br>
+&nbsp;&nbsp; modutil with the -fips option. For example:<br>
+<br>
+&nbsp;modutil -fips true -dbdir sql:/home/my/sharednssdb/<br>
+<br>
+&nbsp;FIPS mode enabled.<br>
+<br>
+&nbsp;&nbsp; To verify that status of FIPS mode, run the -chkfips command with either a<br>
+&nbsp;&nbsp; true or false flag (it doesn't matter which). The tool returns the current<br>
+&nbsp;&nbsp; FIPS setting.<br>
+<br>
+&nbsp;modutil -chkfips false -dbdir sql:/home/my/sharednssdb/<br>
+<br>
+&nbsp;FIPS mode enabled.<br>
+<br>
+&nbsp;&nbsp; Changing the Password on a Token<br>
+<br>
+&nbsp;&nbsp; Initializing or changing a token's password:<br>
+<br>
+&nbsp;modutil -changepw tokenname [-pwfile old-password-file] [-newpwfile new-password-file]<br>
+<br>
+&nbsp;modutil -dbdir sql:/home/my/sharednssdb -changepw "NSS Certificate DB"<br>
+<br>
+&nbsp;Enter old password:<br>
+&nbsp;Incorrect password, try again...<br>
+&nbsp;Enter old password:<br>
+&nbsp;Enter new password:<br>
+&nbsp;Re-enter new password:<br>
+&nbsp;Token "Communicator Certificate DB" password changed successfully.<br>
+<br>
+JAR Installation File Format<br>
+<br>
+&nbsp;&nbsp; When a JAR file is run by a server, by modutil, or by any program that<br>
+&nbsp;&nbsp; does not interpret JavaScript, a special information file must be included<br>
+&nbsp;&nbsp; to install the libraries. There are several things to keep in mind with<br>
+&nbsp;&nbsp; this file:<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;It must be declared in the JAR archive's manifest file.<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;The script can have any name.<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;The metainfo tag for this is Pkcs11_install_script. To declare<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; meta-information in the manifest file, put it in a file that is passed<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; to signtool.<br>
+<br>
+&nbsp;&nbsp; Sample Script<br>
+<br>
+&nbsp;&nbsp; For example, the PKCS #11 installer script could be in the file<br>
+&nbsp;&nbsp; pk11install. If so, the metainfo file for signtool includes a line such as<br>
+&nbsp;&nbsp; this:<br>
+<br>
+&nbsp;+ Pkcs11_install_script: pk11install<br>
+<br>
+&nbsp;&nbsp; The script must define the platform and version number, the module name<br>
+&nbsp;&nbsp; and file, and any optional information like supported ciphers and<br>
+&nbsp;&nbsp; mechanisms. Multiple platforms can be defined in a single install file.<br>
+<br>
+&nbsp;ForwardCompatible { IRIX:6.2:mips SUNOS:5.5.1:sparc }<br>
+&nbsp;Platforms {<br>
+&nbsp;&nbsp;&nbsp; WINNT::x86 {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ModuleName { "Example Module" }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ModuleFile { win32/fort32.dll }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DefaultMechanismFlags{0x0001}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DefaultCipherFlags{0x0001}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Files {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; win32/setup.exe {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Executable<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RelativePath { %temp%/setup.exe }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; win32/setup.hlp {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RelativePath { %temp%/setup.hlp }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; win32/setup.cab {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RelativePath { %temp%/setup.cab }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; WIN95::x86 {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EquivalentPlatform {WINNT::x86}<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; SUNOS:5.5.1:sparc {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ModuleName { "Example UNIX Module" }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ModuleFile { unix/fort.so }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DefaultMechanismFlags{0x0001}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CipherEnableFlags{0x0001}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Files {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unix/fort.so {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RelativePath{%root%/lib/fort.so}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AbsolutePath{/usr/local/netscape/lib/fort.so}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FilePermissions{555}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xplat/instr.html {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RelativePath{%root%/docs/inst.html}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AbsolutePath{/usr/local/netscape/docs/inst.html}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FilePermissions{555}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; IRIX:6.2:mips {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EquivalentPlatform { SUNOS:5.5.1:sparc }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;}<br>
+<br>
+&nbsp;&nbsp; Script Grammar<br>
+<br>
+&nbsp;&nbsp; The script is basic Java, allowing lists, key-value pairs, strings, and<br>
+&nbsp;&nbsp; combinations of all of them.<br>
+<br>
+&nbsp;--&gt; valuelist<br>
+<br>
+&nbsp;valuelist --&gt; value valuelist<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;null&gt;<br>
+<br>
+&nbsp;value ---&gt; key_value_pair<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string<br>
+<br>
+&nbsp;key_value_pair --&gt; key { valuelist }<br>
+<br>
+&nbsp;key --&gt; string<br>
+<br>
+&nbsp;string --&gt; simple_string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "complex_string"<br>
+<br>
+&nbsp;simple_string --&gt; [^ \t\n\""{""}"]+<br>
+<br>
+&nbsp;complex_string --&gt; ([^\"\\\r\n]|(\\\")|(\\\\))+<br>
+<br>
+&nbsp;&nbsp; Quotes and backslashes must be escaped with a backslash. A complex string<br>
+&nbsp;&nbsp; must not include newlines or carriage returns.Outside of complex strings,<br>
+&nbsp;&nbsp; all white space (for example, spaces, tabs, and carriage returns) is<br>
+&nbsp;&nbsp; considered equal and is used only to delimit tokens.<br>
+<br>
+&nbsp;&nbsp; Keys<br>
+<br>
+&nbsp;&nbsp; The Java install file uses keys to define the platform and module<br>
+&nbsp;&nbsp; information.<br>
+<br>
+&nbsp;&nbsp; ForwardCompatible gives a list of platforms that are forward compatible.<br>
+&nbsp;&nbsp; If the current platform cannot be found in the list of supported<br>
+&nbsp;&nbsp; platforms, then the ForwardCompatible list is checked for any platforms<br>
+&nbsp;&nbsp; that have the same OS and architecture in an earlier version. If one is<br>
+&nbsp;&nbsp; found, its attributes are used for the current platform.<br>
+<br>
+&nbsp;&nbsp; Platforms (required) Gives a list of platforms. Each entry in the list is<br>
+&nbsp;&nbsp; itself a key-value pair: the key is the name of the platform and the value<br>
+&nbsp;&nbsp; list contains various attributes of the platform. The platform string is<br>
+&nbsp;&nbsp; in the format system name:OS release:architecture. The installer obtains<br>
+&nbsp;&nbsp; these values from NSPR. OS release is an empty string on non-Unix<br>
+&nbsp;&nbsp; operating systems. NSPR supports these platforms:<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;AIX (rs6000)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;BSDI (x86)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;FREEBSD (x86)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;HPUX (hppa1.1)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;IRIX (mips)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;LINUX (ppc, alpha, x86)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;MacOS (PowerPC)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;NCR (x86)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;NEC (mips)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;OS2 (x86)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;OSF (alpha)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;ReliantUNIX (mips)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;SCO (x86)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;SOLARIS (sparc)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;SONY (mips)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;SUNOS (sparc)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;UnixWare (x86)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;WIN16 (x86)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;WIN95 (x86)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;WINNT (x86)<br>
+<br>
+&nbsp;&nbsp; For example:<br>
+<br>
+&nbsp;IRIX:6.2:mips<br>
+&nbsp;SUNOS:5.5.1:sparc<br>
+&nbsp;Linux:2.0.32:x86<br>
+&nbsp;WIN95::x86<br>
+<br>
+&nbsp;&nbsp; The module information is defined independently for each platform in the<br>
+&nbsp;&nbsp; ModuleName, ModuleFile, and Files attributes. These attributes must be<br>
+&nbsp;&nbsp; given unless an EquivalentPlatform attribute is specified.<br>
+<br>
+&nbsp;&nbsp; Per-Platform Keys<br>
+<br>
+&nbsp;&nbsp; Per-platform keys have meaning only within the value list of an entry in<br>
+&nbsp;&nbsp; the Platforms list.<br>
+<br>
+&nbsp;&nbsp; ModuleName (required) gives the common name for the module. This name is<br>
+&nbsp;&nbsp; used to reference the module by servers and by the modutil tool.<br>
+<br>
+&nbsp;&nbsp; ModuleFile (required) names the PKCS #11 module file for this platform.<br>
+&nbsp;&nbsp; The name is given as the relative path of the file within the JAR archive.<br>
+<br>
+&nbsp;&nbsp; Files (required) lists the files that need to be installed for this<br>
+&nbsp;&nbsp; module. Each entry in the file list is a key-value pair. The key is the<br>
+&nbsp;&nbsp; path of the file in the JAR archive, and the value list contains<br>
+&nbsp;&nbsp; attributes of the file. At least RelativePath or AbsolutePath must be<br>
+&nbsp;&nbsp; specified for each file.<br>
+<br>
+&nbsp;&nbsp; DefaultMechanismFlags specifies mechanisms for which this module is the<br>
+&nbsp;&nbsp; default provider; this is equivalent to the -mechanism option with the<br>
+&nbsp;&nbsp; -add command. This key-value pair is a bitstring specified in hexadecimal<br>
+&nbsp;&nbsp; (0x) format. It is constructed as a bitwise OR. If the<br>
+&nbsp;&nbsp; DefaultMechanismFlags entry is omitted, the value defaults to 0x0.<br>
+<br>
+&nbsp;RSA:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x00000001<br>
+&nbsp;DSA:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x00000002<br>
+&nbsp;RC2:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x00000004<br>
+&nbsp;RC4:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x00000008<br>
+&nbsp;DES:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x00000010<br>
+&nbsp;DH:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x00000020<br>
+&nbsp;FORTEZZA:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x00000040<br>
+&nbsp;RC5:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x00000080<br>
+&nbsp;SHA1:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x00000100<br>
+&nbsp;MD5:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x00000200<br>
+&nbsp;MD2:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x00000400<br>
+&nbsp;RANDOM:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x08000000<br>
+&nbsp;FRIENDLY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x10000000<br>
+&nbsp;OWN_PW_DEFAULTS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x20000000<br>
+&nbsp;DISABLE:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0x40000000<br>
+<br>
+&nbsp;&nbsp; CipherEnableFlags specifies ciphers that this module provides that NSS<br>
+&nbsp;&nbsp; does not provide (so that the module enables those ciphers for NSS). This<br>
+&nbsp;&nbsp; is equivalent to the -cipher argument with the -add command. This key is a<br>
+&nbsp;&nbsp; bitstring specified in hexadecimal (0x) format. It is constructed as a<br>
+&nbsp;&nbsp; bitwise OR. If the CipherEnableFlags entry is omitted, the value defaults<br>
+&nbsp;&nbsp; to 0x0.<br>
+<br>
+&nbsp;&nbsp; EquivalentPlatform specifies that the attributes of the named platform<br>
+&nbsp;&nbsp; should also be used for the current platform. This makes it easier when<br>
+&nbsp;&nbsp; more than one platform uses the same settings.<br>
+<br>
+&nbsp;&nbsp; Per-File Keys<br>
+<br>
+&nbsp;&nbsp; Some keys have meaning only within the value list of an entry in a Files<br>
+&nbsp;&nbsp; list.<br>
+<br>
+&nbsp;&nbsp; Each file requires a path key the identifies where the file is. Either<br>
+&nbsp;&nbsp; RelativePath or AbsolutePath must be specified. If both are specified, the<br>
+&nbsp;&nbsp; relative path is tried first, and the absolute path is used only if no<br>
+&nbsp;&nbsp; relative root directory is provided by the installer program.<br>
+<br>
+&nbsp;&nbsp; RelativePath specifies the destination directory of the file, relative to<br>
+&nbsp;&nbsp; some directory decided at install time. Two variables can be used in the<br>
+&nbsp;&nbsp; relative path: %root% and %temp%. %root% is replaced at run time with the<br>
+&nbsp;&nbsp; directory relative to which files should be installed; for example, it may<br>
+&nbsp;&nbsp; be the server's root directory. The %temp% directory is created at the<br>
+&nbsp;&nbsp; beginning of the installation and destroyed at the end. The purpose of<br>
+&nbsp;&nbsp; %temp% is to hold executable files (such as setup programs) or files that<br>
+&nbsp;&nbsp; are used by these programs. Files destined for the temporary directory are<br>
+&nbsp;&nbsp; guaranteed to be in place before any executable file is run; they are not<br>
+&nbsp;&nbsp; deleted until all executable files have finished.<br>
+<br>
+&nbsp;&nbsp; AbsolutePath specifies the destination directory of the file as an<br>
+&nbsp;&nbsp; absolute path.<br>
+<br>
+&nbsp;&nbsp; Executable specifies that the file is to be executed during the course of<br>
+&nbsp;&nbsp; the installation. Typically, this string is used for a setup program<br>
+&nbsp;&nbsp; provided by a module vendor, such as a self-extracting setup executable.<br>
+&nbsp;&nbsp; More than one file can be specified as executable, in which case the files<br>
+&nbsp;&nbsp; are run in the order in which they are specified in the script file.<br>
+<br>
+&nbsp;&nbsp; FilePermissions sets permissions on any referenced files in a string of<br>
+&nbsp;&nbsp; octal digits, according to the standard Unix format. This string is a<br>
+&nbsp;&nbsp; bitwise OR.<br>
+<br>
+&nbsp;user read:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0400<br>
+&nbsp;user write:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0200<br>
+&nbsp;user execute:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0100<br>
+&nbsp;group read:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0040<br>
+&nbsp;group write:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0020<br>
+&nbsp;group execute:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0010<br>
+&nbsp;other read:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0004<br>
+&nbsp;other write:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0002<br>
+&nbsp;other execute:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0001<br>
+<br>
+&nbsp;&nbsp; Some platforms may not understand these permissions. They are applied only<br>
+&nbsp;&nbsp; insofar as they make sense for the current platform. If this attribute is<br>
+&nbsp;&nbsp; omitted, a default of 777 is assumed.<br>
+<br>
+NSS Database Types<br>
+<br>
+&nbsp;&nbsp; NSS originally used BerkeleyDB databases to store security information.<br>
+&nbsp;&nbsp; The last versions of these legacy databases are:<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;cert8.db for certificates<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;key3.db for keys<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;secmod.db for PKCS #11 module information<br>
+<br>
+&nbsp;&nbsp; BerkeleyDB has performance limitations, though, which prevent it from<br>
+&nbsp;&nbsp; being easily used by multiple applications simultaneously. NSS has some<br>
+&nbsp;&nbsp; flexibility that allows applications to use their own, independent<br>
+&nbsp;&nbsp; database engine while keeping a shared database and working around the<br>
+&nbsp;&nbsp; access issues. Still, NSS requires more flexibility to provide a truly<br>
+&nbsp;&nbsp; shared security database.<br>
+<br>
+&nbsp;&nbsp; In 2009, NSS introduced a new set of databases that are SQLite databases<br>
+&nbsp;&nbsp; rather than BerkleyDB. These new databases provide more accessibility and<br>
+&nbsp;&nbsp; performance:<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;cert9.db for certificates<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;key4.db for keys<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;pkcs11.txt, which is listing of all of the PKCS #11 modules contained<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; in a new subdirectory in the security databases directory<br>
+<br>
+&nbsp;&nbsp; Because the SQLite databases are designed to be shared, these are the<br>
+&nbsp;&nbsp; shared database type. The shared database type is preferred; the legacy<br>
+&nbsp;&nbsp; format is included for backward compatibility.<br>
+<br>
+&nbsp;&nbsp; By default, the tools (certutil, pk12util, modutil) assume that the given<br>
+&nbsp;&nbsp; security databases follow the more common legacy type. Using the SQLite<br>
+&nbsp;&nbsp; databases must be manually specified by using the sql: prefix with the<br>
+&nbsp;&nbsp; given security directory. For example:<br>
+<br>
+&nbsp;modutil -create -dbdir sql:/home/my/sharednssdb<br>
+<br>
+&nbsp;&nbsp; To set the shared database type as the default type for the tools, set the<br>
+&nbsp;&nbsp; NSS_DEFAULT_DB_TYPE environment variable to sql:<br>
+<br>
+&nbsp;export NSS_DEFAULT_DB_TYPE="sql"<br>
+<br>
+&nbsp;&nbsp; This line can be set added to the ~/.bashrc file to make the change<br>
+&nbsp;&nbsp; permanent.<br>
+<br>
+&nbsp;&nbsp; Most applications do not use the shared database by default, but they can<br>
+&nbsp;&nbsp; be configured to use them. For example, this how-to article covers how to<br>
+&nbsp;&nbsp; configure Firefox and Thunderbird to use the new shared NSS databases:<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;<a class="link-https external" href="https://wiki.mozilla.org/NSS_Shared_DB_Howto" rel=" noopener">https://wiki.mozilla.org/NSS_Shared_DB_Howto</a><br>
+<br>
+&nbsp;&nbsp; For an engineering draft on the changes in the shared NSS databases, see<br>
+&nbsp;&nbsp; the NSS project wiki:<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;<a class="link-https external" href="https://wiki.mozilla.org/NSS_Shared_DB" rel=" noopener">https://wiki.mozilla.org/NSS_Shared_DB</a><br>
+<br>
+See Also<br>
+<br>
+&nbsp;&nbsp; certutil (1)<br>
+<br>
+&nbsp;&nbsp; pk12util (1)<br>
+<br>
+&nbsp;&nbsp; signtool (1)<br>
+<br>
+&nbsp;&nbsp; The NSS wiki has information on the new database design and how to<br>
+&nbsp;&nbsp; configure applications to use it.<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;<a class="link-https external" href="https://wiki.mozilla.org/NSS_Shared_DB_Howto" rel=" noopener">https://wiki.mozilla.org/NSS_Shared_DB_Howto</a><br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; o&nbsp;<a class="link-https external" href="https://wiki.mozilla.org/NSS_Shared_DB" rel=" noopener">https://wiki.mozilla.org/NSS_Shared_DB</a><br>
+<br>
+Additional Resources<br>
+<br>
+&nbsp;&nbsp; For information about NSS and other tools related to NSS (like JSS), check<br>
+&nbsp;&nbsp; out the NSS project wiki at<br>
+&nbsp;&nbsp; [2]<a class="external" href="https://www.mozilla.org/projects/security/pki/nss/" rel=" noopener">http://www.mozilla.org/projects/security/pki/nss/</a>. The NSS site relates<br>
+&nbsp;&nbsp; directly to NSS code changes and releases.<br>
+<br>
+&nbsp;&nbsp; Mailing lists: <a class="link-https external" href="https://lists.mozilla.org/listinfo/dev-tech-crypto" rel=" noopener">https://lists.mozilla.org/listinfo/dev-tech-crypto</a><br>
+<br>
+&nbsp;&nbsp; IRC: Freenode at #dogtag-pki<br>
+<br>
+Authors<br>
+<br>
+&nbsp;&nbsp; The NSS tools were written and maintained by developers with Netscape, Red<br>
+&nbsp;&nbsp; Hat, and Sun.<br>
+<br>
+&nbsp;&nbsp; Authors: Elio Maldonado &lt;<a class=" link-mailto" href="mailto:emaldona@redhat.com">emaldona@redhat.com</a>&gt;, Deon Lackey<br>
+&nbsp;&nbsp; &lt;<a class=" link-mailto" href="mailto:dlackey@redhat.com">dlackey@redhat.com</a>&gt;.<br>
+<br>
+Copyright<br>
+<br>
+&nbsp;&nbsp; (c) 2010, Red Hat, Inc. Licensed under the GNU Public License version 2.<br>
+<br>
+References<br>
+<br>
+&nbsp;&nbsp; Visible links<br>
+&nbsp;&nbsp; 1. JAR Installation File Format<br>
+&nbsp;&nbsp;&nbsp; <code>file:///tmp/xmlto.6gGxS0/modutil.pro...r-install-file</code><br>
+&nbsp;&nbsp; 2. <a class="external" href="https://www.mozilla.org/projects/security/pki/nss/" rel=" noopener">https://www.mozilla.org/projects/security/pki/nss/</a></p></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/tools/modutil/index.html" title="Folder: en-us/mozilla/projects/nss/tools/modutil (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FTools%2Fmodutil%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Ftools%2Fmodutil%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FTools%2Fmodutil%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Ftools%2Fmodutil%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2F850896e76a64ceab3fef10dce6acfc8851863859%0A*+Document+last+modified%3A+2021-01-26T08%3A53%3A20.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22NSS+tools+%3A+modutil%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2021-01-26T08:53:20.000Z">Jan 26, 2021</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/Tools/modutil/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>NSS 3.45 release notes - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>NSS 3.45 release notes</h1><h2 id="introduction"><a href="#introduction" title="Permalink to Introduction">Introduction</a></h2><div><p>The NSS team has released Network Security Services (NSS) 3.45 on <strong>5 July 2019</strong>, which is a minor release.</p>
+
+<p>The NSS team would like to recognize first-time contributors:</p>
+
+<ul>
+ <li>Bastien Abadie</li>
+ <li>Christopher Patton</li>
+ <li>Jeremie Courreges-Anglas</li>
+ <li>Marcus Burghardt</li>
+ <li>Michael Shigorin</li>
+ <li>Tomas Mraz</li>
+</ul></div><h2 id="distribution_information"><a href="#distribution_information" title="Permalink to Distribution Information">Distribution Information</a></h2><div><p>The HG tag is NSS_3_45_RTM. NSS 3.45 requires NSPR 4.21 or newer.</p>
+
+<p>NSS 3.45 source distributions are available on ftp.mozilla.org for secure HTTPS download:</p>
+
+<ul>
+ <li>Source tarballs:<br>
+  <a href="https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_45_RTM/src/" class="external" rel=" noopener">https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_45_RTM/src/</a></li>
+</ul>
+
+<p>Other releases are available <a href="/en-US/docs/Mozilla/Projects/NSS/NSS_Releases">in NSS Releases</a>.</p></div><h2 id="new_in_nss_3.45"><a href="#new_in_nss_3.45" title="Permalink to New in NSS 3.45">New in NSS 3.45</a></h2><div></div><h3 id="new_functionality"><a href="#new_functionality" title="Permalink to New Functionality">New Functionality</a></h3><div><h4 id="new_functions">New Functions</h4>
+
+<ul>
+ <li>in <em>pk11pub.h</em>:
+
+  <ul>
+   <li><strong>PK11_FindRawCertsWithSubject</strong> - Finds all certificates on the given slot with the given subject distinguished name and returns them as DER bytes. If no such certificates can be found, returns SECSuccess and sets <code>*results</code> to NULL. If a failure is encountered while fetching any of the matching certificates, SECFailure is returned and <code>*results</code> will be NULL.</li>
+  </ul>
+ </li>
+</ul></div><h2 id="notable_changes_in_nss_3.45"><a href="#notable_changes_in_nss_3.45" title="Permalink to Notable Changes in NSS 3.45">Notable Changes in NSS 3.45</a></h2><div><ul>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1540403" class="external" rel=" noopener">Bug 1540403</a> - Implement Delegated Credentials (<a href="https://datatracker.ietf.org/doc/draft-ietf-tls-subcerts/" class="external" rel=" noopener">draft-ietf-tls-subcerts</a>)
+
+  <ul>
+   <li>This adds a new experimental function: <strong>SSL_DelegateCredential</strong></li>
+   <li><strong>Note</strong>: In 3.45, <code>selfserv</code> does not yet support delegated credentials. See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1548360" class="external" rel=" noopener">Bug 1548360</a>.</li>
+   <li><strong>Note</strong>: In 3.45 the SSLChannelInfo is left unmodified, while an upcoming change in 3.46 will set <code>SSLChannelInfo.authKeyBits</code> to that of the delegated credential for better policy enforcement. See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1563078" class="external" rel=" noopener">Bug 1563078</a>.</li>
+  </ul>
+ </li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1550579" class="external" rel=" noopener">Bug 1550579</a> - Replace ARM32 Curve25519 implementation with one from <a href="https://github.com/mit-plv/fiat-crypto" class="external" rel=" noopener">fiat-crypto</a></li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1551129" class="external" rel=" noopener">Bug 1551129</a> - Support static linking on Windows</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1552262" class="external" rel=" noopener">Bug 1552262</a> - Expose a function <strong>PK11_FindRawCertsWithSubject</strong> for finding certificates with a given subject on a given slot</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1546229" class="external" rel=" noopener">Bug 1546229</a> - Add IPSEC IKE support to softoken</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1554616" class="external" rel=" noopener">Bug 1554616</a> - Add support for the Elbrus lcc compiler (&lt;=1.23)</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1543874" class="external" rel=" noopener">Bug 1543874</a> - Expose an external clock for SSL
+  <ul>
+   <li>This adds new experimental functions: <strong>SSL_SetTimeFunc</strong>, <strong>SSL_CreateAntiReplayContext</strong>, <strong>SSL_SetAntiReplayContext</strong>, and <strong>SSL_ReleaseAntiReplayContext</strong>.</li>
+   <li>The experimental function <strong>SSL_InitAntiReplay</strong> is removed.</li>
+  </ul>
+ </li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1546477" class="external" rel=" noopener">Bug 1546477</a> - Various changes in response to the ongoing FIPS review
+  <ul>
+   <li>Note: The source package size has increased substantially due to the new FIPS test vectors. This will likely prompt follow-on work, but please accept our apologies in the meantime.</li>
+  </ul>
+ </li>
+</ul></div><h3 id="certificate_authority_changes"><a href="#certificate_authority_changes" title="Permalink to Certificate Authority Changes">Certificate Authority Changes</a></h3><div><ul>
+ <li>The following CA certificates were <strong>Removed</strong>:
+
+  <ul>
+   <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1552374" class="external" rel=" noopener">Bug 1552374</a> - CN = Certinomis - Root CA
+
+    <ul>
+     <li>SHA-256 Fingerprint: 2A99F5BC1174B73CBB1D620884E01C34E51CCB3978DA125F0E33268883BF4158</li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul></div><h2 id="bugs_fixed_in_nss_3.45"><a href="#bugs_fixed_in_nss_3.45" title="Permalink to Bugs fixed in NSS 3.45">Bugs fixed in NSS 3.45</a></h2><div><ul>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1540541" class="external" rel=" noopener">Bug 1540541</a> - Don't unnecessarily strip leading 0's from key material during PKCS11 import (<a class="bz_bug_link bz_closed bz_status_RESOLVED external external-icon" href="https://bugzilla.mozilla.org/show_bug.cgi?id=CVE-2019-11719" rel="noopener">CVE-2019-11719</a>)</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1515342" class="external" rel=" noopener">Bug 1515342</a> - More thorough input checking (<a class="bz_bug_link bz_closed bz_status_RESOLVED external external-icon" href="https://bugzilla.mozilla.org/show_bug.cgi?id=CVE-2019-11729" rel="noopener">CVE-2019-11729)</a></li>
+ <li>
+  <div><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1552208" class="external" rel=" noopener">Bug 1552208</a> - Prohibit use of RSASSA-PKCS1-v1_5 algorithms in TLS 1.3 (<a class="bz_bug_link bz_closed bz_status_RESOLVED external external-icon" href="https://bugzilla.mozilla.org/show_bug.cgi?id=CVE-2019-11727" rel="noopener">CVE-2019-11727</a>)</div>
+ </li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1227090" class="external" rel=" noopener">Bug 1227090</a> - Fix a potential divide-by-zero in makePfromQandSeed from lib/freebl/pqg.c (static analysis)</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1227096" class="external" rel=" noopener">Bug 1227096</a> - Fix a potential divide-by-zero in PQG_VerifyParams from lib/freebl/pqg.c&nbsp; (static analysis)</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1509432" class="external" rel=" noopener">Bug 1509432</a> - De-duplicate code between mp_set_long and mp_set_ulong</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1515011" class="external" rel=" noopener">Bug 1515011</a> - Fix a mistake with ChaCha20-Poly1305 test code where tags could be faked. Only relevant for clients that might have copied the unit test code verbatim</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1550022" class="external" rel=" noopener">Bug 1550022</a> - Ensure nssutil3 gets built on Android</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1528174" class="external" rel=" noopener">Bug 1528174</a> - ChaCha20Poly1305 should no longer modify output length on failure</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1549382" class="external" rel=" noopener">Bug 1549382</a> - Don't leak in PKCS#11 modules if C_GetSlotInfo() returns error</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1551041" class="external" rel=" noopener">Bug 1551041</a> - Fix builds using GCC &lt; 4.3 on big-endian architectures</li>
+ <li>
+  <div><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1554659" class="external" rel=" noopener">Bug 1554659</a> - Add versioning to OpenBSD builds to fix link time errors using NSS</div>
+ </li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1553443" class="external" rel=" noopener">Bug 1553443</a> - Send session ticket only after handshake is marked as finished</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1550708" class="external" rel=" noopener">Bug 1550708</a> - Fix gyp scripts on Solaris SPARC so that libfreebl_64fpu_3.so builds</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1554336" class="external" rel=" noopener">Bug 1554336</a> - Optimize away unneeded loop in mpi.c</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1559906" class="external" rel=" noopener">Bug 1559906</a> - fipstest: use CKM_TLS12_MASTER_KEY_DERIVE instead of vendor specific mechanism</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1558126" class="external" rel=" noopener">Bug 1558126</a> - TLS_AES_256_GCM_SHA384 should be marked as FIPS compatible</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1555207" class="external" rel=" noopener">Bug 1555207</a> - HelloRetryRequestCallback return code for rejecting 0-RTT</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1556591" class="external" rel=" noopener">Bug 1556591</a> - Eliminate races in uses of PK11_SetWrapKey</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1558681" class="external" rel=" noopener">Bug 1558681</a> - Stop using a global for anti-replay of TLS 1.3 early data</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1561510" class="external" rel=" noopener">Bug 1561510</a> - Fix a bug where removing -arch XXX args from CC didn't work</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1561523" class="external" rel=" noopener">Bug 1561523</a> - Add a string for the new-ish error SSL_ERROR_MISSING_POST_HANDSHAKE_AUTH_EXTENSION</li>
+</ul>
+
+<p>This Bugzilla query returns all the bugs fixed in NSS 3.45:</p>
+
+<p><a href="https://bugzilla.mozilla.org/buglist.cgi?resolution=FIXED&amp;classification=Components&amp;query_format=advanced&amp;product=NSS&amp;target_milestone=3.45" class="external" rel=" noopener">https://bugzilla.mozilla.org/buglist.cgi?resolution=FIXED&amp;classification=Components&amp;query_format=advanced&amp;product=NSS&amp;target_milestone=3.45</a></p></div><h2 id="compatibility"><a href="#compatibility" title="Permalink to Compatibility">Compatibility</a></h2><div><p>NSS 3.45 shared libraries are backward compatible with all older NSS 3.x shared libraries. A program linked with older NSS 3.x shared libraries will work with NSS 3.45 shared libraries without recompiling or relinking. Furthermore, applications that restrict their use of NSS APIs to the functions listed in NSS Public Functions will remain compatible with future versions of the NSS shared libraries.</p></div><h2 id="feedback"><a href="#feedback" title="Permalink to Feedback">Feedback</a></h2><div><p>Bugs discovered should be reported by filing a bug report with<a href="https://bugzilla.mozilla.org/enter_bug.cgi?product=NSS" class="external" rel=" noopener"> bugzilla.mozilla.org</a> (product NSS).</p></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/nss_3.45_release_notes/index.html" title="Folder: en-us/mozilla/projects/nss/nss_3.45_release_notes (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_3.45_release_notes%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_3.45_release_notes%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_3.45_release_notes%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_3.45_release_notes%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2F31263f4b5183d57324805b2983c513b22cf27a27%0A*+Document+last+modified%3A+2021-01-11T10%3A23%3A28.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22NSS+3.45+release+notes%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2021-01-11T10:23:28.000Z">Jan 11, 2021</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/NSS_3.45_release_notes/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

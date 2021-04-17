@@ -1,0 +1,73 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>NSS 3.47 release notes - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>NSS 3.47 release notes</h1><h2 id="introduction"><a href="#introduction" title="Permalink to Introduction">Introduction</a></h2><div><p>The NSS team has released Network Security Services (NSS) 3.47 on <strong>18 October 2019</strong>, which is a minor release.</p>
+
+<p>The NSS team would like to recognize first-time contributors:</p>
+
+<ul>
+ <li>Christian Weisgerber</li>
+ <li>Deian Stefan</li>
+ <li>Jenine</li>
+</ul></div><h2 id="distribution_information"><a href="#distribution_information" title="Permalink to Distribution Information">Distribution Information</a></h2><div><p>The HG tag is NSS_3_47_RTM. NSS 3.47 requires NSPR 4.23 or newer.</p>
+
+<p>NSS 3.47 source distributions are available on ftp.mozilla.org for secure HTTPS download:</p>
+
+<ul>
+ <li>Source tarballs:<br>
+  <a href="https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_47_RTM/src/" class="external" rel=" noopener">https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_47_RTM/src/</a></li>
+</ul>
+
+<p>Other releases are available <a href="/en-US/docs/Mozilla/Projects/NSS/NSS_Releases">in NSS Releases</a>.</p></div><h2 id="upcoming_changes_to_default_tls_configuration"><a href="#upcoming_changes_to_default_tls_configuration" title="Permalink to Upcoming changes to default TLS configuration">Upcoming changes to default TLS configuration</a></h2><div><p>The next NSS team plans to make two changes to the default TLS configuration in NSS 3.48, which will be released in early December:</p>
+
+<ul>
+ <li><a class="external" href="https://datatracker.ietf.org/doc/html/rfc8446" rel="noopener">TLS 1.3</a> will be the default maximum TLS version.&nbsp; See <a class="external" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1573118" rel="noopener">Bug 1573118</a> for details.</li>
+ <li><a class="external" href="https://datatracker.ietf.org/doc/html/rfc7627" rel="noopener">TLS extended master secret</a> will be enabled by default, where possible.&nbsp; See <a class="external" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1575411" rel="noopener">Bug 1575411</a> for details.</li>
+</ul></div><h2 id="notable_changes_in_nss_3.47"><a href="#notable_changes_in_nss_3.47" title="Permalink to Notable Changes in NSS 3.47">Notable Changes in NSS 3.47</a></h2><div><ul>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1152625" class="external" rel=" noopener">Bug 1152625</a> - Support AES HW acceleration on ARMv8</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1267894" class="external" rel=" noopener">Bug 1267894</a> - Allow per-socket run-time ordering of the cipher suites presented in ClientHello</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1570501" class="external" rel=" noopener">Bug 1570501</a> - Add CMAC to FreeBL and PKCS #11 libraries</li>
+</ul></div><h2 id="bugs_fixed_in_nss_3.47"><a href="#bugs_fixed_in_nss_3.47" title="Permalink to Bugs fixed in NSS 3.47">Bugs fixed in NSS 3.47</a></h2><div><ul>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1459141" class="external" rel=" noopener">Bug 1459141</a> - Make softoken CBC padding removal constant time</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1589120" class="external" rel=" noopener">Bug 1589120</a> - More CBC padding tests</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1465613" class="external" rel=" noopener">Bug 1465613</a> - Add ability to distrust certificates issued after a certain date for a specified root cert</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1588557" class="external" rel=" noopener">Bug 1588557</a> - Bad debug statement in tls13con.c</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1579060" class="external" rel=" noopener">Bug 1579060</a> - mozilla::pkix tag definitions for issuerUniqueID and subjectUniqueID shouldn't have the CONSTRUCTED bit set</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1583068" class="external" rel=" noopener">Bug 1583068</a> - NSS 3.47 should pick up fix from bug 1575821 (NSPR 4.23)</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1152625" class="external" rel=" noopener">Bug 1152625</a> - Support AES HW acceleration on ARMv8</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1549225" class="external" rel=" noopener">Bug 1549225</a> - Disable DSA signature schemes for TLS 1.3</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1586947" class="external" rel=" noopener">Bug 1586947</a> - PK11_ImportAndReturnPrivateKey does not store nickname for EC keys</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1586456" class="external" rel=" noopener">Bug 1586456</a> - Unnecessary conditional in pki3hack, pk11load and stanpcertdb</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1576307" class="external" rel=" noopener">Bug 1576307</a> - Check mechanism param and param length before casting to mechanism-specific structs</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1577953" class="external" rel=" noopener">Bug 1577953</a> - Support longer (up to RFC maximum) HKDF outputs</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1508776" class="external" rel=" noopener">Bug 1508776</a> - Remove refcounting from sftk_FreeSession (CVE-2019-11756)</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1494063" class="external" rel=" noopener">Bug 1494063</a> - Support TLS Exporter in tstclnt and selfserv</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1581024" class="external" rel=" noopener">Bug 1581024</a> - Heap overflow in NSS utility "derdump"</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1582343" class="external" rel=" noopener">Bug 1582343</a> - Soft token MAC verification not constant time</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1578238" class="external" rel=" noopener">Bug 1578238</a> - Handle invald tag sizes for CKM_AES_GCM</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1576295" class="external" rel=" noopener">Bug 1576295</a> - Check all bounds when encrypting with SEED_CBC</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1580286" class="external" rel=" noopener">Bug 1580286</a> - NSS rejects TLS 1.2 records with large padding with SHA384 HMAC</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1577448" class="external" rel=" noopener">Bug 1577448</a> - Create additional nested S/MIME test messages for Thunderbird</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1399095" class="external" rel=" noopener">Bug 1399095</a> - Allow nss-try to be used to test NSPR changes</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1267894" class="external" rel=" noopener">Bug 1267894</a> - libSSL should allow selecting the order of cipher suites in ClientHello</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1581507" class="external" rel=" noopener">Bug 1581507</a> - Fix unportable grep expression in test scripts</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1234830" class="external" rel=" noopener">Bug 1234830</a> - [CID 1242894][CID 1242852] unused values</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1580126" class="external" rel=" noopener">Bug 1580126</a> - Fix build failure on aarch64_be while building freebl/gcm</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1385039" class="external" rel=" noopener">Bug 1385039</a> - Build NSPR tests as part of NSS continuous integration</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1581391" class="external" rel=" noopener">Bug 1581391</a> - Fix build on OpenBSD/arm64 after bug #1559012</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1581041" class="external" rel=" noopener">Bug 1581041</a> - mach-commands -&gt; mach-completion</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1558313" class="external" rel=" noopener">Bug 1558313</a> - Code bugs found by clang scanners.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1542207" class="external" rel=" noopener">Bug 1542207</a> - Limit policy check on signature algorithms to known algorithms</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1560329" class="external" rel=" noopener">Bug 1560329</a> - drbg: add continuous self-test on entropy source</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1579290" class="external" rel=" noopener">Bug 1579290</a> - ASAN builds should disable LSAN while building</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1385061" class="external" rel=" noopener">Bug 1385061</a> - Build NSPR tests with NSS make; Add gyp parameters to build/run NSPR tests</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1577359" class="external" rel=" noopener">Bug 1577359</a> - Build atob and btoa for Thunderbird</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1579036" class="external" rel=" noopener">Bug 1579036</a> - Confusing error when trying to export non-existent cert with pk12util</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1578626" class="external" rel=" noopener">Bug 1578626</a> - [CID 1453375] UB: decrement nullptr.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1578751" class="external" rel=" noopener">Bug 1578751</a> - Ensure a consistent style for pk11_find_certs_unittest.cc</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1570501" class="external" rel=" noopener">Bug 1570501</a> - Add CMAC to FreeBL and PKCS #11 libraries</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=657379" class="external" rel=" noopener">Bug 657379</a> - NSS uses the wrong OID for signatureAlgorithm field of signerInfo in CMS for DSA and ECDSA</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1576664" class="external" rel=" noopener">Bug 1576664</a> - Remove -mms-bitfields from mingw NSS build.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1577038" class="external" rel=" noopener">Bug 1577038</a> - add PK11_GetCertsFromPrivateKey to return all certificates with public keys matching a particular private key</li>
+</ul>
+
+<p>This Bugzilla query returns all the bugs fixed in NSS 3.47:</p>
+
+<p><a href="https://bugzilla.mozilla.org/buglist.cgi?resolution=FIXED&amp;classification=Components&amp;query_format=advanced&amp;product=NSS&amp;target_milestone=3.47" class="external" rel=" noopener">https://bugzilla.mozilla.org/buglist.cgi?resolution=FIXED&amp;classification=Components&amp;query_format=advanced&amp;product=NSS&amp;target_milestone=3.47</a></p></div><h2 id="compatibility"><a href="#compatibility" title="Permalink to Compatibility">Compatibility</a></h2><div><p>NSS 3.47 shared libraries are backward compatible with all older NSS 3.x shared libraries. A program linked with older NSS 3.x shared libraries will work with NSS 3.47 shared libraries without recompiling or relinking. Furthermore, applications that restrict their use of NSS APIs to the functions listed in NSS Public Functions will remain compatible with future versions of the NSS shared libraries.</p></div><h2 id="feedback"><a href="#feedback" title="Permalink to Feedback">Feedback</a></h2><div><p>Bugs discovered should be reported by filing a bug report with<a href="https://bugzilla.mozilla.org/enter_bug.cgi?product=NSS" class="external" rel=" noopener"> bugzilla.mozilla.org</a> (product NSS).</p></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/nss_3.47_release_notes/index.html" title="Folder: en-us/mozilla/projects/nss/nss_3.47_release_notes (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_3.47_release_notes%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_3.47_release_notes%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_3.47_release_notes%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_3.47_release_notes%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2F48fca0c614add538e95f1075b2777fc396023d31%0A*+Document+last+modified%3A+2021-03-16T07%3A50%3A01.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22NSS+3.47+release+notes%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2021-03-16T07:50:01.000Z">Mar 16, 2021</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/NSS_3.47_release_notes/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

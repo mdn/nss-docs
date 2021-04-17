@@ -1,0 +1,50 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>sslkey - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>sslkey</h1><div><div class="note notecard">
+  <ul>
+    <li>This page is part of the <a href="/en-US/docs/Mozilla/Projects/NSS/SSL_functions/OLD_SSL_Reference">SSL Reference</a> that we are migrating into the format described in the <a href="/en-US/docs/MDN/Guidelines">MDN Style Guide</a>. If you are inclined to help with this migration, your help would be very much appreciated.</li>
+  </ul>
+  <ul>
+    <li>Upgraded documentation may be found in the <a href="/NSS_reference" data-flaw="link1">Current NSS Reference</a>
+    </li>
+  </ul>
+</div>
+<h1 id="Key_Functions">Key Functions</h1>
+<hr>
+<p><a id="1022819"> </a></p></div><h2 id="chapter_6_key_functions"><a href="#chapter_6_key_functions" title="Permalink to Chapter 6
+   Key Functions">Chapter 6<br>
+  </a><a id="1047959"> Key Functions</a></h2><div><p><a id="1050823"> This chapter describes two functions used to manipulate private keys and key databases such as the <code>key3.db</code> database provided with Communicator.</a></p>
+<p><a id="1051473"> </a><a href="#1051479"><code>SECKEY_GetDefaultKeyDB</code></a><br>
+  <a href="#1051017"><code>SECKEY_DestroyPrivateKey</code></a></p>
+<h4 id="seckey_getdefaultkeydb"> <a id="1051479"> SECKEY_GetDefaultKeyDB </a></h4>
+<p><a id="1051483"> Returns a handle to the default key database opened by </a><a href="/en-US/docs/Mozilla/Projects/NSS/SSL_functions/sslfnc#1067601"><code>NSS_Init</code></a>.</p>
+<h5 id="syntax"> <a id="1050894"> Syntax </a></h5>
+<pre class="notranslate"><a id="1050962">#include &lt;key.h&gt;
+#include &lt;keyt.h&gt;</a></pre>
+<pre class="notranslate"><a id="1050902">SECKEYKeyDBHandle *SECKEY_GetDefaultKeyDB(void);</a></pre>
+<h5 id="returns"> <a id="1050930"> Returns </a></h5>
+<p><a id="1050946"> The function returns a handle of type <code>SECKEYKeyDBHandle</code>.</a></p>
+<h5 id="description"> <a id="1051220"> Description </a></h5>
+<p><a id="1051232"> </a><a href="/en-US/docs/Mozilla/Projects/NSS/SSL_functions/sslfnc#1067601"><code>NSS_Init</code></a> opens the certificate, key, and security module databases that you specify for use with NSS. <code>SECKEYKeyDBHandle</code> returns a handle to the key database opened by <code>NSS_Init</code>.</p>
+<h4 id="seckey_destroyprivatekey"> <a id="1051017"> SECKEY_DestroyPrivateKey </a></h4>
+<p><a id="1050982"> Destroys a private key structure.</a></p>
+<h5 id="syntax_2"> <a id="1050983"> Syntax </a></h5>
+<pre class="notranslate"><a id="1050984">#include &lt;key.h&gt;
+#include &lt;keyt.h&gt;</a></pre>
+<pre class="notranslate"><a id="1050985">void SECKEY_DestroyPrivateKey(SECKEYPrivateKey *key);</a></pre>
+<h5 id="parameter"> <a id="1050986"> Parameter </a></h5>
+<p><a id="1050992"> This function has the following parameter:</a></p>
+<table>
+  <tbody>
+    <tr>
+      <td>
+        <pre class="notranslate"><a id="1050989">key</a></pre>
+      </td>
+      <td>
+        <p><a id="1050991"> A pointer to the private key structure to destroy. </a></p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="description_2"> <a id="1051258"> Description </a></h5>
+<p><a id="1051346"> Certificate and key structures are shared objects. When an application makes a copy of a particular certificate or key structure that already exists in memory, SSL makes a <i>shallow</i> copy--that is, it increments the reference count for that object rather than making a whole new copy. When you call </a><a href="sslcrt.html#1050532"><code>CERT_DestroyCertificate</code></a> or <a href="#1051017"><code>SECKEY_DestroyPrivateKey</code></a>, the function decrements the reference count and, if the reference count reaches zero as a result, both frees the memory and sets all the bits to zero. The use of the word "destroy" in function names or in the description of a function implies reference counting.</p>
+<p><a id="1051259"> Never alter the contents of a certificate or key structure. If you attempt to do so, the change affects all the shallow copies of that structure and can cause severe problems.</a></p>
+<p><a id="1051269"> </a></p></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/ssl_functions/sslkey/index.html" title="Folder: en-us/mozilla/projects/nss/ssl_functions/sslkey (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FSSL_functions%2Fsslkey%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Fssl_functions%2Fsslkey%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FSSL_functions%2Fsslkey%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Fssl_functions%2Fsslkey%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2F0c5f3d8b1ffae695f4400c1e08bffca2cfec67c8%0A*+Document+last+modified%3A+2021-03-20T05%3A47%3A10.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22sslkey%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2021-03-20T05:47:10.000Z">Mar 19, 2021</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/SSL_functions/sslkey/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

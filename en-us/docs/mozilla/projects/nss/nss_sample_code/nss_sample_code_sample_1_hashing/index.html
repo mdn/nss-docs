@@ -1,0 +1,229 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>NSS Sample Code Sample_1_Hashing - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>NSS Sample Code Sample_1_Hashing</h1><h2 id="nss_sample_code_1_hashing_a_file."><a href="#nss_sample_code_1_hashing_a_file." title="Permalink to NSS Sample Code 1: Hashing a file.">NSS Sample Code 1: Hashing a file.</a></h2><div><p>This is an example program that demonstrates how to compute the hash of a file and save it to another file.&nbsp; This program illustrates the use of NSS message APIs.</p></div><h3 id="sample_code_1"><a href="#sample_code_1" title="Permalink to Sample Code 1">Sample Code 1</a></h3><div><pre class="brush: cpp notranslate"><code><span class="token comment">/* NSPR Headers */</span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;prprf.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;prtypes.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;plgetopt.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;prio.h&gt;</span></span>
+
+<span class="token comment">/* NSS headers */</span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;secoid.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;secmodt.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;sechash.h&gt;</span></span>
+
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span>hashName<span class="token punctuation">;</span>
+    SECOidTag oid<span class="token punctuation">;</span>
+<span class="token punctuation">}</span> NameTagPair<span class="token punctuation">;</span>
+
+<span class="token comment">/* The hash algorithms supported */</span>
+<span class="token keyword">static</span> <span class="token keyword">const</span> NameTagPair HASH_NAMES<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">{</span> <span class="token string">"MD2"</span><span class="token punctuation">,</span> SEC_OID_MD2 <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> <span class="token string">"MD5"</span><span class="token punctuation">,</span> SEC_OID_MD5 <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> <span class="token string">"SHA1"</span><span class="token punctuation">,</span> SEC_OID_SHA1 <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> <span class="token string">"SHA256"</span><span class="token punctuation">,</span> SEC_OID_SHA256 <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> <span class="token string">"SHA384"</span><span class="token punctuation">,</span> SEC_OID_SHA384 <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> <span class="token string">"SHA512"</span><span class="token punctuation">,</span> SEC_OID_SHA512 <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token comment">/*
+ * Maps a hash name to a SECOidTag.
+ * Returns NULL if the name is not a supported algorithm
+ */</span>
+<span class="token keyword">static</span> SECOidTag <span class="token function">HashNameToOIDTag</span><span class="token punctuation">(</span><span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span>hashName<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">int</span> i<span class="token punctuation">,</span> nhashes <span class="token operator">=</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>HASH_NAMES<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    SECOidTag hashtag <span class="token operator">=</span> SEC_OID_UNKNOWN<span class="token punctuation">;</span>
+
+    <span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> nhashes<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">PORT_Strcasecmp</span><span class="token punctuation">(</span>hashName<span class="token punctuation">,</span> HASH_NAMES<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>hashName<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            hashtag <span class="token operator">=</span> HASH_NAMES<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>oid<span class="token punctuation">;</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> hashtag<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">/*
+ * Newline
+ */</span>
+<span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">Newline</span><span class="token punctuation">(</span>PRFileDesc<span class="token operator">*</span> out<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token function">PR_fprintf</span><span class="token punctuation">(</span>out<span class="token punctuation">,</span> <span class="token string">"\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+
+<span class="token comment">/*
+ * PrintAsHex
+ */</span>
+<span class="token keyword">void</span> <span class="token function">PrintAsHex</span><span class="token punctuation">(</span>PRFileDesc<span class="token operator">*</span> out<span class="token punctuation">,</span> <span class="token keyword">unsigned</span> <span class="token keyword">char</span> <span class="token operator">*</span>data<span class="token punctuation">,</span> <span class="token keyword">unsigned</span> <span class="token keyword">int</span> len<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">unsigned</span> i<span class="token punctuation">;</span>
+    <span class="token keyword">int</span> column<span class="token punctuation">;</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span> limit <span class="token operator">=</span> <span class="token number">15</span><span class="token punctuation">;</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span> level  <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+
+    column <span class="token operator">=</span> level<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>len<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">PR_fprintf</span><span class="token punctuation">(</span>out<span class="token punctuation">,</span> <span class="token string">"(empty)\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> len<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token operator">!=</span> len <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">PR_fprintf</span><span class="token punctuation">(</span>out<span class="token punctuation">,</span> <span class="token string">"%02x:"</span><span class="token punctuation">,</span> data<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            column <span class="token operator">+=</span> <span class="token number">3</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token function">PR_fprintf</span><span class="token punctuation">(</span>out<span class="token punctuation">,</span> <span class="token string">"%02x"</span><span class="token punctuation">,</span> data<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            column <span class="token operator">+=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>column <span class="token operator">&gt;</span> <span class="token number">76</span> <span class="token operator">||</span> <span class="token punctuation">(</span>i <span class="token operator">%</span> <span class="token number">16</span> <span class="token operator">==</span> limit<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">Newline</span><span class="token punctuation">(</span>out<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            column <span class="token operator">=</span> level<span class="token punctuation">;</span>
+            limit <span class="token operator">=</span> i <span class="token operator">%</span> <span class="token number">16</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>column <span class="token operator">!=</span> level<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">Newline</span><span class="token punctuation">(</span>out<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">/*
+ * Prints a usage message and exits
+ */</span>
+<span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">Usage</span><span class="token punctuation">(</span><span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span>progName<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">int</span> htype<span class="token punctuation">;</span>
+    <span class="token keyword">int</span> HASH_AlgTOTAL <span class="token operator">=</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>HASH_NAMES<span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>HASH_NAMES<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">fprintf</span><span class="token punctuation">(</span><span class="token constant">stderr</span><span class="token punctuation">,</span> <span class="token string">"Usage:  %s -t type [ &lt; input ] [ &gt; output ]\n"</span><span class="token punctuation">,</span> progName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">fprintf</span><span class="token punctuation">(</span><span class="token constant">stderr</span><span class="token punctuation">,</span> <span class="token string">"%-20s Specify the digest method (must be one of\n"</span><span class="token punctuation">,</span>
+            <span class="token string">"-t type"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">fprintf</span><span class="token punctuation">(</span><span class="token constant">stderr</span><span class="token punctuation">,</span> <span class="token string">"%-20s "</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span>htype <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> htype <span class="token operator">&lt;</span> HASH_AlgTOTAL<span class="token punctuation">;</span> htype<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">fprintf</span><span class="token punctuation">(</span><span class="token constant">stderr</span><span class="token punctuation">,</span> HASH_NAMES<span class="token punctuation">[</span>htype<span class="token punctuation">]</span><span class="token punctuation">.</span>hashName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>htype <span class="token operator">==</span> <span class="token punctuation">(</span>HASH_AlgTOTAL <span class="token operator">-</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token function">fprintf</span><span class="token punctuation">(</span><span class="token constant">stderr</span><span class="token punctuation">,</span> <span class="token string">" or "</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>htype <span class="token operator">!=</span> <span class="token punctuation">(</span>HASH_AlgTOTAL <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token function">fprintf</span><span class="token punctuation">(</span><span class="token constant">stderr</span><span class="token punctuation">,</span> <span class="token string">", "</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">fprintf</span><span class="token punctuation">(</span><span class="token constant">stderr</span><span class="token punctuation">,</span> <span class="token string">" (case ignored))\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">fprintf</span><span class="token punctuation">(</span><span class="token constant">stderr</span><span class="token punctuation">,</span> <span class="token string">"%-20s Define an input file to use (default is stdin)\n"</span><span class="token punctuation">,</span>
+            <span class="token string">"&lt; input"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">fprintf</span><span class="token punctuation">(</span><span class="token constant">stderr</span><span class="token punctuation">,</span> <span class="token string">"%-20s Define an output file to use (default is stdout)\n"</span><span class="token punctuation">,</span>
+            <span class="token string">"&gt; output"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">exit</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">/*
+ * Check for the missing arguments
+ */</span>
+<span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">PrintMsgAndExit</span><span class="token punctuation">(</span><span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span>progName<span class="token punctuation">,</span> <span class="token keyword">char</span> opt<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">fprintf</span><span class="token punctuation">(</span><span class="token constant">stderr</span><span class="token punctuation">,</span> <span class="token string">"%s: option -%c requires an argument\n"</span><span class="token punctuation">,</span> progName<span class="token punctuation">,</span> opt<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">Usage</span><span class="token punctuation">(</span>progName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">REQUIRE_ARG</span><span class="token expression"><span class="token punctuation">(</span>opt<span class="token punctuation">,</span>value<span class="token punctuation">)</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token function">PrintMsgAndExit</span><span class="token punctuation">(</span>progName<span class="token punctuation">,</span> opt<span class="token punctuation">)</span></span></span>
+
+<span class="token comment">/*
+ * Digests a file according to the specified algorithm.
+ * It writes out the digest as a hexadecimal string.
+ */</span>
+<span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">DigestFile</span><span class="token punctuation">(</span>PRFileDesc <span class="token operator">*</span>outFile<span class="token punctuation">,</span> PRFileDesc <span class="token operator">*</span>inFile<span class="token punctuation">,</span> SECOidTag hashOIDTag<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span>  nb<span class="token punctuation">;</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">char</span> ibuf<span class="token punctuation">[</span><span class="token number">4096</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">char</span> digest<span class="token punctuation">[</span><span class="token number">64</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span>  len<span class="token punctuation">;</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span>  digestLen<span class="token punctuation">;</span>
+    HASH_HashType hashType<span class="token punctuation">;</span>
+    HASHContext   <span class="token operator">*</span>hashContext <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+
+    hashType    <span class="token operator">=</span> <span class="token function">HASH_GetHashTypeByOidTag</span><span class="token punctuation">(</span>hashOIDTag<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    hashContext <span class="token operator">=</span> <span class="token function">HASH_Create</span><span class="token punctuation">(</span>hashType<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>hashContext <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> SECFailure<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">do</span> <span class="token punctuation">{</span>
+
+        <span class="token function">HASH_Begin</span><span class="token punctuation">(</span>hashContext<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">/* Incrementally hash the file contents */</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>nb <span class="token operator">=</span> <span class="token function">PR_Read</span><span class="token punctuation">(</span>inFile<span class="token punctuation">,</span> ibuf<span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>ibuf<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">HASH_Update</span><span class="token punctuation">(</span>hashContext<span class="token punctuation">,</span> ibuf<span class="token punctuation">,</span> nb<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token function">HASH_End</span><span class="token punctuation">(</span>hashContext<span class="token punctuation">,</span> digest<span class="token punctuation">,</span> <span class="token operator">&amp;</span>len<span class="token punctuation">,</span> <span class="token number">64</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">/*  Normally we would write it out in binary with
+         *  nb = PR_Write(outFile, digest, len);
+         *  but for illustration let's print it in hex.
+         */</span>
+        <span class="token function">PrintAsHex</span><span class="token punctuation">(</span>outFile<span class="token punctuation">,</span> digest<span class="token punctuation">,</span> len<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span> <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* cleanup */</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>hashContext <span class="token operator">!=</span> <span class="token constant">NULL</span><span class="token punctuation">)</span>
+        <span class="token function">HASH_Destroy</span><span class="token punctuation">(</span>hashContext<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> SECSuccess<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">/*
+ * This sample computes the hash of a file and saves it
+ * to another file. It illustrates the use of NSS message
+ * APIs.
+ */</span>
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span> <span class="token keyword">char</span> <span class="token operator">*</span><span class="token operator">*</span>argv<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    SECOidTag     hashOIDTag<span class="token punctuation">;</span>
+    PLOptState    <span class="token operator">*</span>optstate<span class="token punctuation">;</span>
+    PLOptStatus   status<span class="token punctuation">;</span>
+    SECStatus     rv<span class="token punctuation">;</span>
+    <span class="token keyword">char</span>          <span class="token operator">*</span>hashName  <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+    <span class="token keyword">char</span>          <span class="token operator">*</span>progName <span class="token operator">=</span> <span class="token function">strrchr</span><span class="token punctuation">(</span>argv<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">'/'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    progName <span class="token operator">=</span> progName <span class="token operator">?</span> progName <span class="token operator">+</span> <span class="token number">1</span> <span class="token operator">:</span> argv<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+    rv <span class="token operator">=</span> <span class="token function">NSS_NoDB_Init</span><span class="token punctuation">(</span><span class="token string">"/tmp"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>rv <span class="token operator">!=</span> SECSuccess<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">fprintf</span><span class="token punctuation">(</span><span class="token constant">stderr</span><span class="token punctuation">,</span> <span class="token string">"%s: NSS_Init failed in directory %s\n"</span><span class="token punctuation">,</span>
+                progName<span class="token punctuation">,</span> <span class="token string">"/tmp"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">/* Parse command line arguments */</span>
+    optstate <span class="token operator">=</span> <span class="token function">PL_CreateOptState</span><span class="token punctuation">(</span>argc<span class="token punctuation">,</span> argv<span class="token punctuation">,</span> <span class="token string">"t:"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>status <span class="token operator">=</span> <span class="token function">PL_GetNextOpt</span><span class="token punctuation">(</span>optstate<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> PL_OPT_OK<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">switch</span> <span class="token punctuation">(</span>optstate<span class="token operator">-&gt;</span>option<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">case</span> <span class="token string">'t'</span><span class="token operator">:</span>
+            <span class="token function">REQUIRE_ARG</span><span class="token punctuation">(</span>optstate<span class="token operator">-&gt;</span>option<span class="token punctuation">,</span> optstate<span class="token operator">-&gt;</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            hashName <span class="token operator">=</span> <span class="token function">strdup</span><span class="token punctuation">(</span>optstate<span class="token operator">-&gt;</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>hashName<span class="token punctuation">)</span>
+        <span class="token function">Usage</span><span class="token punctuation">(</span>progName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/* convert and validate */</span>
+    hashOIDTag <span class="token operator">=</span> <span class="token function">HashNameToOIDTag</span><span class="token punctuation">(</span>hashName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>hashOIDTag <span class="token operator">==</span> SEC_OID_UNKNOWN<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">fprintf</span><span class="token punctuation">(</span><span class="token constant">stderr</span><span class="token punctuation">,</span> <span class="token string">"%s: invalid digest type - %s\n"</span><span class="token punctuation">,</span> progName<span class="token punctuation">,</span> hashName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">Usage</span><span class="token punctuation">(</span>progName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">/* Digest it and print the result */</span>
+    rv <span class="token operator">=</span> <span class="token function">DigestFile</span><span class="token punctuation">(</span>PR_STDOUT<span class="token punctuation">,</span> PR_STDIN<span class="token punctuation">,</span> hashOIDTag<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>rv <span class="token operator">!=</span> SECSuccess<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">fprintf</span><span class="token punctuation">(</span><span class="token constant">stderr</span><span class="token punctuation">,</span> <span class="token string">"%s: problem digesting data (%d)\n"</span><span class="token punctuation">,</span>
+                progName<span class="token punctuation">,</span> <span class="token function">PORT_GetError</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    rv <span class="token operator">=</span> <span class="token function">NSS_Shutdown</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>rv <span class="token operator">!=</span> SECSuccess<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">exit</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token operator">&lt;</span><span class="token operator">/</span>sechash<span class="token punctuation">.</span>h<span class="token operator">&gt;</span><span class="token operator">&lt;</span><span class="token operator">/</span>secmodt<span class="token punctuation">.</span>h<span class="token operator">&gt;</span><span class="token operator">&lt;</span><span class="token operator">/</span>secoid<span class="token punctuation">.</span>h<span class="token operator">&gt;</span><span class="token operator">&lt;</span><span class="token operator">/</span>prio<span class="token punctuation">.</span>h<span class="token operator">&gt;</span><span class="token operator">&lt;</span><span class="token operator">/</span>plgetopt<span class="token punctuation">.</span>h<span class="token operator">&gt;</span><span class="token operator">&lt;</span><span class="token operator">/</span>prtypes<span class="token punctuation">.</span>h<span class="token operator">&gt;</span><span class="token operator">&lt;</span><span class="token operator">/</span>prprf<span class="token punctuation">.</span>h<span class="token operator">&gt;</span></code></pre></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/nss_sample_code/nss_sample_code_sample_1_hashing/index.html" title="Folder: en-us/mozilla/projects/nss/nss_sample_code/nss_sample_code_sample_1_hashing (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_Sample_Code%2FNSS_Sample_Code_Sample_1_Hashing%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_sample_code%2Fnss_sample_code_sample_1_hashing%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_Sample_Code%2FNSS_Sample_Code_Sample_1_Hashing%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_sample_code%2Fnss_sample_code_sample_1_hashing%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2F7413715ecf0e0fca4aa5dbf4ff90107ee7061820%0A*+Document+last+modified%3A+2021-01-02T17%3A57%3A21.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22NSS+Sample+Code+Sample_1_Hashing%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2021-01-02T17:57:21.000Z">Jan 2, 2021</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/NSS_Sample_Code/NSS_Sample_Code_Sample_1_Hashing/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

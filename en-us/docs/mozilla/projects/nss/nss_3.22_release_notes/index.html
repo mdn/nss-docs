@@ -1,0 +1,141 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>NSS 3.22 release notes - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>NSS 3.22 release notes</h1><h2 id="introduction"><a href="#introduction" title="Permalink to Introduction">Introduction</a></h2><div><p>The NSS team has released Network Security Services (NSS) 3.22, which is a minor release.</p></div><h2 id="distribution_information"><a href="#distribution_information" title="Permalink to Distribution Information">Distribution Information</a></h2><div><p>The HG tag is NSS_3_22_RTM. NSS 3.22 requires NSPR 4.11 or newer.</p>
+
+<p>NSS 3.22 source distributions are available on ftp.mozilla.org for secure HTTPS download:</p>
+
+<ul>
+ <li>Source tarballs:<br>
+  <a href="https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_22_RTM/src/" class="external" rel=" noopener">https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_22_RTM/src/</a></li>
+</ul></div><h2 id="new_in_nss_3.22"><a href="#new_in_nss_3.22" title="Permalink to New in NSS 3.22">New in NSS 3.22</a></h2><div></div><h3 id="new_functionality"><a href="#new_functionality" title="Permalink to New Functionality">New Functionality</a></h3><div><ul>
+ <li>RSA-PSS signatures are now supported (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1215295" class="external" rel=" noopener">bug 1215295</a>)
+
+  <ul>
+   <li>New functions <code>PK11_SignWithMechanism()</code> and <code>PK11_SignWithMechanism()</code> are provided to allow RSA keys to be used with PSS.</li>
+  </ul>
+ </li>
+ <li>Pseudorandom functions based on hashes other than SHA-1 are now supported with PBKDF (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=554827" class="external" rel=" noopener">bug 554827</a>).
+  <ul>
+   <li><code>PK11_CreatePBEV2AlgorithmID()</code> now supports <code>SEC_OID_PKCS5_PBKDF2</code> with <code>cipherAlgTag</code> and <code>prfAlgTag</code> set to <code>SEC_OID_HMAC_SHA256</code>, <code>SEC_OID_HMAC_SHA224</code>, <code>SEC_OID_HMAC_SHA384</code>, or <code>SEC_OID_HMAC_SHA512</code>.</li>
+  </ul>
+ </li>
+ <li>Enforce an External Policy on NSS from a config file (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1009429" class="external" rel=" noopener">bug 1009429</a>)
+  <ul>
+   <li>you can now add a config= line to pkcs11.txt (assuming you are using sql databases), which will force NSS to restrict the application to certain cryptographic algorithms and protocols. A complete list can be found in <a href="en-US/docs/Mozilla/Projects/NSS/NSS_Config_Options">NSS Config Options</a>.</li>
+  </ul>
+ </li>
+</ul>
+
+<h4 id="new_functions">New Functions</h4>
+
+<ul>
+ <li><em>in pk11pub.h</em>
+
+  <ul>
+   <li><strong>PK11_SignWithMechanism</strong> - This function is an extended version <code>PK11_Sign()</code>.</li>
+   <li><strong>PK11_VerifyWithMechanism</strong> - This function is an extended version of <code>PK11_Verify()</code>.
+    <ul>
+     <li>These functions take an explicit mechanism and parameters as arguments rather than inferring it from the key type using <code>PK11_MapSignKeyType()</code>.&nbsp; The mechanism type CKM_RSA_PKCS_PSS is now supported for RSA in addition to CKM_RSA_PKCS.&nbsp; The CK_RSA_PKCS_PSS mechanism takes a parameter of type CK_RSA_PKCS_PSS_PARAMS.</li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li><em>in ssl.h</em>
+  <ul>
+   <li><strong>SSL_PeerSignedCertTimestamps</strong> - Get signed_certificate_timestamp TLS extension data</li>
+   <li><strong>SSL_SetSignedCertTimestamps</strong> - Set signed_certificate_timestamp TLS extension data</li>
+  </ul>
+ </li>
+</ul>
+
+<h4 id="new_types">New Types</h4>
+
+<ul>
+ <li><em>in secoidt.h</em>
+
+  <ul>
+   <li>The following are added to SECOidTag:
+    <ul>
+     <li>SEC_OID_AES_128_GCM</li>
+     <li>SEC_OID_AES_192_GCM</li>
+     <li>SEC_OID_AES_256_GCM</li>
+     <li>SEC_OID_IDEA_CBC</li>
+     <li>SEC_OID_RC2_40_CBC</li>
+     <li>SEC_OID_DES_40_CBC</li>
+     <li>SEC_OID_RC4_40</li>
+     <li>SEC_OID_RC4_56</li>
+     <li>SEC_OID_NULL_CIPHER</li>
+     <li>SEC_OID_HMAC_MD5</li>
+     <li>SEC_OID_TLS_RSA</li>
+     <li>SEC_OID_TLS_DHE_RSA</li>
+     <li>SEC_OID_TLS_DHE_DSS</li>
+     <li>SEC_OID_TLS_DH_RSA</li>
+     <li>SEC_OID_TLS_DH_DSS</li>
+     <li>SEC_OID_TLS_DH_ANON</li>
+     <li>SEC_OID_TLS_ECDHE_ECDSA</li>
+     <li>SEC_OID_TLS_ECDHE_RSA</li>
+     <li>SEC_OID_TLS_ECDH_ECDSA</li>
+     <li>SEC_OID_TLS_ECDH_RSA</li>
+     <li>SEC_OID_TLS_ECDH_ANON</li>
+     <li>SEC_OID_TLS_RSA_EXPORT</li>
+     <li>SEC_OID_TLS_DHE_RSA_EXPORT</li>
+     <li>SEC_OID_TLS_DHE_DSS_EXPORT</li>
+     <li>SEC_OID_TLS_DH_RSA_EXPORT</li>
+     <li>SEC_OID_TLS_DH_DSS_EXPORT</li>
+     <li>SEC_OID_TLS_DH_ANON_EXPORT</li>
+     <li>SEC_OID_APPLY_SSL_POLICY</li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li>in sslt.h
+  <ul>
+   <li><strong>ssl_signed_cert_timestamp_xtn</strong> is added to <code>SSLExtensionType</code>.</li>
+  </ul>
+ </li>
+</ul>
+
+<h4 id="new_macros">New Macros</h4>
+
+<ul>
+ <li>in nss.h
+  <ul>
+   <li>NSS_RSA_MIN_KEY_SIZE</li>
+   <li>NSS_DH_MIN_KEY_SIZE</li>
+   <li>NSS_DSA_MIN_KEY_SIZE</li>
+   <li>NSS_TLS_VERSION_MIN_POLICY</li>
+   <li>NSS_TLS_VERSION_MAX_POLICY</li>
+   <li>NSS_DTLS_VERSION_MIN_POLICY</li>
+   <li>NSS_DTLS_VERSION_MAX_POLICY</li>
+  </ul>
+ </li>
+ <li><em>in pkcs11t.h</em>
+  <ul>
+   <li><strong>CKP_PKCS5_PBKD2_HMAC_GOSTR3411</strong> - PRF based on HMAC with GOSTR3411 for PBKDF (not supported)</li>
+   <li><strong>CKP_PKCS5_PBKD2_HMAC_SHA224</strong> - PRF based on HMAC with SHA-224 for PBKDF</li>
+   <li><strong>CKP_PKCS5_PBKD2_HMAC_SHA256</strong> - PRF based on HMAC with SHA-256 for PBKDF</li>
+   <li><strong>CKP_PKCS5_PBKD2_HMAC_SHA384</strong> - PRF based on HMAC with SHA-256 for PBKDF</li>
+   <li><strong>CKP_PKCS5_PBKD2_HMAC_SHA512</strong> - PRF based on HMAC with SHA-256 for PBKDF</li>
+   <li><strong>CKP_PKCS5_PBKD2_HMAC_SHA512_224</strong> - PRF based on HMAC with SHA-512 truncated to 224 bits for PBKDF (not supported)</li>
+   <li><strong>CKP_PKCS5_PBKD2_HMAC_SHA512_256 </strong>- PRF based on HMAC with SHA-512 truncated to 256 bits for PBKDF (not supported)</li>
+  </ul>
+ </li>
+ <li><em>in secoidt.h</em>
+  <ul>
+   <li>NSS_USE_ALG_IN_SSL</li>
+   <li>NSS_USE_POLICY_IN_SSL</li>
+  </ul>
+ </li>
+ <li><em>in ssl.h</em>
+  <ul>
+   <li><strong>SSL_ENABLE_SIGNED_CERT_TIMESTAMPS</strong></li>
+  </ul>
+ </li>
+ <li><em>in sslt.h</em>
+  <ul>
+   <li><strong>SSL_MAX_EXTENSIONS</strong> is updated to 13</li>
+  </ul>
+ </li>
+</ul></div><h2 id="notable_changes_in_nss_3.22"><a href="#notable_changes_in_nss_3.22" title="Permalink to Notable Changes in NSS 3.22">Notable Changes in NSS 3.22</a></h2><div><ul>
+ <li>NSS C++ tests are built by default, requiring a C++11 compiler.&nbsp; Set the NSS_DISABLE_GTESTS variable to 1 to disable building these tests.</li>
+</ul></div><h2 id="bugs_fixed_in_nss_3.22"><a href="#bugs_fixed_in_nss_3.22" title="Permalink to Bugs fixed in NSS 3.22">Bugs fixed in NSS 3.22</a></h2><div><p>This Bugzilla query returns all the bugs fixed in NSS 3.22:</p>
+
+<p><a href="https://bugzilla.mozilla.org/buglist.cgi?resolution=FIXED&amp;classification=Components&amp;query_format=advanced&amp;product=NSS&amp;target_milestone=3.22" class="external" rel=" noopener">https://bugzilla.mozilla.org/buglist.cgi?resolution=FIXED&amp;classification=Components&amp;query_format=advanced&amp;product=NSS&amp;target_milestone=3.22</a></p></div><h2 id="compatibility"><a href="#compatibility" title="Permalink to Compatibility">Compatibility</a></h2><div><p>NSS 3.22 shared libraries are backward compatible with all older NSS 3.x shared libraries. A program linked with older NSS 3.x shared libraries will work with NSS 3.22 shared libraries without recompiling or relinking. Furthermore, applications that restrict their use of NSS APIs to the functions listed in NSS Public Functions will remain compatible with future versions of the NSS shared libraries.</p></div><h2 id="feedback"><a href="#feedback" title="Permalink to Feedback">Feedback</a></h2><div><p>Bugs discovered should be reported by filing a bug report with<a href="https://bugzilla.mozilla.org/enter_bug.cgi?product=NSS" class="external" rel=" noopener"> bugzilla.mozilla.org</a> (product NSS).</p></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/nss_3.22_release_notes/index.html" title="Folder: en-us/mozilla/projects/nss/nss_3.22_release_notes (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_3.22_release_notes%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_3.22_release_notes%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_3.22_release_notes%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_3.22_release_notes%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2F7d7b3ff1ba04dbcf036be287d95f3b8820a6fe94%0A*+Document+last+modified%3A+2021-03-15T09%3A52%3A33.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22NSS+3.22+release+notes%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2021-03-15T09:52:33.000Z">Mar 15, 2021</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/NSS_3.22_release_notes/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

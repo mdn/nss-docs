@@ -1,0 +1,33 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>troubleshoot - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>troubleshoot</h1><h2 id="troubleshooting_nss_and_jss_builds"><a href="#troubleshooting_nss_and_jss_builds" title="Permalink to Troubleshooting NSS and JSS Builds">Troubleshooting NSS and JSS Builds</a></h2><div><p>Newsgroup: <a href="nntp://news.mozilla.org/mozilla.dev.tech.crypto">mozilla.dev.tech.crypto</a></p>
+<p>This page summarizes information on troubleshooting the NSS and JSS build and test systems, including known problems and configuration suggestions.</p>
+<p>If you have suggestions for this page, please post them to <a href="nntp://news.mozilla.org/mozilla.dev.tech.crypto">mozilla.dev.tech.crypto</a>.</p></div><h3 id="building_nss"><a href="#building_nss" title="Permalink to Building NSS">Building NSS</a></h3><div><ul>
+ <li>Having /usr/ucb/bin in the path before /usr/ccs/bin breaks the build on 64-bit Solaris.</li>
+ <li>The Solaris compiler needs to be workshop-5.0 or greater.</li>
+ <li>The 64-bit builds don't support gcc.</li>
+ <li>If the build fails early on the gmakein coreconf try updating your cvs tree with -P:<br>
+  <br>
+  cd mozilla<br>
+  cvs update -P</li>
+ <li>Building a 32-bit version on a 64-bit may fail with:
+  <pre class="notranslate">/usr/include/features.h:324:26: fatal error: bits/predefs.h: No such file or directory
+
+</pre>
+  <p>In this case remember to set USE_64=1</p>
+ </li>
+</ul></div><h3 id="testing_nss"><a href="#testing_nss" title="Permalink to Testing NSS">Testing NSS</a></h3><div><p>The SSL stress test opens 2,048 TCP connections in quick succession. Kernel data structures may remain allocated for these connections for up to two minutes. Some systems may not be configured to allow this many simultaneous connections by default; if the stress tests fail, try increasing the number of simultaneous sockets supported.</p></div><h3 id="building_jss"><a href="#building_jss" title="Permalink to Building JSS">Building JSS</a></h3><div><ul>
+ <li><b>Windows Only:</b> The shell invoked by gmake, <code>shmsdos.exe</code>, is likely to crash when invoking some Java tools on Windows. The current workaround is to use some other shell in place of <code>shmsdos</code>, such as <code>sh.exe</code>, which should be distributed with the <a href="http://sourceware.cygnus.com/cygwin/download.html" class="external" rel=" noopener">Cygnus toolkit</a> you installed to build NSS. The change is unfortunately rather drastic: to trick gmake, you rename the shell program.
+  <blockquote>
+   cd c:/Programs/cygnus/bin
+   <i>
+    (or wherever your GNU tools are installed)</i>
+   <br>
+   cp shmsdos.exe shmsdos.bak
+   <i>
+    (backup shmsdos)</i>
+   <br>
+   cp sh.exe shmsdos.exe
+   <i>
+    (substitute alternative shell)</i>
+  </blockquote>
+  Making this change will probably break other builds you are&nbsp; making on the same machine. You may need to switch the shell back and forthdepending on which product you are building. We will try to provide a moreconvenient solution in the future. If you have the MKS toolkit installed,&nbsp; the &lt;tt&gt;sh.exe&lt;/tt&gt; that comes with this toolkit can be used as well.</li>
+</ul></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/reference/troubleshoot/index.html" title="Folder: en-us/mozilla/projects/nss/reference/troubleshoot (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FReference%2Ftroubleshoot%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Freference%2Ftroubleshoot%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FReference%2Ftroubleshoot%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Freference%2Ftroubleshoot%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2F6fbce8adc620b166c37e504ce4fd3a05c5e05347%0A*+Document+last+modified%3A+2021-01-06T08%3A29%3A51.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22troubleshoot%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2021-01-06T08:29:51.000Z">Jan 6, 2021</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/Reference/troubleshoot/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

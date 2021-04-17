@@ -1,0 +1,131 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>JSS - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>JSS</h1><h2 id="documentation"><a href="#documentation" title="Permalink to Documentation">Documentation</a></h2><div><div class="warning notecard">
+<p><strong>The JSS project has been relocated!</strong></p>
+
+<p>As of April 6, 2018, JSS has been migrated from Mercurial on Mozilla to Git on Github.</p>
+
+<p>JSS source should now be checked out from the Github:</p>
+
+<ul>
+ <li>git clone git@github.com:dogtagpki/jss.git<br>
+  -- OR --</li>
+ <li>git clone <a href="https://github.com/dogtagpki/jss.git" class="external" rel=" noopener">https://github.com/dogtagpki/jss.git</a></li>
+</ul>
+
+<p>All future upstream enquiries to JSS should now use the Pagure Issue Tracker system:</p>
+
+<ul>
+ <li><a href="https://pagure.io/jss/issues" class="external" rel=" noopener">https://pagure.io/jss/issues</a></li>
+</ul>
+
+<p>Documentation regarding the JSS project should now be viewed at:</p>
+
+<ul>
+ <li><a href="http://www.dogtagpki.org/wiki/JSS" class="external" rel=" noopener">http://www.dogtagpki.org/wiki/JSS</a></li>
+</ul>
+
+<p><em><strong>NOTE:&nbsp; As much of the JSS documentation is sorely out-of-date, updated information will be a work in progress, and many portions of any legacy documentation will be re-written over the course of time.&nbsp; Stay tuned! </strong></em></p>
+
+<p>Legacy JSS information can still be found at:</p>
+
+<ul>
+ <li>SOURCE: <a class="moz-txt-link-freetext external" href="https://hg.mozilla.org/projects/jss" rel=" noopener">https://hg.mozilla.org/projects/jss</a></li>
+ <li>ISSUES:&nbsp;&nbsp; <a href="https://bugzilla.mozilla.org/buglist.cgi?product=JSS" class="external" rel=" noopener">https://bugzilla.mozilla.org/buglist.cgi?product=JSS</a></li>
+ <li>WIKI:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; <a class="moz-txt-link-freetext" href="/en-US/docs/Mozilla/Projects/NSS/JSS">https://developer.mozilla.org/en-US/docs/Mozilla/Projects/NSS/JSS</a></li>
+</ul>
+</div>
+
+<p>Network Security Services for Java (JSS) is a Java interface to <a href="/en-US/docs/NSS" data-flaw="link1">NSS</a>. JSS supports most of the security standards and encryption technologies supported by <a href="/en-US/docs/Mozilla/Projects/NSS/Reference">NSS</a>. JSS also provides a pure Java interface for ASN.1 types and BER/DER encoding.</p>
+
+<p>JSS offers a implementation of Java SSL sockets that uses NSS's SSL/TLS implementation rather than Sun's JSSE implementation. You might want to use JSS's own <a href="ftp://ftp.mozilla.org/pub/mozilla.org/security/jss/releases">SSL classes</a> if you want to use some of the capabilities found in NSS's SSL/TLS library but not found in JSSE.</p>
+
+<p>NSS is the cryptographic module where all cryptographic operations are performed. JSS essentially provides a Java JNI bridge to NSS C shared libraries. When NSS is put in FIPS mode, JSS ensures FIPS compliance by ensuring that all cryptographic operations are performed by the NSS cryptographic module.</p>
+
+<p>JSS offers a JCE provider, <a href="JSS/JSS_Provider_Notes">"Mozilla-JSS" JCA Provider notes</a>.</p>
+
+<p>JSS, jss4.jar, is still built with JDK 1.4.2. While JDK 1.4.2 is EOL'd and all new product development should be using the latest <a href="http://java.sun.com/javase/downloads/index.jsp" class="external" rel=" noopener">JavaSE</a>, legacy business products that must use JDK 1.4 or 1.5 can continue to add NSS/JSS security fixes/enhancements.</p>
+
+<p>JSS is used by Red Hat and Sun products that do crypto in Java. JSS is available under the Mozilla Public License, the GNU General Public License, and the GNU Lesser General Public License. JSS requires <a href="/en-US/docs/NSPR" data-flaw="link2">NSPR</a> and <a href="/en-US/docs/NSS" data-flaw="link3">NSS</a>.</p>
+
+<p>Java provides a JCE provider called SunPKCS11 (see <a href="http://download.java.net/jdk7/docs/technotes/guides/security/p11guide.html" class="external" rel=" noopener">Java PKCS#11 Reference Guide</a>.) SunPKCS11 can be configured to use the NSS module as the crytographic provider. If you are planning to just use JSS JCE provider as a bridge to NSS's FIPS validated PKCS#11 module, then the SunPKCS11 JCE provider may do all that you need. Note that Java 1.5 claimed no FIPS compliance, and <a href="http://java.sun.com/javase/6/docs/technotes/guides/security/enhancements.html" class="external" rel=" noopener">Java 1.6</a> or higher needs to be used. A current limitation to the configured SunPKCS11-NSS bridge configuration is if you add a PKCS#11 module to the NSS database such as for a smartcard, you won't be able to access that smartcard through the SunPKCS11-NSS bridge. If you use JSS, you can easily get lists of modules and tokens that are configured in the NSS DB and freely access all of it.</p>
+
+<table class="topicpage-table">
+ <tbody>
+  <tr>
+   <td>
+    
+
+    <p>Before you use JSS, you should have a good understanding of the crypto technologies it uses. You might want to read these documents:</p>
+
+    <ul>
+     <li><a href="/en-US/docs/Introduction_to_Public-Key_Cryptography" data-flaw="link4">Introduction to Public-Key Cryptography</a>. Explains the basic concepts of public-key cryptography that underlie NSS and JSS.</li>
+     <li><a href="/en-US/docs/Introduction_to_SSL" data-flaw="link5">Introduction to SSL</a>. Introduces the SSL protocol, including information about cryptographic ciphers supported by SSL and the steps involved in the SSL handshake.</li>
+    </ul>
+
+    <p>For information on downloading NSS releases, see&nbsp;<a href="NSS_Sources_Building_Testing">NSS sources building testing</a><a href="NSS_Sources_Building_Testing">.</a></p>
+
+    <p>Read <a href="JSS/Using_JSS">Using JSS</a> to get you started with development after you've built and downloaded it.</p>
+
+    <h3 id="Release_Notes">Release Notes</h3>
+
+    <ul>
+     <li><a href="/4.3.1_Release_Notes" title="4.3.1 Release Notes" data-flaw="link6">4.3.1 Release Notes</a></li>
+     <li><a href="/en-US/docs/JSS/4_3_ReleaseNotes" title="JSS/4 3 ReleaseNotes" data-flaw="link7">4.3 Release Notes</a></li>
+     <li><a href="http://www-archive.mozilla.org/projects/security/pki/jss/index.html" class="external" rel=" noopener">Older Release Notes</a></li>
+    </ul>
+
+    <h3 id="Build_Instructions">Build Instructions</h3>
+
+    <ul>
+     <li><a href="/en-US/docs/Mozilla/Projects/NSS/JSS/Build_instructions_for_JSS_4.4.x#build_instructions_for_jss_4.4.x">Building JSS 4.4.x</a></li>
+     <li><a href="/en-US/docs/JSS/Build_instructions_for_JSS_4.3.x" data-flaw="link8">Building JSS 4.3.x</a></li>
+     <li><a href="http://www-archive.mozilla.org/projects/security/pki/jss/index.html" class="external" rel=" noopener">Older Build Instructions</a></li>
+    </ul>
+
+    <h3 id="Download_or_View_Source">Download or View Source</h3>
+
+    <ul>
+     <li><a href="ftp://ftp.mozilla.org/pub/mozilla.org/security/jss/releases/">Download binaries, source, and javadoc</a></li>
+     <li><a href="http://mxr.mozilla.org/mozilla/source/security/jss/" class="external" rel=" noopener">View the source online</a></li>
+    </ul>
+
+    <h3 id="Testing">Testing</h3>
+
+    <ul>
+     <li><a href="https://hg.mozilla.org/projects/jss/file/tip/README" class="external" rel=" noopener">JSS tests</a></li>
+    </ul>
+
+    <h3 id="Frequently_Asked_Questions">Frequently Asked Questions</h3>
+
+    <ul>
+     <li><a href="JSS/JSS_FAQ">JSS FAQ</a></li>
+    </ul>
+
+    <p>Information on JSS planning can be found at <a href="http://wiki.mozilla.org/NSS" class="external" rel=" noopener">wiki.mozilla.org</a>, including:</p>
+
+    <ul>
+     <li><a href="http://wiki.mozilla.org/FIPS_Validation" class="external" rel=" noopener">NSS FIPS Validation</a></li>
+     <li><a href="http://wiki.mozilla.org/NSS:Roadmap" class="external" rel=" noopener">NSS Roadmap page</a></li>
+    </ul>
+   </td>
+   <td>
+    <h2 id="Community">Community</h2>
+
+    <ul>
+     <li>View Mozilla Cryptography forums...<ul>
+  <li><a href="https://lists.mozilla.org/listinfo/dev-tech-crypto" class="external" rel=" noopener">Mailing list</a></li>
+  
+  
+  <li><a href="http://groups.google.com/group/mozilla.dev.tech.crypto" class="external" rel=" noopener">Newsgroup</a></li>
+  <li><a href="http://groups.google.com/group/mozilla.dev.tech.crypto/feeds" class="external" rel=" noopener">RSS feed</a></li>
+</ul></li>
+    </ul>
+
+    <h2 id="Related_Topics">Related Topics</h2>
+
+    <ul>
+     <li><a href="/en-US/docs/Security" data-flaw="link9">Security</a></li>
+    </ul>
+   </td>
+  </tr>
+ </tbody>
+</table></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/jss/index.html" title="Folder: en-us/mozilla/projects/nss/jss (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FJSS%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Fjss%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FJSS%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Fjss%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2Fcec9e8ed306805d484e197fdc153f7305d69ce83%0A*+Document+last+modified%3A+2021-03-09T20%3A34%3A57.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22JSS%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2021-03-09T20:34:57.000Z">Mar 9, 2021</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/JSS/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

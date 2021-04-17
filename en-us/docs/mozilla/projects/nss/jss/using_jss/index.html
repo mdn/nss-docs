@@ -1,0 +1,166 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Using JSS - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>Using JSS</h1><h2 id="using_jss"><a href="#using_jss" title="Permalink to Using JSS">Using JSS</a></h2><div><p><em>Newsgroup: <a href="news://news.mozilla.org:119/mozilla.dev.tech.crypto">mozilla.dev.tech.crypto</a></em></p>
+
+<p>If you have already <a href="/en-US/docs/JSS/Build_instructions_for_JSS_4.3.x" data-flaw="link1">built JSS</a>, or if you are planning to use a binary release of JSS, here's how to get JSS working with your code.</p>
+
+<p><a href="#components">Gather Components</a><br>
+ <a href="#runtime">Setup your runtime environment</a><br>
+ <a href="#init">Initialize JSS in your application</a></p></div><h3 id="gather_components"><a href="#gather_components" title="Permalink to Gather components">Gather components</a></h3><div><ol>
+ <li>You need the JSS classes and the NSPR, NSS, and JSS shared libraries.
+ </li>
+ <li><strong>NSPR and NSS Shared Libraries</strong>
+  <p>JSS uses the NSPR and NSS libraries for I/O and crypto. JSS version 3.0 linked statically with NSS, so it only required NSPR. JSS versions 3.1 and later link dynamically with NSS, so they also require the NSS shared libraries.</p>
+
+  <p>The exact library names vary according to the convention for each platform. For example, the NSPR library is called <code>nspr4.dll</code> or <code>libnspr4.dll</code> on Windows and <code>libnspr4.so</code> on Solaris. The following table gives the core names of the libraries, omitting the platform-specific prefix and suffix.</p>
+
+  <table>
+   <tbody>
+    <tr>
+     <th colspan="3">JSS Dependencies</th>
+    </tr>
+    <tr>
+     <th>Core Library Name</th>
+     <th>Description</th>
+     <th>Binary Release Location</th>
+    </tr>
+    <tr>
+     <td>nspr4</td>
+     <td>NSPR OS abstraction layer</td>
+     <td rowspan="3"><a href="http://ftp.mozilla.org/pub/mozilla.org/nspr/releases/" class="external" rel=" noopener">http://ftp.mozilla.org/pub/mozilla.org/nspr/releases</a></td>
+    </tr>
+    <tr>
+     <td>plc4</td>
+     <td>NSPR standard C library replacement functions</td>
+    </tr>
+    <tr>
+     <td>plds4</td>
+     <td>NSPR data structure types</td>
+    </tr>
+    <tr>
+     <td>nss3</td>
+     <td>NSS crypto, PKCS #11, and utilities</td>
+     <td rowspan="7"><a href="http://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/" class="external" rel=" noopener">http://ftp.mozilla.org/pub/mozilla.org/security/nss/releases</a></td>
+    </tr>
+    <tr>
+     <td>ssl3</td>
+     <td>NSS SSL library</td>
+    </tr>
+    <tr>
+     <td>smime3</td>
+     <td>NSS S/MIME functions and types</td>
+    </tr>
+    <tr>
+     <td>nssckbi</td>
+     <td>PKCS #11 module containing built-in root CA certificates. Optional.</td>
+    </tr>
+    <tr>
+     <td>freebl_*</td>
+     <td>Processor-specific optimized big-number arithmetic library. Not present on all platforms. <a href="/en-US/docs/Mozilla/Projects/NSS/Introduction_to_Network_Security_Services">More information...</a></td>
+    </tr>
+    <tr>
+     <td>fort</td>
+     <td>FORTEZZA support. Optional</td>
+    </tr>
+    <tr>
+     <td>swft</td>
+     <td>PKCS #11 module implementing FORTEZZA in software. Optional.</td>
+    </tr>
+   </tbody>
+  </table>
+
+  <p>If you built JSS from source, you have these libraries in the <code>mozilla/dist/&lt;platform&gt;/lib</code> directory of your build tree. If you are downloading binaries, get them from the binary release locations in the above table. You need to select the right version of the components, based on the version of JSS you are using. Generally, it is safe to use a later version of a component than what JSS was tested with. For example, although JSS 4.2 was tested with NSS 3.11.</p>
+
+  <table>
+   <tbody>
+    <tr>
+     <th colspan="3">Component Versions</th>
+    </tr>
+    <tr>
+     <th>JSS Version</th>
+     <th>Component</th>
+     <th>Tested Version</th>
+    </tr>
+    <tr>
+     <td rowspan="2">JSS 4.2</td>
+     <td>NSPR</td>
+     <td>4.6.4</td>
+    </tr>
+    <tr>
+     <td>NSS</td>
+     <td>3.11.4</td>
+    </tr>
+    <tr>
+     <td rowspan="2">JSS 3.4</td>
+     <td>NSPR</td>
+     <td>4.2.2</td>
+    </tr>
+    <tr>
+     <td>NSS</td>
+     <td>3.7.3</td>
+    </tr>
+    <tr>
+     <td rowspan="2">JSS 3.3</td>
+     <td>NSPR</td>
+     <td>4.2.2</td>
+    </tr>
+    <tr>
+     <td>NSS</td>
+     <td>3.6.1 or 3.7</td>
+    </tr>
+    <tr>
+     <td rowspan="2">JSS 3.2</td>
+     <td>NSPR</td>
+     <td>4.2 or 4.1.2</td>
+    </tr>
+    <tr>
+     <td>NSS</td>
+     <td>3.4.2</td>
+    </tr>
+    <tr>
+     <td rowspan="2">JSS 3.1.1</td>
+     <td>NSPR</td>
+     <td>4.1.2</td>
+    </tr>
+    <tr>
+     <td>NSS</td>
+     <td>3.3.1</td>
+    </tr>
+    <tr>
+     <td rowspan="2">JSS 3.1</td>
+     <td>NSPR</td>
+     <td>4.1.2</td>
+    </tr>
+    <tr>
+     <td>NSS</td>
+     <td>3.3</td>
+    </tr>
+    <tr>
+     <td>JSS 3.0</td>
+     <td>NSPR</td>
+     <td>3.5.1</td>
+    </tr>
+   </tbody>
+  </table>
+ </li>
+ <li><strong>JSS Shared Library</strong>
+  <p>The JSS shared library is <code>jss4.dll</code> (Windows) or <code>libjss4.so</code> (Unix). If you built JSS from source, it is in <code>mozilla/dist/&lt;platform&gt;/lib</code>. If you are downloading binaries, get it from <a href="http://ftp.mozilla.org/pub/mozilla.org/security/jss/releases/" class="external" rel=" noopener"> http://ftp.mozilla.org/pub/mozilla.org/security/jss/releases/</a>.</p>
+ </li>
+ <li><strong>JSS classes</strong>
+  <p>If you built JSS from source, the compiled JSS classes are in <code>mozilla/dist/classes[_dbg]</code>. You can put this directory in your classpath to run applications locally; or, you can package the class files into a JAR file for easier distribution:</p>
+
+  <blockquote>
+  <pre class="notranslate">cd mozilla/dist/classes[_dbg]
+zip -r ../jss42.jar .
+</pre>
+  </blockquote>
+
+  <p>If you are downloading binaries, get jss42.jar from&nbsp;<a href="http://ftp.mozilla.org/pub/mozilla.org/security/jss/releases/" class="external" rel=" noopener">http://ftp.mozilla.org/pub/mozilla.org/security/jss/releases/</a>.</p>
+ </li>
+</ol></div><h3 id="setup_your_runtime_environment"><a href="#setup_your_runtime_environment" title="Permalink to Setup your runtime environment">Setup your runtime environment</a></h3><div><p>You need to set some environment variables before building and running Java applications with JSS.</p>
+
+<dl>
+  <dt><code>CLASSPATH</code></dt>
+  <dd>Include the path containing the JSS classes you built, or the path to <code>jss42.jar</code>. (The path to <code>jss34.jar</code> ends with the string "/jss42.jar". It is not just the directory that contains <code>jss42.jar</code>.)
+  </dd>
+  <dt><code>LD_LIBRARY_PATH</code> (Unix) / <code>PATH</code> (Windows)</dt>
+  <dd>Include the path to the NSPR, NSS, and JSS shared libraries.</dd>
+</dl></div><h3 id="initialize_jss_in_your_application"><a href="#initialize_jss_in_your_application" title="Permalink to Initialize JSS in your application">Initialize JSS in your application</a></h3><div><p>Before calling any JSS methods, you must initialize JSS by calling one of the <code>CryptoManager.initialize</code> methods. See the <a href="javadoc">javadoc</a> for more details.</p></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/jss/using_jss/index.html" title="Folder: en-us/mozilla/projects/nss/jss/using_jss (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FJSS%2FUsing_JSS%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Fjss%2Fusing_jss%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FJSS%2FUsing_JSS%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Fjss%2Fusing_jss%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2Ffc36604b19a172f3fbedb2629e2403180f2eda55%0A*+Document+last+modified%3A+2021-03-19T23%3A16%3A59.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22Using+JSS%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2021-03-19T23:16:59.000Z">Mar 19, 2021</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/JSS/Using_JSS/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

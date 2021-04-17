@@ -1,0 +1,68 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>NSS 3.52 release notes - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>NSS 3.52 release notes</h1><h2 id="introduction"><a href="#introduction" title="Permalink to Introduction">Introduction</a></h2><div><p>The NSS team has released Network Security Services (NSS) 3.52 on <strong>1 May 2020</strong>.</p>
+
+<p>The NSS team would like to recognize first-time contributors:</p>
+
+<ul>
+ <li><cite>zhujianwei7</cite> </li>
+ <li><cite>Hans Petter Jansson</cite></li>
+</ul></div><h2 id="distribution_information"><a href="#distribution_information" title="Permalink to Distribution Information">Distribution Information</a></h2><div><p>The HG tag is NSS_3_52_RTM. NSS 3.52 requires NSPR 4.25 or newer.</p>
+
+<p>NSS 3.52 source distributions are available on ftp.mozilla.org for secure HTTPS download:</p>
+
+<ul>
+ <li>Source tarballs:<br>
+  <a href="https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_52_RTM/src/" class="external" rel=" noopener">https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_52_RTM/src/</a></li>
+</ul>
+
+<p>Other releases are available <a href="/en-US/docs/Mozilla/Projects/NSS/NSS_Releases">in NSS Releases</a>.</p></div><h2 id="notable_changes_in_nss_3.52"><a href="#notable_changes_in_nss_3.52" title="Permalink to Notable Changes in NSS 3.52">Notable Changes in NSS 3.52</a></h2><div><ul>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1603628" class="external" rel=" noopener">Bug 1603628</a> - Update NSS to support PKCS #11 v3.0.
+
+  <ul>
+   <li>Note: This change modifies the CK_GCM_PARAMS struct to include the ulIvBits field which, prior to PKCS #11 v3.0, was ambiguously defined and not included in the NSS definition. If an application is recompiled with NSS 3.52+, this field must be initialized to a value corresponding to ulIvLen. Alternatively, defining NSS_PKCS11_2_0_COMPAT will yield the old definition. See the bug for more information.</li>
+  </ul>
+ </li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1623374" class="external" rel=" noopener">Bug 1623374</a> - Support new PKCS #11 v3.0 Message Interface for AES-GCM and ChaChaPoly.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1612493" class="external" rel=" noopener">Bug 1612493</a> - Integrate AVX2 ChaCha20, Poly1305, and ChaCha20Poly1305 from HACL*.</li>
+</ul></div><h2 id="bugs_fixed_in_nss_3.52"><a href="#bugs_fixed_in_nss_3.52" title="Permalink to Bugs fixed in NSS 3.52">Bugs fixed in NSS 3.52</a></h2><div><ul>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1633498" class="external" rel=" noopener">Bug 1633498</a> - Fix unused variable 'getauxval' error on iOS compilation.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1630721" class="external" rel=" noopener">Bug 1630721</a> - Add Softoken functions for FIPS.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1630458" class="external" rel=" noopener">Bug 1630458 </a>- Fix problem of GYP MSVC builds not producing debug symbol files.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1629663" class="external" rel=" noopener">Bug 1629663</a> - Add IKEv1 Quick Mode KDF.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1629661" class="external" rel=" noopener">Bug 1629661 </a>- MPConfig calls in SSL initialize policy before NSS is initialized.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1629655" class="external" rel=" noopener">Bug 1629655</a> - Support temporary session objects in ckfw.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1629105" class="external" rel=" noopener">Bug 1629105</a> - Add PKCS11 v3.0 functions to module debug logger.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1626751" class="external" rel=" noopener">Bug 1626751</a> - Fix error in generation of fuzz32 docker image after updates.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1625133" class="external" rel=" noopener">Bug 1625133</a> - Fix implicit declaration of function 'getopt' error.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1624864" class="external" rel=" noopener">Bug 1624864</a> - Allow building of gcm-arm32-neon on non-armv7 architectures.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1624402" class="external" rel=" noopener">Bug 1624402 </a>- Fix compilation error in Firefox Android.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1624130" class="external" rel=" noopener">Bug 1624130 </a>- Require CK_FUNCTION_LIST structs to be packed.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1624377" class="external" rel=" noopener">Bug 1624377</a> - Fix clang warning for unknown argument '-msse4'.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1623374" class="external" rel=" noopener">Bug 1623374</a> - Support new PKCS #11 v3.0 Message Interface for AES-GCM and ChaChaPoly.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1623184" class="external" rel=" noopener">Bug 1623184</a> - Fix freebl_cpuid for querying Extended Features.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1622555" class="external" rel=" noopener">Bug 1622555</a> - Fix argument parsing in lowhashtest.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1620799" class="external" rel=" noopener">Bug 1620799</a> - Introduce NSS_DISABLE_GCM_ARM32_NEON to build on arm32 without NEON support.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1619102" class="external" rel=" noopener">Bug 1619102</a> - Add workaround option to include both DTLS and TLS versions in DTLS supported_versions.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1619056" class="external" rel=" noopener">Bug 1619056</a> - Update README: TLS 1.3 is not experimental anymore.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1618915" class="external" rel=" noopener">Bug 1618915</a> - Fix UBSAN issue in ssl_ParseSessionTicket.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1618739" class="external" rel=" noopener">Bug 1618739</a> - Don't assert fuzzer behavior in SSL_ParseSessionTicket.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1617968" class="external" rel=" noopener">Bug 1617968</a> - Update Delegated Credentials implementation to draft-07.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1617533" class="external" rel=" noopener">Bug 1617533</a> - Update HACL* dependencies for libintvector.h</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1613238" class="external" rel=" noopener">Bug 1613238</a> - Add vector accelerated SHA2 for POWER 8+.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1612493" class="external" rel=" noopener">Bug 1612493</a> - Integrate AVX2 ChaCha20, Poly1305, and ChaCha20Poly1305 from HACL*.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1612281" class="external" rel=" noopener">Bug 1612281</a> - Maintain PKCS11 C_GetAttributeValue semantics on attributes that lack NSS database columns.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1612260" class="external" rel=" noopener">Bug 1612260</a> - Add Wycheproof RSA test vectors.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1608250" class="external" rel=" noopener">Bug 1608250</a> - broken fipstest handling of KI_len.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1608245" class="external" rel=" noopener">Bug 1608245</a> - Consistently handle NULL slot/session.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1603801" class="external" rel=" noopener">Bug 1603801</a> - Avoid dcache pollution from sdb_measureAccess().</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1603628" class="external" rel=" noopener">Bug 1603628</a> - Update NSS to support PKCS #11 v3.0.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1561637" class="external" rel=" noopener">Bug 1561637</a> - TLS 1.3 does not work in FIPS mode.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1531906" class="external" rel=" noopener">Bug 1531906</a> - Fix overzealous assertion when evicting a cached sessionID or using external cache.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1465613" class="external" rel=" noopener">Bug 1465613</a> - Fix issue where testlib makefile build produced extraneous object files.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1619959" class="external" rel=" noopener">Bug 1619959</a> - Properly handle multi-block SEED ECB inputs.</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1630925" class="external" rel=" noopener">Bug 1630925</a> - Guard all instances of NSSCMSSignedData.signerInfo to avoid a CMS crash</li>
+ <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1571677" class="external" rel=" noopener">Bug 1571677</a> - Name Constraints validation: CN treated as DNS name even when syntactically invalid as DNS name</li>
+</ul>
+
+<p>This Bugzilla query returns all the bugs fixed in NSS 3.52:</p>
+
+<p><a class="external" href="https://bugzilla.mozilla.org/buglist.cgi?resolution=FIXED&amp;classification=Components&amp;query_format=advanced&amp;product=NSS&amp;target_milestone=3.52" rel="noopener">https://bugzilla.mozilla.org/buglist.cgi?resolution=FIXED&amp;classification=Components&amp;query_format=advanced&amp;product=NSS&amp;target_milestone=3.52</a></p></div><h2 id="compatibility"><a href="#compatibility" title="Permalink to Compatibility">Compatibility</a></h2><div><p>NSS 3.52 shared libraries are backward compatible with all older NSS 3.x shared libraries. A program linked with older NSS 3.x shared libraries will work with NSS 3.52 shared libraries without recompiling or relinking. Furthermore, applications that restrict their use of NSS APIs to the functions listed in NSS Public Functions will remain compatible with future versions of the NSS shared libraries.</p></div><h2 id="feedback"><a href="#feedback" title="Permalink to Feedback">Feedback</a></h2><div><p>Bugs discovered should be reported by filing a bug report with<a href="https://bugzilla.mozilla.org/enter_bug.cgi?product=NSS" class="external" rel=" noopener"> bugzilla.mozilla.org</a> (product NSS).</p></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/nss_3.52_release_notes/index.html" title="Folder: en-us/mozilla/projects/nss/nss_3.52_release_notes (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_3.52_release_notes%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_3.52_release_notes%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_3.52_release_notes%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_3.52_release_notes%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2F78b274bd51286dd74dd34b8ccc0f02cc0bf9c116%0A*+Document+last+modified%3A+2021-01-05T07%3A42%3A29.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22NSS+3.52+release+notes%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2021-01-05T07:42:29.000Z">Jan 4, 2021</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/NSS_3.52_release_notes/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

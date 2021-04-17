@@ -1,0 +1,58 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>NSS 3.16.2 release notes - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>NSS 3.16.2 release notes</h1><h2 id="introduction"><a href="#introduction" title="Permalink to Introduction">Introduction</a></h2><div><p>Network Security Services (NSS) 3.16.2 is a patch release for NSS 3.16. The bug fixes in NSS 3.16.2 are described in the "Bugs Fixed" section below.</p></div><h2 id="distribution_information"><a href="#distribution_information" title="Permalink to Distribution Information">Distribution Information</a></h2><div><p>The HG tag is NSS_3_16_2_RTM. NSS 3.16.2 requires NSPR 4.10.6 or newer.</p>
+<p>NSS 3.16.2 source distributions are available on ftp.mozilla.org for secure HTTPS download:</p>
+<ul>
+ <li>Source tarballs:<br>
+  <a href="https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_16_2_RTM/src/" class="external" rel=" noopener">https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_16_2_RTM/src/</a></li>
+</ul></div><h2 id="new_in_nss_3.16.2"><a href="#new_in_nss_3.16.2" title="Permalink to New in NSS 3.16.2">New in NSS 3.16.2</a></h2><div></div><h3 id="new_functionality"><a href="#new_functionality" title="Permalink to New Functionality">New Functionality</a></h3><div><ul>
+ <li>DTLS 1.2 is supported.</li>
+ <li>The TLS application layer protocol negotiation (ALPN) extension is also supported on the server side.</li>
+ <li>RSA-OEAP is supported. Use the new PK11_PrivDecrypt and PK11_PubEncrypt functions with the CKM_RSA_PKCS_OAEP mechanism.</li>
+ <li>New Intel AES assembly code for 32-bit and 64-bit Windows, contributed by Shay Gueron and Vlad Krasnov of Intel.</li>
+</ul>
+<h4 id="new_functions">New Functions</h4>
+<ul>
+ <li><em>in cert.h</em>
+  <ul>
+   <li><b>CERT_AddExtensionByOID</b>&nbsp;- adds an extension to a certificate. It is the same as CERT_AddExtension except that the OID is represented by a SECItem instead of a SECOidTag.</li>
+  </ul>
+ </li>
+ <li><em>in pk11pub.h</em>
+  <ul>
+   <li><b>PK11_PrivDecrypt</b>&nbsp;- decrypts with a private key. The algorithm is specified with a CK_MECHANISM_TYPE.</li>
+   <li><b>PK11_PubEncrypt</b>&nbsp;- encrypts with a public key. The algorithm is specified with a CK_MECHANISM_TYPE.</li>
+  </ul>
+ </li>
+</ul>
+<h4 id="new_macros">New Macros</h4>
+<ul>
+ <li><em>in sslerr.h</em>
+  <ul>
+   <li><b>SSL_ERROR_NEXT_PROTOCOL_NO_CALLBACK</b>&nbsp;- An SSL error code that means the next protcol negotiation extension was enabled, but the callback was cleared prior to being needed.</li>
+   <li><b>SSL_ERROR_NEXT_PROTOCOL_NO_PROTOCOL</b>&nbsp;- An SSL error code that means the server supports no protocols that the client advertises in the ALPN extension.</li>
+  </ul>
+ </li>
+</ul></div><h2 id="notable_changes_in_nss_3.16.2"><a href="#notable_changes_in_nss_3.16.2" title="Permalink to Notable Changes in NSS 3.16.2">Notable Changes in NSS 3.16.2</a></h2><div><ul>
+ <li>The btoa command has a new command-line option -w <em>suffix</em>, which causes the output to be wrapped in BEGIN/END lines with the given suffix. Use "c" as a shorthand for the suffix CERTIFICATE.</li>
+ <li>The certutil commands supports additionals types of subject alt name extensions:
+  <ul>
+   <li>--extSAN <em>type:name[,type:name]...</em></li>
+  </ul>
+ </li>
+ <li>The certutil commands supports generic certificate extensions, by loading binary data from files, which have been prepared using external tools, or which have been extracted and dumped to file from other existing certificates:
+  <ul>
+   <li>--dump-ext-val <em>OID</em></li>
+   <li>--extGeneric <em>OID:critical-flag:filename[,OID:critical-flag:filename]...</em></li>
+  </ul>
+ </li>
+ <li>The certutil command has three new certificate usage specifiers:
+  <ul>
+   <li>L:&nbsp;&nbsp;certificateUsageSSLCA</li>
+   <li>A:&nbsp;certificateUsageAnyCA</li>
+   <li>Y:&nbsp;certificateUsageVerifyCA</li>
+  </ul>
+ </li>
+ <li>The pp command has a new command-line option -u, which means "use UTF-8". The default is to show a non-ASCII character as ".".</li>
+ <li>On Linux, NSS is built with the -ffunction-sections -fdata-sections&nbsp;compiler flags and the --gc-sections&nbsp;linker flag to allow unused functions to be discarded.</li>
+</ul></div><h2 id="bugs_fixed_in_nss_3.16.2"><a href="#bugs_fixed_in_nss_3.16.2" title="Permalink to Bugs fixed in NSS 3.16.2">Bugs fixed in NSS 3.16.2</a></h2><div><p>This Bugzilla query returns all the bugs fixed in NSS 3.16.2:</p>
+<p><a href="https://bugzilla.mozilla.org/buglist.cgi?resolution=FIXED&amp;classification=Components&amp;query_format=advanced&amp;product=NSS&amp;target_milestone=3.16.2" class="external" rel=" noopener">https://bugzilla.mozilla.org/buglist.cgi?resolution=FIXED&amp;classification=Components&amp;query_format=advanced&amp;product=NSS&amp;target_milestone=3.16.2</a><br>
+ &nbsp;</p></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/nss_3.16.2_release_notes/index.html" title="Folder: en-us/mozilla/projects/nss/nss_3.16.2_release_notes (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_3.16.2_release_notes%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_3.16.2_release_notes%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FNSS_3.16.2_release_notes%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Fnss_3.16.2_release_notes%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2F12f7b8926421b894834adc4f0dd9f7981b93cd2e%0A*+Document+last+modified%3A+2021-01-04T12%3A01%3A55.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22NSS+3.16.2+release+notes%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2021-01-04T12:01:55.000Z">Jan 4, 2021</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/NSS_3.16.2_release_notes/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

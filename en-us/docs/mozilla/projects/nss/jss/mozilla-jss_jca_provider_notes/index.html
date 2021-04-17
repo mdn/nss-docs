@@ -1,0 +1,313 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Mozilla-JSS JCA Provider notes - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>Mozilla-JSS JCA Provider notes</h1><h2 id="the_mozilla-jss_jca_provider"><a href="#the_mozilla-jss_jca_provider" title="Permalink to The Mozilla-JSS JCA Provider">The Mozilla-JSS JCA Provider</a></h2><div><p><em>Newsgroup: <a class="link-news" href="news://news.mozilla.org/mozilla.dev.tech.crypto"> mozilla.dev.tech.crypto</a> </em></p></div><h3 id="overview"><a href="#overview" title="Permalink to Overview">Overview</a></h3><div><p>This document describes the JCA Provider shipped with JSS. The provider's name is "Mozilla-JSS". It implements cryptographic operations in native code using the <a href="https://www.mozilla.org/projects/security/pki/nss" class="external" rel=" noopener">NSS</a> libraries.</p></div><h3 id="contents"><a href="#contents" title="Permalink to Contents">Contents</a></h3><div><ul>
+ <li><a href="https://www.mozilla.org/projects/security/pki/jss/provider_notes.html#signed-jar" class="external" rel=" noopener">Signed JAR file</a></li>
+ <li><a href="https://www.mozilla.org/projects/security/pki/jss/provider_notes.html#installing-provider" class="external" rel=" noopener">Installing the Provider</a></li>
+ <li><a href="https://www.mozilla.org/projects/security/pki/jss/provider_notes.html#specifying-token" class="external" rel=" noopener">Specifying the CryptoToken</a></li>
+ <li><a href="https://www.mozilla.org/projects/security/pki/jss/provider_notes.html#supported-classes" class="external" rel=" noopener">Supported Classes</a></li>
+ <li><a href="https://www.mozilla.org/projects/security/pki/jss/provider_notes.html#not-supported" class="external" rel=" noopener">What's Not Supported</a></li>
+</ul></div><h3 id="signed_jar_file"><a href="#signed_jar_file" title="Permalink to Signed JAR file">Signed JAR file</a></h3><div><p>JSS implements several JCE (Java Cryptography Extension) algorithms. These algorithms have at various times been export-controlled by the US government. JRE therefore requires that JAR files implementing JCE algorithms be digitally signed by an approved organization. The maintainers of JSS, Sun, Red Hat, and Mozilla, have this approval and signs the official builds of <code>jss4.jar</code>. At runtime, the JRE automatically verifies this signature whenever a JSS class is loaded that implements a JCE algorithm. The verification is transparent to the application (unless it fails and throws an exception). If you are curious, you can verify the signature on the JAR file using the <code>jarsigner</code> tool, which is distributed with the JDK.</p>
+<p>If you build JSS yourself from source instead of using binaries downloaded from mozilla.org, your JAR file will not have a valid signature. This means you will not be able to use the JSS provider for JCE algorithms. You have two choices.</p>
+<ol>
+ <li>Use the binary release of JSS from mozilla.org.</li>
+ <li>Apply for your own JCE code-signing certificate following the procedure at <a href="http://java.sun.com/javase/6/docs/technotes/guides/security/crypto/HowToImplAProvider.html#Step61" class="external" rel=" noopener">How to Implement a Provider for the Java<sup>TM</sup> Cryptography Extension</a>. Then you can sign your own JSS JAR file.</li>
+</ol></div><h3 id="installing_the_provider"><a href="#installing_the_provider" title="Permalink to Installing the Provider">Installing the Provider</a></h3><div><p>In order to use any part of JSS, including the JCA provider, you must first call <code> <a href="https://www.mozilla.org/projects/security/pki/jss/javadoc/org/mozilla/jss/CryptoManager.html" class="external" rel=" noopener">CryptoManager</a>.initialize()</code>. By default, the JCA provider will be installed in the list of providers maintained by the <code>java.security.Security</code> class. If you do not wish the provider to be installed, create a <a href="https://www.mozilla.org/projects/security/pki/jss/javadoc/org/mozilla/jss/CryptoManager.InitializationValues.html" class="external" rel=" noopener"><code> CryptoManager.InitializationValues</code></a> object, set its <code>installJSSProvider</code> field to <code>false</code>, and pass the <code>InitializationValues</code> object to <code>CryptoManager.initialize()</code>.</p></div><h3 id="specifying_the_cryptotoken"><a href="#specifying_the_cryptotoken" title="Permalink to Specifying the CryptoToken">Specifying the CryptoToken</a></h3><div><p>All cryptographic operations in JSS and NSS occur on a particular PKCS #11 token, implemented in software or hardware. There is no clean way to specify this token through the JCA API. By default, the JSS provider carries out all operations except MessageDigest on the Internal Key Storage Token, a software token included in JSS/NSS. MessageDigest operations take place by default on the Internal Crypto Token, another internal software token in JSS/NSS. There is no good design reason for this difference, but it is necessitated by a quirk in the NSS implementation.</p>
+<p>In order to use a different token, use <code>CryptoManager.setThreadToken()</code>. This sets the token to be used by the JSS JCA provider in the current thread. When you call <code>getInstance()</code> on a JCA class, the JSS provider checks the current per-thread default token (by calling <code>CryptoManager.getThreadToken()</code>) and instructs the new object to use that token for cryptographic operations. The per-thread default token setting is only consulted inside <code>getInstance()</code>. Once a JCA object has been created it will continue to use the same token, even if the application later changes the per-thread default token.</p>
+<p>Whenever a new thread is created, its token is initialized to the default, the Internal Key Storage Token. Thus, the thread token is not inherited from the parent thread.</p>
+<p>The following example shows how you can specify which token is used for various JCA operations:</p>
+<pre class="notranslate"><code>// Lookup PKCS #11 tokens
+CryptoManager manager = CryptoManager.getInstance();
+CryptoToken tokenA = manager.getTokenByName("TokenA");
+CryptoToken tokenB = manager.getTokenByName("TokenB");
+
+// Create an RSA KeyPairGenerator using TokenA
+manager.setThreadToken(tokenA);
+KeyPairGenerator rsaKpg = KeyPairGenerator.getInstance("Mozilla-JSS", "RSA");
+
+// Create a DSA KeyPairGenerator using TokenB
+manager.setThreadToken(tokenB);
+KeyPairGenerator dsaKpg  = KeyPairGenerator.getInstance("Mozilla-JSS", "DSA");
+
+// Generate an RSA KeyPair. This will happen on TokenA because TokenA
+// was the per-thread default token when rsaKpg was created.
+rsaKpg.initialize(1024);
+KeyPair rsaPair = rsaKpg.generateKeyPair();
+
+// Generate a DSA KeyPair. This will happen on TokenB because TokenB
+// was the per-thread default token when dsaKpg was created.
+dsaKpg.initialize(1024);
+KeyPair dsaPair = dsaKpg.generateKeyPair();
+</code></pre></div><h3 id="supported_classes"><a href="#supported_classes" title="Permalink to Supported Classes">Supported Classes</a></h3><div><ul>
+ <li><a href="https://www.mozilla.org/projects/security/pki/jss/provider_notes.html#Cipher" class="external" rel=" noopener">Cipher</a></li>
+ <li><a href="https://www.mozilla.org/projects/security/pki/jss/provider_notes.html#DSAPrivateKey" class="external" rel=" noopener">DSAPrivateKey</a></li>
+ <li>DSAPublicKey</li>
+ <li><a href="https://www.mozilla.org/projects/security/pki/jss/provider_notes.html#KeyFactory" class="external" rel=" noopener">KeyFactory</a></li>
+ <li><a href="https://www.mozilla.org/projects/security/pki/jss/provider_notes.html#KeyGenerator" class="external" rel=" noopener">KeyGenerator</a></li>
+ <li><a href="https://www.mozilla.org/projects/security/pki/jss/provider_notes.html#KeyPairGenerator" class="external" rel=" noopener">KeyPairGenerator</a></li>
+ <li><a href="https://www.mozilla.org/projects/security/pki/jss/provider_notes.html#Mac" class="external" rel=" noopener">Mac</a></li>
+ <li><a href="https://www.mozilla.org/projects/security/pki/jss/provider_notes.html#MessageDigest" class="external" rel=" noopener">MessageDigest</a></li>
+ <li><a href="https://www.mozilla.org/projects/security/pki/jss/provider_notes.html#RSAPrivateKey" class="external" rel=" noopener">RSAPrivateKey</a></li>
+ <li>RSAPublicKey</li>
+ <li><a href="https://www.mozilla.org/projects/security/pki/jss/provider_notes.html#SecretKeyFactory" class="external" rel=" noopener">SecretKeyFactory</a></li>
+ <li><a href="https://www.mozilla.org/projects/security/pki/jss/provider_notes.html#SecretKey" class="external" rel=" noopener">SecretKey</a></li>
+ <li><a href="https://www.mozilla.org/projects/security/pki/jss/provider_notes.html#SecureRandom" class="external" rel=" noopener">SecureRandom</a></li>
+ <li><a href="https://www.mozilla.org/projects/security/pki/jss/provider_notes.html#Signature" class="external" rel=" noopener">Signature</a></li>
+</ul></div><h3 id="cipher"><a href="#cipher" title="Permalink to Cipher">Cipher</a></h3><div><h4 id="supported_algorithms">Supported Algorithms</h4>
+<h4 id="notes">Notes</h4>
+<ul>
+ <li>AES</li>
+ <li>DES</li>
+ <li>DESede (<em>DES3</em>)</li>
+ <li>RC2</li>
+ <li>RC4</li>
+ <li>RSA
+  <ul>
+   <li>The following modes and padding schemes are supported:
+    <table>
+     <tbody>
+      <tr>
+       <th>Algorithm</th>
+       <th>Mode</th>
+       <th>Padding</th>
+      </tr>
+      <tr>
+       <td rowspan="3">DES</td>
+       <td>ECB</td>
+       <td>NoPadding</td>
+      </tr>
+      <tr>
+       <td rowspan="2">CBC</td>
+       <td>NoPadding</td>
+      </tr>
+      <tr>
+       <td>PKCS5 Padding</td>
+      </tr>
+      <tr>
+       <td rowspan="3">DESede<br>
+        <em>DES3</em></td>
+       <td>ECB</td>
+       <td>NoPadding</td>
+      </tr>
+      <tr>
+       <td rowspan="2">CBC</td>
+       <td>NoPadding</td>
+      </tr>
+      <tr>
+       <td>PKCS5 Padding</td>
+      </tr>
+      <tr>
+       <td rowspan="3">AES</td>
+       <td>ECB</td>
+       <td>NoPadding</td>
+      </tr>
+      <tr>
+       <td rowspan="2">CBC</td>
+       <td>NoPadding</td>
+      </tr>
+      <tr>
+       <td>PKCS5 Padding</td>
+      </tr>
+      <tr>
+       <td>RC4</td>
+       <td><em>None</em></td>
+       <td><em>None</em></td>
+      </tr>
+      <tr>
+       <td rowspan="2">RC2</td>
+       <td rowspan="2">CBC</td>
+       <td>NoPadding</td>
+      </tr>
+      <tr>
+       <td>PKCS5Padding</td>
+      </tr>
+     </tbody>
+    </table>
+   </li>
+   <li>The SecureRandom argument passed to <code>initSign()</code> and <code>initVerify()</code> is ignored, because NSS does not support specifying an external source of randomness.</li>
+  </ul>
+ </li>
+</ul></div><h3 id="dsaprivatekey"><a href="#dsaprivatekey" title="Permalink to DSAPrivateKey">DSAPrivateKey</a></h3><div><ul>
+ <li><code>getX()</code> is not supported because NSS does not support extracting data from private keys.</li>
+</ul></div><h3 id="keyfactory"><a href="#keyfactory" title="Permalink to KeyFactory">KeyFactory</a></h3><div><h4 id="supported_algorithms_2">Supported Algorithms</h4>
+<h4 id="notes_2">Notes</h4>
+<ul>
+ <li>DSA</li>
+ <li>RSA</li>
+ <li>The following transformations are supported for <code>generatePublic()</code> and <code>generatePrivate()</code>:
+  <table>
+   <tbody>
+    <tr>
+     <th>From</th>
+     <th>To</th>
+    </tr>
+    <tr>
+     <td><code>RSAPublicKeySpec</code></td>
+     <td><code>RSAPublicKey</code></td>
+    </tr>
+    <tr>
+     <td><code>DSAPublicKeySpec</code></td>
+     <td><code>DSAPublicKey</code></td>
+    </tr>
+    <tr>
+     <td><code>X509EncodedKeySpec</code></td>
+     <td><code>RSAPublicKey</code><br>
+      <code>DSAPublicKey</code></td>
+    </tr>
+    <tr>
+     <td><code>RSAPrivateCrtKeySpec</code></td>
+     <td><code>RSAPrivateKey</code></td>
+    </tr>
+    <tr>
+     <td><code>DSAPrivateKeySpec</code></td>
+     <td><code>DSAPrivateKey</code></td>
+    </tr>
+    <tr>
+     <td><code>PKCS8EncodedKeySpec</code></td>
+     <td><code>RSAPrivateKey</code><br>
+      <code>DSAPrivateKey</code></td>
+    </tr>
+   </tbody>
+  </table>
+ </li>
+ <li><code>getKeySpec()</code> is not supported. This method exports key material in plaintext and is therefore insecure. Note that a public key's data can be accessed directly from the key.</li>
+ <li><code>translateKey()</code> simply gets the encoded form of the given key and then tries to import it by calling <code>generatePublic()</code> or <code>generatePrivate()</code>. Only <code>X509EncodedKeySpec</code> is supported for public keys, and only <code>PKCS8EncodedKeySpec</code> is supported for private keys.</li>
+</ul></div><h3 id="keygenerator"><a href="#keygenerator" title="Permalink to KeyGenerator">KeyGenerator</a></h3><div><h4 id="supported_algorithms_3">Supported Algorithms</h4>
+<h4 id="notes_3">Notes</h4>
+<ul>
+ <li>AES</li>
+ <li>DES</li>
+ <li>DESede (<em>DES3</em>)</li>
+ <li>RC4</li>
+ <li>The SecureRandom argument passed to <code>init()</code> is ignored, because NSS does not support specifying an external source of randomness.</li>
+ <li>None of the key generation algorithms accepts an <code>AlgorithmParameterSpec</code>.</li>
+</ul></div><h3 id="keypairgenerator"><a href="#keypairgenerator" title="Permalink to KeyPairGenerator">KeyPairGenerator</a></h3><div><h4 id="supported_algorithms_4">Supported Algorithms</h4>
+<h4 id="notes_4">Notes</h4>
+<ul>
+ <li>DSA</li>
+ <li>RSA</li>
+</ul>
+<ul>
+ <li>The SecureRandom argument passed to initialize() is ignored, because NSS does not support specifying an external source of randomness.</li>
+</ul></div><h3 id="mac"><a href="#mac" title="Permalink to Mac">Mac</a></h3><div><h4 id="supported_algorithms_5">Supported Algorithms</h4>
+<h4 id="notes_5">Notes</h4>
+<ul>
+ <li>HmacSHA1 (<em>Hmac-SHA1</em>)</li>
+</ul>
+<ul>
+ <li>Any secret key type (AES, DES, etc.) can be used as the MAC key, but it must be a JSS key. That is, it must be an <code>instanceof org.mozilla.jss.crypto.SecretKeyFacade</code>.</li>
+ <li>The params passed to <code>init()</code> are ignored.</li>
+</ul></div><h3 id="messagedigest"><a href="#messagedigest" title="Permalink to MessageDigest">MessageDigest</a></h3><div><h4 id="supported_algorithms_6">Supported Algorithms</h4>
+<ul>
+ <li>MD5</li>
+ <li>MD2</li>
+ <li>SHA-1 (<em>SHA1, SHA</em>)</li>
+</ul></div><h3 id="rsaprivatekey"><a href="#rsaprivatekey" title="Permalink to RSAPrivateKey">RSAPrivateKey</a></h3><div><h4 id="notes_6">Notes</h4>
+<ul>
+ <li><code>getModulus()</code> is not supported because NSS does not support extracting data from private keys.</li>
+ <li><code>getPrivateExponent()</code> is not supported because NSS does not support extracting data from private keys.</li>
+</ul></div><h3 id="secretkeyfactory"><a href="#secretkeyfactory" title="Permalink to SecretKeyFactory">SecretKeyFactory</a></h3><div><h4 id="supported_algorithms_7">Supported Algorithms</h4>
+<h4 id="notes_7">Notes</h4>
+<ul>
+ <li>AES</li>
+ <li>DES</li>
+ <li>DESede (<em>DES3</em>)</li>
+ <li>PBAHmacSHA1</li>
+ <li>PBEWithMD5AndDES</li>
+ <li>PBEWithSHA1AndDES</li>
+ <li>PBEWithSHA1AndDESede (<em>PBEWithSHA1AndDES3</em>)</li>
+ <li>PBEWithSHA1And128RC4</li>
+ <li>RC4</li>
+</ul>
+<ul>
+ <li><code>generateSecret</code> supports the following transformations:
+  <table>
+   <tbody>
+    <tr>
+     <th>KeySpec Class</th>
+     <th>Key Algorithm</th>
+    </tr>
+    <tr>
+     <td>PBEKeySpec<br>
+      org.mozilla.jss.crypto.PBEKeyGenParams</td>
+     <td><em>Using the appropriate PBE algorithm:</em><br>
+      DES<br>
+      DESede<br>
+      RC4</td>
+    </tr>
+    <tr>
+     <td>DESedeKeySpec</td>
+     <td>DESede</td>
+    </tr>
+    <tr>
+     <td>DESKeySpec</td>
+     <td>DES</td>
+    </tr>
+    <tr>
+     <td>SecretKeySpec</td>
+     <td>AES<br>
+      DES<br>
+      DESede<br>
+      RC4</td>
+    </tr>
+   </tbody>
+  </table>
+ </li>
+ <li><code>getKeySpec</code> supports the following transformations:
+  <table>
+   <tbody>
+    <tr>
+     <th>Key Algorithm</th>
+     <th>KeySpec Class</th>
+    </tr>
+    <tr>
+     <td>DESede</td>
+     <td>DESedeKeySpec</td>
+    </tr>
+    <tr>
+     <td>DES</td>
+     <td>DESKeySpec</td>
+    </tr>
+    <tr>
+     <td>DESede<br>
+      DES<br>
+      AES<br>
+      RC4</td>
+     <td>SecretKeySpec</td>
+    </tr>
+   </tbody>
+  </table>
+ </li>
+ <li>For increased security, some SecretKeys may not be extractable from their PKCS #11 token. In this case, the key should be wrapped (encrypted with another key), and then the encrypted key might be extractable from the token. This policy varies across PKCS #11 tokens.</li>
+ <li><code>translateKey</code> tries two approaches to copying keys. First, it tries to copy the key material directly using NSS calls to PKCS #11. If that fails, it calls <code>getEncoded()</code> on the source key, and then tries to create a new key on the target token from the encoded bits. Both of these operations will fail if the source key is not extractable.</li>
+ <li>The class <code>java.security.spec.PBEKeySpec</code> in JDK versions earlier than 1.4 does not contain the salt and iteration fields, which are necessary for PBE key generation. These fields were added in JDK 1.4. If you are using a JDK (or JRE) version earlier than 1.4, you cannot use class <code>java.security.spec.PBEKeySpec</code>. Instead, you can use <code>org.mozilla.jss.crypto.PBEKeyGenParams</code>. If you are using JDK (or JRE) 1.4 or later, you can use <code>java.security.spec.PBEKeySpec</code> or <code>org.mozilla.jss.crypto.PBEKeyGenParams</code>.</li>
+</ul></div><h3 id="secretkey"><a href="#secretkey" title="Permalink to SecretKey">SecretKey</a></h3><div><h4 id="supported_algorithms_8">Supported Algorithms</h4>
+<h4 id="notes_8">Notes</h4>
+<ul>
+ <li>AES</li>
+ <li>DES</li>
+ <li>DESede (<em>DES3</em>)</li>
+ <li>HmacSHA1</li>
+ <li>RC2</li>
+ <li>RC4</li>
+</ul>
+<ul>
+ <li><code>SecretKey</code> is implemented by the class <code>org.mozilla.jss.crypto.SecretKeyFacade</code>, which acts as a wrapper around the JSS class <code>SymmetricKey</code>. Any <code>SecretKeys</code> handled by JSS will actually be <code>SecretKeyFacades</code>. This should usually be transparent.</li>
+</ul></div><h3 id="securerandom"><a href="#securerandom" title="Permalink to SecureRandom">SecureRandom</a></h3><div><h4 id="supported_algorithms_9">Supported Algorithms</h4>
+<h4 id="notes_9">Notes</h4>
+<ul>
+ <li>pkcs11prng</li>
+</ul>
+<ul>
+ <li>This invokes the NSS internal pseudorandom number generator.</li>
+</ul></div><h3 id="signature"><a href="#signature" title="Permalink to Signature">Signature</a></h3><div><h4 id="supported_algorithms_10">Supported Algorithms</h4>
+<h4 id="notes_10">Notes</h4>
+<ul>
+ <li>SHA1withDSA (<em>DSA, DSS, SHA/DSA, SHA-1/DSA, SHA1/DSA, DSAWithSHA1, SHAwithDSA</em>)</li>
+ <li>SHA-1/RSA (<em>SHA1/RSA, SHA1withRSA</em>)</li>
+ <li>MD5/RSA (<em>MD5withRSA</em>)</li>
+ <li>MD2/RSA</li>
+</ul>
+<ul>
+ <li>The SecureRandom argument passed to <code>initSign()</code> and <code>initVerify()</code> is ignored, because NSS does not support specifying an external source of randomness.</li>
+</ul></div><h3 id="what's_not_supported"><a href="#what's_not_supported" title="Permalink to What's Not Supported">What's Not Supported</a></h3><div><p>The following classes don't work very well:</p>
+<ul>
+ <li><strong>KeyStore:</strong> There are many serious problems mapping the JCA keystore interface onto NSS's model of PKCS #11 modules. The current implementation is almost useless. Since these problems lie deep in the NSS design and implementation, there is no clear timeframe for fixing them. Meanwhile, the <code>org.mozilla.jss.crypto.CryptoStore</code> class can be used for some of this functionality.</li>
+</ul></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/jss/mozilla-jss_jca_provider_notes/index.html" title="Folder: en-us/mozilla/projects/nss/jss/mozilla-jss_jca_provider_notes (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FJSS%2FMozilla-JSS_JCA_Provider_notes%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Fjss%2Fmozilla-jss_jca_provider_notes%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FJSS%2FMozilla-JSS_JCA_Provider_notes%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Fjss%2Fmozilla-jss_jca_provider_notes%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2Fc1713af47b73d01fcb0d303d2eb8ec992da2fd1f%0A*+Document+last+modified%3A+2020-12-28T11%3A20%3A12.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22Mozilla-JSS+JCA+Provider+notes%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2020-12-28T11:20:12.000Z">Dec 28, 2020</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/JSS/Mozilla-JSS_JCA_Provider_notes/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

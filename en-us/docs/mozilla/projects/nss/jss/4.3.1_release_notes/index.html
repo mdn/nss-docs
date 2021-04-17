@@ -1,0 +1,91 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>4.3.1 Release Notes - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>4.3.1 Release Notes</h1><h2 id="release_date_2009-12-02"><a href="#release_date_2009-12-02" title="Permalink to Release Date: 2009-12-02">Release Date: 2009-12-02</a></h2><div></div><h3 id="introduction"><a href="#introduction" title="Permalink to Introduction">Introduction</a></h3><div><p>Network Security Services for Java (JSS) 4.3.1 is a minor release with the following new features:</p>
+<ul>
+  <li>Support for SSL3 &amp; TLS Renegotiation Vulnerability</li>
+  <li>Support to explicitly set the key usage for the generated private key</li>
+</ul>
+<p>JSS 4.3.1 is <a class="external" href="https://www.mozilla.org/MPL" rel=" noopener">tri-licensed</a> under MPL 1.1/GPL 2.0/LGPL 2.1.
+</p></div><h3 id="new_in_jss_4.3.1"><a href="#new_in_jss_4.3.1" title="Permalink to New in JSS 4.3.1">New in JSS 4.3.1</a></h3><div><p>&nbsp;A list of bug fixes and enhancement requests were implemented in this release can be obtained by running this <a class="external" href="http://bugzilla.mozilla.org/buglist.cgi?product=JSS&amp;target_milestone=4.3.1&amp;target_milestone=4.3.1&amp;bug_status=RESOLVED&amp;resolution=FIXED" rel=" noopener">bugzilla
+    query</a></p>
+<p><strong>JSS&nbsp;4.3.1 requires <a href="/NSS_3.12.5_release_notes" title="NSS 3.12.5 release notes" data-flaw="link1">NSS 3.12.5 </a>or
+    higher. </strong></p>
+<h4 id="ssl3_tls_renegotiation_vulnerability">SSL3 &amp; TLS Renegotiation Vulnerability</h4>
+<p>See <a class="external" href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-3555" rel="external nofollow noopener" title="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-3555">CVE-2009-3555</a> and <a class="external" href="http://www.kb.cert.org/vuls/id/120541" rel="external nofollow noopener" title="http://www.kb.cert.org/vuls/id/120541">US-CERT VU#120541</a> for more information about this security
+  vulnerability.</p>
+<p>All SSL/TLS renegotiation is disabled by default in NSS 3.12.5 and therefore will be disabled by default with
+  JSS&nbsp;4.3.1. This will cause programs that attempt to perform renegotiation to experience failures where they formerly
+  experienced successes, and is necessary for them to not be vulnerable, until such time as a new safe renegotiation
+  scheme is standardized by the IETF.</p>
+<p>If an application depends on renegotiation feature, it can be enabled by setting the environment variable
+  NSS_SSL_ENABLE_RENEGOTIATION to 1. By setting this environmental variable, the fix provided by these patches will
+  have no effect and the application may become vulnerable to the issue.</p>
+<p>This default setting can also be changed within the application by using the following JSS methods:</p>
+<ul>
+  <li>SSLServerSocket.enableRenegotiation(int mode)</li>
+  <li>SSLSocket.enableRenegotiation(int mode)</li>
+  <li>SSLSocket.enableRenegotiationDefault(int mode)</li>
+</ul>
+The mode of renegotiation that the peer must use can be set to the following:
+<ul>
+  <li>SSLSocket.SSL_RENEGOTIATE_NEVER - Never renegotiate at all. (Default)</li>
+  <li>SSLSocket.SSL_RENEGOTIATE_UNRESTRICTED - Renegotiate without<br> restriction, whether or not the peer's client
+    hello bears the<br> renegotiation info extension (like we always did in the past).</li>
+  <li>SSLSocket.SSL_RENEGOTIATE_REQUIRES_XTN - NOT YET IMPLEMENTED</li>
+</ul>
+<h4 id="explicitly_set_the_key_usage_for_the_generated_private_key">Explicitly set the key usage for the generated
+  private key</h4>
+<p>&nbsp;In PKCS #11, each keypair can be marked with the operations it will<br> &nbsp;be used to perform. Some tokens require
+  that a key be marked for<br> &nbsp;an operation before the key can be used to perform that operation;<br> &nbsp;other tokens
+  don't care. NSS/JSS provides a way to specify a set of<br> &nbsp;flags and a corresponding mask for these flags.</p>
+<ul>
+  <li>see generateECKeyPairWithOpFlags</li>
+  <li>see generateRSAKeyPairWithOpFlags</li>
+  <li>see generateDSAKeyPairWithOpFlags</li>
+</ul></div><h3 id="distribution_information"><a href="#distribution_information" title="Permalink to Distribution Information">Distribution Information</a></h3><div><ul>
+  <li>JSS is checked into <code>mozilla/security/jss/</code>.</li>
+  <li>The CVS tag for the JSS 4.3.1 release is <code>JSS_4_3_1_RTM</code>.</li>
+  <li>Source tarballs are available from <a class=" link-ftp" href="ftp://ftp.mozilla.org/pub/mozilla.org/security/jss/releases/JSS_4_3_1_RTM/src/jss-4.3.1.tar.bz2">ftp://ftp.mozilla.org/pub/mozilla.or...-4.3.1.tar.bz2</a></li>
+  <li>Binary releases are no longer available on mozilla. JSS is a JNI&nbsp;library we provide the jss4.jar but expect you to
+    build the JSS's matching JNI shared library. We provide the jss4.jar in case you do not want to obtain your own
+    JCE&nbsp;code signing certificate. JSS is a JCE&nbsp;provider and therefore the jss4.jar must be signed. <a class="link-ftp" href="ftp://ftp.mozilla.org/pub/mozilla.org/security/jss/releases/JSS_4_3_1_RTM/">ftp://ftp.mozilla.org/pub/mozilla.org/security/jss/releases/JSS_4_3_1_RTM</a>.
+  </li>
+</ul></div><h3 id="documentation"><a href="#documentation" title="Permalink to Documentation">Documentation</a></h3><div><p>Documentation for JSS 4.3.1 is available as follows:</p>
+<ul>
+  <li><a href="/jss_build_4.3.1.html" title="jss_build_4.3.1.html" data-flaw="link2">Build Instructions for JSS 4.3.1</a></li>
+  <li>Javadoc <a href="/javadoc" data-flaw="link3">[online]</a> <a class="link-ftp" href="ftp://ftp.mozilla.org/pub/mozilla.org/security/jss/releases/JSS_4_3_1_RTM/doc/JSS_4_3_1_RTM-doc.zip" title="ftp://ftp.mozilla.org/pub/mozilla.org/security/jss/releases/JSS_4_3_1_RTM/doc/JSS_4_3_1_RTM-doc.zip">[zipped]</a>
+  </li>
+  <li>Read the instructions on <a href="/using_jss.html" title="using_jss.html" data-flaw="link4">using JSS</a>.</li>
+  <li>Source may be viewed with a browser (via the MXR tool) at <a class="external" href="http://mxr.mozilla.org/mozilla/source/security/jss/" rel=" noopener">
+      http://mxr.mozilla.org/mozilla/source/security/jss/</a></li>
+  <li>The RUN&nbsp;TIME behavior of JSS can be affected by the <a class="internal" href="/en-US/docs/Mozilla/Projects/NSS/Reference/NSS_environment_variables">NSS
+      Environment Variables</a>.&nbsp;</li>
+</ul></div><h3 id="platform_information"><a href="#platform_information" title="Permalink to Platform Information">Platform Information</a></h3><div><ul>
+  <li>
+    <p>
+      You can check out the source from CVS by</p>
+      <div class="note notecard">cvs co -r JSS_4_3_1_RTM JSS</div>
+  </li>
+  <li>JSS 4.3.1 works with JDK versions 4 or higher we suggest the latest.</li>
+  <li>JSS 4.3.1 requires <a href="/NSS_3.12.5" title="NSS 3.12.5" data-flaw="link5">NSS 3.12.5</a> or higher.</li>
+  <li>JSS 4.3.1 requires <a class="external" href="https://www.mozilla.org/projects/nspr/release-notes/" title="http://www.mozilla.org/projects/nspr/release-notes/" rel=" noopener">NSPR 4.7.1</a> or higher.</li>
+  <li>JSS only supports the native threading model (no green threads).</li>
+</ul></div><h3 id="known_bugs_and_issues"><a href="#known_bugs_and_issues" title="Permalink to Known Bugs and Issues">Known Bugs and Issues</a></h3><div><ul>
+  <li>For a list of reported bugs that have not yet been fixed, <a class="external" href="http://bugzilla.mozilla.org/buglist.cgi?bug_status=UNCONFIRMED&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;&amp;product=JSS" rel=" noopener">click
+      here.</a> Note that some bugs may have been fixed since JSS 4.3.1 was released.&nbsp;</li>
+</ul></div><h3 id="compatibility"><a href="#compatibility" title="Permalink to Compatibility">Compatibility</a></h3><div><ul>
+  <li>JSS 4.3.1 is backwards compatible with JSS 4.2. Applications compiled against JSS 4.2 will work with JSS 4.3.1.
+  </li>
+  <li>The 4.3.1 version of libjss4.so/jss4.dll must only be used with jss4.jar. In general, a JSS JAR file must be used
+    with the JSS shared library from the exact same release.</li>
+  <li>To obtain the version info from the jar file use,
+    "System.out.println(org.mozilla.jss.CryptoManager.JAR_JSS_VERSION)" and to check the shared library: strings
+    libjss4.so | grep -i header&nbsp;&nbsp;</li>
+</ul></div><h3 id="feedback"><a href="#feedback" title="Permalink to Feedback">Feedback</a></h3><div><ul>
+  <li>Bugs discovered should be reported by filing a bug report with <a class="external" href="http://bugzilla.mozilla.org/enter_bug.cgi?product=JSS" rel=" noopener">bugzilla</a>.</li>
+  <li>You can also give feedback directly to the developers on the&nbsp;Mozilla Cryptography forums... <ul>
+  <li><a href="https://lists.mozilla.org/listinfo/dev-tech-crypto" class="external" rel=" noopener">Mailing list</a></li>
+  
+  
+  <li><a href="http://groups.google.com/group/mozilla.dev.tech.crypto" class="external" rel=" noopener">Newsgroup</a></li>
+  <li><a href="http://groups.google.com/group/mozilla.dev.tech.crypto/feeds" class="external" rel=" noopener">RSS feed</a></li>
+</ul></li>
+</ul></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/jss/4.3.1_release_notes/index.html" title="Folder: en-us/mozilla/projects/nss/jss/4.3.1_release_notes (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FJSS%2F4.3.1_Release_Notes%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Fjss%2F4.3.1_release_notes%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FJSS%2F4.3.1_Release_Notes%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Fjss%2F4.3.1_release_notes%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2Ffc36604b19a172f3fbedb2629e2403180f2eda55%0A*+Document+last+modified%3A+2021-03-19T23%3A16%3A59.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%224.3.1+Release+Notes%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2021-03-19T23:16:59.000Z">Mar 19, 2021</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/JSS/4.3.1_Release_Notes/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

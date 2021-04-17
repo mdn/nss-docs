@@ -1,0 +1,68 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>NSS Tools - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>NSS Tools</h1><h2 id="nss_security_tools"><a href="#nss_security_tools" title="Permalink to NSS Security Tools">NSS Security Tools</a></h2><div><p>Newsgroup: <a href="news://news.mozilla.org/mozilla.dev.tech.crypto">mozilla.dev.tech.crypto</a></p></div><h3 id="overview"><a href="#overview" title="Permalink to Overview">Overview</a></h3><div><p>The NSS Security Tools allow developers to test, debug, and manage applications that use NSS. The <a href="#tools">Tools Information</a> table below describes both the tools that are currently working and those that are still under development. The links for each tool take you to the source code, documentation, plans, and related links for each tool. The links will become active when information is available.</p>
+
+<p>Currently, you must download the NSS 3.1 source and build it to create binary files for the NSS tools. For information about downloading the NSS source, see <a href="/en-US/docs/Mozilla/Projects/NSS/Building">Building NSS</a>.</p>
+
+<p>If you have feedback or questions, please feel free to post to <a href="news://news.mozilla.org/mozilla.dev.tech.crypto"> mozilla.dev.tech.crypto</a>. This newsgroup is the preferred forum for all questions about NSS and NSS tools.</p></div><h3 id="overall_objectives"><a href="#overall_objectives" title="Permalink to Overall Objectives">Overall Objectives</a></h3><div><ol>
+ <li>Provide a tool for analyzing and repairing certificate databases (<a href="#dbck">dbck</a>).</li>
+ <li>Migrate tools from secutil.h interface to PKCS #11 interface.</li>
+ <li>Eliminate redundant functionality in tools. Many tools implement private versions of PKCS11Init(), OpenCertDB(), etc.</li>
+ <li>Eliminate use of getopt() and replace with NSPR calls to get command options (to eliminate platform dependencies with getopt()).</li>
+</ol></div><h3 id="tools_information"><a href="#tools_information" title="Permalink to Tools information">Tools information</a></h3><div><table style="width: 90%;">
+ <tbody>
+  <tr>
+   <th><strong>Tool</strong></th>
+   <th><strong>Description</strong></th>
+   <th><strong>Links</strong></th>
+  </tr>
+  <tr>
+   <td><a name="certutil">certutil 2.0</a></td>
+   <td>Manage certificate and key databases (cert7.db and key3.db).</td>
+   <td><a href="https://dxr.mozilla.org/mozilla/source/security/nss/cmd/certutil/" class="external" rel=" noopener">Source</a>, <a href="tools/NSS_Tools_certutil">Documentation</a>, <a href="tools/NSS_Tools_certutil-tasks">Tasks/Plans</a></td>
+  </tr>
+  <tr>
+   <td><a name="cmsutil">cmsutil 1.0</a></td>
+   <td>Performs basic CMS operations such as encrypting, decrypting, and signing messages.</td>
+   <td><a href="https://dxr.mozilla.org/mozilla/source/security/nss/cmd/smimetools/" class="external" rel=" noopener">Source</a>, <a href="tools/NSS_Tools_cmsutil">Documentation</a></td>
+  </tr>
+  <tr>
+   <td><a name="crlutil">crlutil</a></td>
+   <td>Manage certificate revocation lists (CRLs).</td>
+   <td><a href="https://dxr.mozilla.org/mozilla/source/security/nss/cmd/crlutil/" class="external" rel=" noopener">Source</a>, <a href="tools/NSS_Tools_crlutil">Documentation</a>,</td>
+  </tr>
+  <tr>
+   <td><a name="dbck">dbck 1.0</a></td>
+   <td>Analyze and repair certificate databases (not working in NSS 3.2)</td>
+   <td><a href="https://dxr.mozilla.org/mozilla/source/security/nss/cmd/dbck/" class="external" rel=" noopener">Source</a>, <a href="tools/NSS_Tools_dbck-tasks">Tasks/Plans</a></td>
+  </tr>
+  <tr>
+   <td><a name="modutil">modutil 1.1</a></td>
+   <td>Manage the database of PKCS11 modules (secmod.db). Add modules and modify the properties of existing modules (such as whether a module is the default provider of some crypto service).</td>
+   <td><a href="https://dxr.mozilla.org/mozilla/source/security/nss/cmd/modutil/" class="external" rel=" noopener">Source</a>, <a href="tools/NSS_Tools_modutil">Documentation</a>, <a href="tools/NSS_Tools_modutil-tasks">Tasks/Plans</a></td>
+  </tr>
+  <tr>
+   <td><a name="pk12util">pk12util 1.0</a></td>
+   <td>Import and export keys and certificates between the cert/key databases and files in PKCS12 format.</td>
+   <td><a href="https://dxr.mozilla.org/mozilla/source/security/nss/cmd/pk12util/" class="external" rel=" noopener">Source</a>, <a href="tools/NSS_Tools_pk12util">Documentation</a>, <a href="tools/NSS_Tools_pk12util-tasks">Tasks/Plans</a></td>
+  </tr>
+  <tr>
+   <td><a name="signtool">signtool 1.3</a></td>
+   <td>Create digitally-signed jar archives containing files and/or code.</td>
+   <td><a href="https://dxr.mozilla.org/mozilla/source/security/nss/cmd/signtool/" class="external" rel=" noopener">Source</a>, <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/security/SecurityToolsSummary.html#jarsigner" class="external" rel=" noopener"> Documentation</a>,</td>
+  </tr>
+  <tr>
+   <td><a name="signver">signver 1.1</a></td>
+   <td>Verify signatures on digitally-signed objects.</td>
+   <td><a href="https://dxr.mozilla.org/mozilla/source/security/nss/cmd/signver/" class="external" rel=" noopener">Source</a>, <a href="https://docs.oracle.com/javase/tutorial/deployment/jar/verify.html" class="external" rel=" noopener"> Documentation</a>, <a href="tools/NSS_Tools_signver-tasks">Tasks/Plans</a></td>
+  </tr>
+  <tr>
+   <td><a name="sslstrength">sslstrength</a></td>
+   <td>SSL Strength</td>
+   <td><a href="tools/NSS_Tools_sslstrength">Documentation</a></td>
+  </tr>
+  <tr>
+   <td><a name="ssltap">ssltap 3.2</a></td>
+   <td>Proxy requests for an SSL server and display the contents of the messages exchanged between the client and server. The ssltap tool does not decrypt data, but it shows things like the type of SSL message (clientHello, serverHello, etc) and connection data (protocol version, cipher suite, etc). This tool is very useful for debugging.</td>
+   <td><a href="https://dxr.mozilla.org/mozilla/source/security/nss/cmd/ssltap/" class="external" rel=" noopener">Source</a>, <a href="tools/NSS_Tools_ssltap">Documentation</a></td>
+  </tr>
+ </tbody>
+</table></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/tools/index.html" title="Folder: en-us/mozilla/projects/nss/tools (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2Ftools%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Ftools%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2Ftools%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Ftools%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2Fcec9e8ed306805d484e197fdc153f7305d69ce83%0A*+Document+last+modified%3A+2021-03-09T20%3A34%3A57.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22NSS+Tools%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2021-03-09T20:34:57.000Z">Mar 9, 2021</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/tools/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

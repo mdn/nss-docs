@@ -1,0 +1,563 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>NSS tools : ssltap - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>NSS tools : ssltap</h1><div><p>Name<br>
+<br>
+&nbsp;&nbsp; ssltap — Tap into SSL connections and display the data going by<br>
+<br>
+Synopsis<br>
+<br>
+&nbsp;&nbsp; libssltap [-vhfsxl] [-p port] [hostname:port]<br>
+<br>
+Description<br>
+<br>
+&nbsp;&nbsp; The SSL Debugging Tool ssltap is an SSL-aware command-line proxy. It<br>
+&nbsp;&nbsp; watches TCP connections and displays the data going by. If a connection is<br>
+&nbsp;&nbsp; SSL, the data display includes interpreted SSL records and handshaking<br>
+<br>
+Options<br>
+<br>
+&nbsp;&nbsp; -v<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Print a version string for the tool.<br>
+<br>
+&nbsp;&nbsp; -h<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Turn on hex/ASCII printing. Instead of outputting raw data, the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; command interprets each record as a numbered line of hex values,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; followed by the same data as ASCII characters. The two parts are<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; separated by a vertical bar. Nonprinting characters are replaced<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; by dots.<br>
+<br>
+&nbsp;&nbsp; -f<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Turn on fancy printing. Output is printed in colored HTML. Data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sent from the client to the server is in blue; the server's reply<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; is in red. When used with looping mode, the different connections<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; are separated with horizontal lines. You can use this option to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; upload the output into a browser.<br>
+<br>
+&nbsp;&nbsp; -s<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Turn on SSL parsing and decoding. The tool does not automatically<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; detect SSL sessions. If you are intercepting an SSL connection,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; use this option so that the tool can detect and decode SSL<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; structures.<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If the tool detects a certificate chain, it saves the DER-encoded<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; certificates into files in the current directory. The files are<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; named cert.0x, where x is the sequence number of the certificate.<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If the -s option is used with -h, two separate parts are printed<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for each record: the plain hex/ASCII output, and the parsed SSL<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; output.<br>
+<br>
+&nbsp;&nbsp; -x<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Turn on hex/ASCII printing of undecoded data inside parsed SSL<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; records. Used only with the -s option. This option uses the same<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; output format as the -h option.<br>
+<br>
+&nbsp;&nbsp; -l prefix<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Turn on looping; that is, continue to accept connections rather<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; than stopping after the first connection is complete.<br>
+<br>
+&nbsp;&nbsp; -p port<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Change the default rendezvous port (1924) to another port.<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The following are well-known port numbers:<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * HTTP 80<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * HTTPS 443<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * SMTP 25<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * FTP 21<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * IMAP 143<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * IMAPS 993 (IMAP over SSL)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * NNTP 119<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; * NNTPS 563 (NNTP over SSL)<br>
+<br>
+Usage and Examples<br>
+<br>
+&nbsp;&nbsp; You can use the SSL Debugging Tool to intercept any connection<br>
+&nbsp;&nbsp; information. Although you can run the tool at its most basic by issuing<br>
+&nbsp;&nbsp; the ssltap command with no options other than hostname:port, the<br>
+&nbsp;&nbsp; information you get in this way is not very useful. For example, assume<br>
+&nbsp;&nbsp; your development machine is called intercept. The simplest way to use the<br>
+&nbsp;&nbsp; debugging tool is to execute the following command from a command shell:<br>
+<br>
+&nbsp;$ ssltap www.netscape.com<br>
+<br>
+&nbsp;&nbsp; The program waits for an incoming connection on the default port 1924. In<br>
+&nbsp;&nbsp; your browser window, enter the URL <a class="external" href="http://intercept:1924" rel=" noopener">http://intercept:1924</a>. The browser<br>
+&nbsp;&nbsp; retrieves the requested page from the server at www.netscape.com, but the<br>
+&nbsp;&nbsp; page is intercepted and passed on to the browser by the debugging tool on<br>
+&nbsp;&nbsp; intercept. On its way to the browser, the data is printed to the command<br>
+&nbsp;&nbsp; shell from which you issued the command. Data sent from the client to the<br>
+&nbsp;&nbsp; server is surrounded by the following symbols: --&gt; [ data ] Data sent from<br>
+&nbsp;&nbsp; the server to the client is surrounded by the following symbols: "left<br>
+&nbsp;&nbsp; arrow"-- [ data ] The raw data stream is sent to standard output and is<br>
+&nbsp;&nbsp; not interpreted in any way. This can result in peculiar effects, such as<br>
+&nbsp;&nbsp; sounds, flashes, and even crashes of the command shell window. To output a<br>
+&nbsp;&nbsp; basic, printable interpretation of the data, use the -h option, or, if you<br>
+&nbsp;&nbsp; are looking at an SSL connection, the -s option. You will notice that the<br>
+&nbsp;&nbsp; page you retrieved looks incomplete in the browser. This is because, by<br>
+&nbsp;&nbsp; default, the tool closes down after the first connection is complete, so<br>
+&nbsp;&nbsp; the browser is not able to load images. To make the tool continue to<br>
+&nbsp;&nbsp; accept connections, switch on looping mode with the -l option. The<br>
+&nbsp;&nbsp; following examples show the output from commonly used combinations of<br>
+&nbsp;&nbsp; options.<br>
+<br>
+&nbsp;&nbsp; Example 1<br>
+<br>
+&nbsp;$ ssltap.exe -sx -p 444 interzone.mcom.com:443 &gt; sx.txt<br>
+<br>
+&nbsp;&nbsp; Output<br>
+<br>
+&nbsp;Connected to interzone.mcom.com:443<br>
+&nbsp;--&gt;; [<br>
+&nbsp;alloclen = 66 bytes<br>
+&nbsp;&nbsp;&nbsp; [ssl2]&nbsp; ClientHelloV2 {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; version = {0x03, 0x00}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cipher-specs-length = 39 (0x27)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sid-length = 0 (0x00)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; challenge-length = 16 (0x10)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cipher-suites = {<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x010080) SSL2/RSA/RC4-128/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x020080) SSL2/RSA/RC4-40/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x030080) SSL2/RSA/RC2CBC128/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x040080) SSL2/RSA/RC2CBC40/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x060040) SSL2/RSA/DES64CBC/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x0700c0) SSL2/RSA/3DES192EDE-CBC/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x000004) SSL3/RSA/RC4-128/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x00ffe0) SSL3/RSA-FIPS/3DES192EDE-CBC/SHA<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x00000a) SSL3/RSA/3DES192EDE-CBC/SHA<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x00ffe1) SSL3/RSA-FIPS/DES64CBC/SHA<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x000009) SSL3/RSA/DES64CBC/SHA<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x000003) SSL3/RSA/RC4-40/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x000006) SSL3/RSA/RC2CBC40/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; session-id = { }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; challenge = { 0xec5d 0x8edb 0x37c9 0xb5c9 0x7b70 0x8fe9 0xd1d3<br>
+<br>
+&nbsp;0x2592 }<br>
+&nbsp;}<br>
+&nbsp;]<br>
+&nbsp;&lt;-- [<br>
+&nbsp;SSLRecord {<br>
+&nbsp;&nbsp;&nbsp; 0: 16 03 00 03&nbsp; e5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |.....<br>
+&nbsp;&nbsp;&nbsp; type&nbsp;&nbsp;&nbsp; = 22 (handshake)<br>
+&nbsp;&nbsp;&nbsp; version = { 3,0 }<br>
+&nbsp;&nbsp;&nbsp; length&nbsp; = 997 (0x3e5)<br>
+&nbsp;&nbsp;&nbsp; handshake {<br>
+&nbsp;&nbsp;&nbsp; 0: 02 00 00 46&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |...F<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; type = 2 (server_hello)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; length = 70 (0x000046)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ServerHello {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; server_version = {3, 0}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; random = {...}<br>
+&nbsp;&nbsp;&nbsp; 0: 77 8c 6e 26&nbsp; 6c 0c ec c0&nbsp; d9 58 4f 47&nbsp; d3 2d 01 45&nbsp; |<br>
+&nbsp;wn&amp;l.ì..XOG.-.E<br>
+&nbsp;&nbsp;&nbsp; 10: 5c 17 75 43&nbsp; a7 4c 88 c7&nbsp; 88 64 3c 50&nbsp; 41 48 4f 7f&nbsp; |<br>
+<br>
+&nbsp;\.uC§L.Ç.d&lt;PAHO.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; session ID = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; length = 32<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; contents = {..}<br>
+&nbsp;&nbsp;&nbsp; 0: 14 11 07 a8&nbsp; 2a 31 91 29&nbsp; 11 94 40 37&nbsp; 57 10 a7 32&nbsp; | ...¨*1.)..@7W.§2<br>
+&nbsp;&nbsp;&nbsp; 10: 56 6f 52 62&nbsp; fe 3d b3 65&nbsp; b1 e4 13 0f&nbsp; 52 a3 c8 f6&nbsp; | VoRbþ=³e±...R£È.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cipher_suite = (0x0003) SSL3/RSA/RC4-40/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; 0: 0b 00 02 c5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |...Å<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; type = 11 (certificate)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; length = 709 (0x0002c5)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CertificateChain {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; chainlength = 706 (0x02c2)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Certificate {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; size = 703 (0x02bf)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; data = { saved in file 'cert.001' }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; 0: 0c 00 00 ca&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |....<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; type = 12 (server_key_exchange)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; length = 202 (0x0000ca)<br>
+&nbsp;&nbsp;&nbsp; 0: 0e 00 00 00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |....<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; type = 14 (server_hello_done)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; length = 0 (0x000000)<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;}<br>
+&nbsp;]<br>
+&nbsp;--&gt; [<br>
+&nbsp;SSLRecord {<br>
+&nbsp;&nbsp;&nbsp; 0: 16 03 00 00&nbsp; 44&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |....D<br>
+&nbsp;&nbsp;&nbsp; type&nbsp;&nbsp;&nbsp; = 22 (handshake)<br>
+&nbsp;&nbsp;&nbsp; version = { 3,0 }<br>
+&nbsp;&nbsp;&nbsp; length&nbsp; = 68 (0x44)<br>
+&nbsp;&nbsp;&nbsp; handshake {<br>
+&nbsp;&nbsp;&nbsp; 0: 10 00 00 40&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |...@<br>
+&nbsp;&nbsp;&nbsp; type = 16 (client_key_exchange)<br>
+&nbsp;&nbsp;&nbsp; length = 64 (0x000040)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ClientKeyExchange {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; message = {...}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;}<br>
+&nbsp;]<br>
+&nbsp;--&gt; [<br>
+&nbsp;SSLRecord {<br>
+&nbsp;&nbsp;&nbsp; 0: 14 03 00 00&nbsp; 01&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |.....<br>
+&nbsp;&nbsp;&nbsp; type&nbsp;&nbsp;&nbsp; = 20 (change_cipher_spec)<br>
+&nbsp;&nbsp;&nbsp; version = { 3,0 }<br>
+&nbsp;&nbsp;&nbsp; length&nbsp; = 1 (0x1)<br>
+&nbsp;&nbsp;&nbsp; 0: 01&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |.<br>
+&nbsp;}<br>
+&nbsp;SSLRecord {<br>
+&nbsp;&nbsp;&nbsp; 0: 16 03 00 00&nbsp; 38&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |....8<br>
+&nbsp;&nbsp;&nbsp; type&nbsp;&nbsp;&nbsp; = 22 (handshake)<br>
+&nbsp;&nbsp;&nbsp; version = { 3,0 }<br>
+&nbsp;&nbsp;&nbsp; length&nbsp; = 56 (0x38)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt; encrypted &gt;<br>
+<br>
+&nbsp;}<br>
+&nbsp;]<br>
+&nbsp;&lt;-- [<br>
+&nbsp;SSLRecord {<br>
+&nbsp;&nbsp;&nbsp; 0: 14 03 00 00&nbsp; 01&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |.....<br>
+&nbsp;&nbsp;&nbsp; type&nbsp;&nbsp;&nbsp; = 20 (change_cipher_spec)<br>
+&nbsp;&nbsp;&nbsp; version = { 3,0 }<br>
+&nbsp;&nbsp;&nbsp; length&nbsp; = 1 (0x1)<br>
+&nbsp;&nbsp;&nbsp; 0: 01&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |.<br>
+&nbsp;}<br>
+&nbsp;]<br>
+&nbsp;&lt;-- [<br>
+&nbsp;SSLRecord {<br>
+&nbsp;&nbsp;&nbsp; 0: 16 03 00 00&nbsp; 38&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |....8<br>
+&nbsp;&nbsp;&nbsp; type&nbsp;&nbsp;&nbsp; = 22 (handshake)<br>
+&nbsp;&nbsp;&nbsp; version = { 3,0 }<br>
+&nbsp;&nbsp;&nbsp; length&nbsp; = 56 (0x38)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt; encrypted &gt;<br>
+<br>
+&nbsp;}<br>
+&nbsp;]<br>
+&nbsp;--&gt; [<br>
+&nbsp;SSLRecord {<br>
+&nbsp;&nbsp;&nbsp; 0: 17 03 00 01&nbsp; 1f&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |.....<br>
+&nbsp;&nbsp;&nbsp; type&nbsp;&nbsp;&nbsp; = 23 (application_data)<br>
+&nbsp;&nbsp;&nbsp; version = { 3,0 }<br>
+&nbsp;&nbsp;&nbsp; length&nbsp; = 287 (0x11f)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt; encrypted &gt;<br>
+&nbsp;}<br>
+&nbsp;]<br>
+&nbsp;&lt;-- [<br>
+&nbsp;SSLRecord {<br>
+&nbsp;&nbsp;&nbsp; 0: 17 03 00 00&nbsp; a0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |....<br>
+&nbsp;&nbsp;&nbsp; type&nbsp;&nbsp;&nbsp; = 23 (application_data)<br>
+&nbsp;&nbsp;&nbsp; version = { 3,0 }<br>
+&nbsp;&nbsp;&nbsp; length&nbsp; = 160 (0xa0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt; encrypted &gt;<br>
+<br>
+&nbsp;}<br>
+&nbsp;]<br>
+&nbsp;&lt;-- [<br>
+&nbsp;SSLRecord {<br>
+&nbsp;0: 17 03 00 00&nbsp; df&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |....ß<br>
+&nbsp;&nbsp;&nbsp; type&nbsp;&nbsp;&nbsp; = 23 (application_data)<br>
+&nbsp;&nbsp;&nbsp; version = { 3,0 }<br>
+&nbsp;&nbsp;&nbsp; length&nbsp; = 223 (0xdf)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt; encrypted &gt;<br>
+<br>
+&nbsp;}<br>
+&nbsp;SSLRecord {<br>
+&nbsp;&nbsp;&nbsp; 0: 15 03 00 00&nbsp; 12&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |.....<br>
+&nbsp;&nbsp;&nbsp; type&nbsp;&nbsp;&nbsp; = 21 (alert)<br>
+&nbsp;&nbsp;&nbsp; version = { 3,0 }<br>
+&nbsp;&nbsp;&nbsp; length&nbsp; = 18 (0x12)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt; encrypted &gt;<br>
+&nbsp;}<br>
+&nbsp;]<br>
+&nbsp;Server socket closed.<br>
+<br>
+&nbsp;&nbsp; Example 2<br>
+<br>
+&nbsp;&nbsp; The -s option turns on SSL parsing. Because the -x option is not used in<br>
+&nbsp;&nbsp; this example, undecoded values are output as raw data. The output is<br>
+&nbsp;&nbsp; routed to a text file.<br>
+<br>
+&nbsp;$ ssltap -s&nbsp; -p 444 interzone.mcom.com:443 &gt; s.txt<br>
+<br>
+&nbsp;&nbsp; Output<br>
+<br>
+&nbsp;Connected to interzone.mcom.com:443<br>
+&nbsp;--&gt; [<br>
+&nbsp;alloclen = 63 bytes<br>
+&nbsp;&nbsp;&nbsp; [ssl2]&nbsp; ClientHelloV2 {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; version = {0x03, 0x00}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cipher-specs-length = 36 (0x24)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sid-length = 0 (0x00)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; challenge-length = 16 (0x10)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cipher-suites = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x010080) SSL2/RSA/RC4-128/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x020080) SSL2/RSA/RC4-40/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x030080) SSL2/RSA/RC2CBC128/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x060040) SSL2/RSA/DES64CBC/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x0700c0) SSL2/RSA/3DES192EDE-CBC/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x000004) SSL3/RSA/RC4-128/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x00ffe0) SSL3/RSA-FIPS/3DES192EDE-CBC/SHA<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x00000a) SSL3/RSA/3DES192EDE-CBC/SHA<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x00ffe1) SSL3/RSA-FIPS/DES64CBC/SHA<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x000009) SSL3/RSA/DES64CBC/SHA<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x000003) SSL3/RSA/RC4-40/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; session-id = { }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; challenge = { 0x713c 0x9338 0x30e1 0xf8d6 0xb934 0x7351 0x200c<br>
+&nbsp;0x3fd0 }<br>
+&nbsp;]<br>
+&nbsp;&gt;-- [<br>
+&nbsp;SSLRecord {<br>
+&nbsp;&nbsp;&nbsp; type&nbsp;&nbsp;&nbsp; = 22 (handshake)<br>
+&nbsp;&nbsp;&nbsp; version = { 3,0 }<br>
+&nbsp;&nbsp;&nbsp; length&nbsp; = 997 (0x3e5)<br>
+&nbsp;&nbsp;&nbsp; handshake {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; type = 2 (server_hello)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; length = 70 (0x000046)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ServerHello {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; server_version = {3, 0}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; random = {...}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; session ID = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; length = 32<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; contents = {..}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cipher_suite = (0x0003) SSL3/RSA/RC4-40/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; type = 11 (certificate)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; length = 709 (0x0002c5)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CertificateChain {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; chainlength = 706 (0x02c2)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Certificate {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; size = 703 (0x02bf)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; data = { saved in file 'cert.001' }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; type = 12 (server_key_exchange)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; length = 202 (0x0000ca)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; type = 14 (server_hello_done)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; length = 0 (0x000000)<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;}<br>
+&nbsp;]<br>
+&nbsp;--&gt; [<br>
+&nbsp;SSLRecord {<br>
+&nbsp;&nbsp;&nbsp; type&nbsp;&nbsp;&nbsp; = 22 (handshake)<br>
+&nbsp;&nbsp;&nbsp; version = { 3,0 }<br>
+&nbsp;&nbsp;&nbsp; length&nbsp; = 68 (0x44)<br>
+&nbsp;&nbsp;&nbsp; handshake {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; type = 16 (client_key_exchange)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; length = 64 (0x000040)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ClientKeyExchange {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; message = {...}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;}<br>
+&nbsp;]<br>
+&nbsp;--&gt; [<br>
+&nbsp;SSLRecord {<br>
+&nbsp;&nbsp;&nbsp; type&nbsp;&nbsp;&nbsp; = 20 (change_cipher_spec)<br>
+&nbsp;&nbsp;&nbsp; version = { 3,0 }<br>
+&nbsp;&nbsp;&nbsp; length&nbsp; = 1 (0x1)<br>
+&nbsp;}<br>
+&nbsp;SSLRecord {<br>
+&nbsp;&nbsp;&nbsp; type&nbsp;&nbsp;&nbsp; = 22 (handshake)<br>
+&nbsp;&nbsp;&nbsp; version = { 3,0 }<br>
+&nbsp;&nbsp;&nbsp; length&nbsp; = 56 (0x38)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &gt; encrypted &gt;<br>
+&nbsp;}<br>
+&nbsp;]<br>
+&nbsp;&gt;-- [<br>
+&nbsp;SSLRecord {<br>
+&nbsp;&nbsp;&nbsp; type&nbsp;&nbsp;&nbsp; = 20 (change_cipher_spec)<br>
+&nbsp;&nbsp;&nbsp; version = { 3,0 }<br>
+&nbsp;&nbsp;&nbsp; length&nbsp; = 1 (0x1)<br>
+&nbsp;}<br>
+&nbsp;]<br>
+&nbsp;&gt;-- [<br>
+&nbsp;SSLRecord {<br>
+&nbsp;&nbsp;&nbsp; type&nbsp;&nbsp;&nbsp; = 22 (handshake)<br>
+&nbsp;&nbsp;&nbsp; version = { 3,0 }<br>
+&nbsp;&nbsp;&nbsp; length&nbsp; = 56 (0x38)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &gt; encrypted &gt;<br>
+&nbsp;}<br>
+&nbsp;]<br>
+&nbsp;--&gt; [<br>
+&nbsp;SSLRecord {<br>
+&nbsp;&nbsp;&nbsp; type&nbsp;&nbsp;&nbsp; = 23 (application_data)<br>
+&nbsp;&nbsp;&nbsp; version = { 3,0 }<br>
+&nbsp;&nbsp;&nbsp; length&nbsp; = 287 (0x11f)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &gt; encrypted &gt;<br>
+&nbsp;}<br>
+&nbsp;]<br>
+&nbsp;[<br>
+&nbsp;SSLRecord {<br>
+&nbsp;&nbsp;&nbsp; type&nbsp;&nbsp;&nbsp; = 23 (application_data)<br>
+&nbsp;&nbsp;&nbsp; version = { 3,0 }<br>
+&nbsp;&nbsp;&nbsp; length&nbsp; = 160 (0xa0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &gt; encrypted &gt;<br>
+&nbsp;}<br>
+&nbsp;]<br>
+&nbsp;&gt;-- [<br>
+&nbsp;SSLRecord {<br>
+&nbsp;&nbsp;&nbsp; type&nbsp;&nbsp;&nbsp; = 23 (application_data)<br>
+&nbsp;&nbsp;&nbsp; version = { 3,0 }<br>
+&nbsp;&nbsp;&nbsp; length&nbsp; = 223 (0xdf)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &gt; encrypted &gt;<br>
+&nbsp;}<br>
+&nbsp;SSLRecord {<br>
+&nbsp;&nbsp;&nbsp; type&nbsp;&nbsp;&nbsp; = 21 (alert)<br>
+&nbsp;&nbsp;&nbsp; version = { 3,0 }<br>
+&nbsp;&nbsp;&nbsp; length&nbsp; = 18 (0x12)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &gt; encrypted &gt;<br>
+&nbsp;}<br>
+&nbsp;]<br>
+&nbsp;Server socket closed.<br>
+<br>
+&nbsp;&nbsp; Example 3<br>
+<br>
+&nbsp;&nbsp; In this example, the -h option turns hex/ASCII format. There is no SSL<br>
+&nbsp;&nbsp; parsing or decoding. The output is routed to a text file.<br>
+<br>
+&nbsp;$ ssltap -h&nbsp; -p 444 interzone.mcom.com:443 &gt; h.txt<br>
+<br>
+&nbsp;&nbsp; Output<br>
+<br>
+&nbsp;Connected to interzone.mcom.com:443<br>
+&nbsp;--&gt; [<br>
+&nbsp;&nbsp;&nbsp; 0: 80 40 01 03&nbsp; 00 00 27 00&nbsp; 00 00 10 01&nbsp; 00 80 02 00&nbsp; | .@....'.........<br>
+&nbsp;&nbsp;&nbsp; 10: 80 03 00 80&nbsp; 04 00 80 06&nbsp; 00 40 07 00&nbsp; c0 00 00 04&nbsp; | .........@......<br>
+&nbsp;&nbsp;&nbsp; 20: 00 ff e0 00&nbsp; 00 0a 00 ff&nbsp; e1 00 00 09&nbsp; 00 00 03 00&nbsp; | ........á.......<br>
+&nbsp;&nbsp;&nbsp; 30: 00 06 9b fe&nbsp; 5b 56 96 49&nbsp; 1f 9f ca dd&nbsp; d5 ba b9 52&nbsp; | ..þ[V.I.\xd9 ...º¹R<br>
+&nbsp;&nbsp;&nbsp; 40: 6f 2d&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |o-<br>
+&nbsp;]<br>
+&nbsp;&lt;-- [<br>
+&nbsp;&nbsp;&nbsp; 0: 16 03 00 03&nbsp; e5 02 00 00&nbsp; 46 03 00 7f&nbsp; e5 0d 1b 1d&nbsp; | ........F.......<br>
+&nbsp;&nbsp;&nbsp; 10: 68 7f 3a 79&nbsp; 60 d5 17 3c&nbsp; 1d 9c 96 b3&nbsp; 88 d2 69 3b&nbsp; | h.:y`..&lt;..³.Òi;<br>
+&nbsp;&nbsp;&nbsp; 20: 78 e2 4b 8b&nbsp; a6 52 12 4b&nbsp; 46 e8 c2 20&nbsp; 14 11 89 05&nbsp; | x.K.¦R.KFè. ...<br>
+&nbsp;&nbsp;&nbsp; 30: 4d 52 91 fd&nbsp; 93 e0 51 48&nbsp; 91 90 08 96&nbsp; c1 b6 76 77&nbsp; | MR.ý..QH.....¶vw<br>
+&nbsp;&nbsp;&nbsp; 40: 2a f4 00 08&nbsp; a1 06 61 a2&nbsp; 64 1f 2e 9b&nbsp; 00 03 00 0b&nbsp; | *ô..¡.a¢d......<br>
+&nbsp;&nbsp;&nbsp; 50: 00 02 c5 00&nbsp; 02 c2 00 02&nbsp; bf 30 82 02&nbsp; bb 30 82 02&nbsp; | ..Å......0...0..<br>
+&nbsp;&nbsp;&nbsp; 60: 24 a0 03 02&nbsp; 01 02 02 02&nbsp; 01 36 30 0d&nbsp; 06 09 2a 86&nbsp; | $ .......60...*.<br>
+&nbsp;&nbsp;&nbsp; 70: 48 86 f7 0d&nbsp; 01 01 04 05&nbsp; 00 30 77 31&nbsp; 0b 30 09 06&nbsp; | H.÷......0w1.0..<br>
+&nbsp;&nbsp;&nbsp; 80: 03 55 04 06&nbsp; 13 02 55 53&nbsp; 31 2c 30 2a&nbsp; 06 03 55 04&nbsp; | .U....US1,0*..U.<br>
+&nbsp;&nbsp;&nbsp; 90: 0a 13 23 4e&nbsp; 65 74 73 63&nbsp; 61 70 65 20&nbsp; 43 6f 6d 6d&nbsp; | ..#Netscape Comm<br>
+&nbsp;&nbsp;&nbsp; a0: 75 6e 69 63&nbsp; 61 74 69 6f&nbsp; 6e 73 20 43&nbsp; 6f 72 70 6f&nbsp; | unications Corpo<br>
+&nbsp;&nbsp;&nbsp; b0: 72 61 74 69&nbsp; 6f 6e 31 11&nbsp; 30 0f 06 03&nbsp; 55 04 0b 13&nbsp; | ration1.0...U...<br>
+&nbsp;&nbsp;&nbsp; c0: 08 48 61 72&nbsp; 64 63 6f 72&nbsp; 65 31 27 30&nbsp; 25 06 03 55&nbsp; | .Hardcore1'0%..U<br>
+&nbsp;&nbsp;&nbsp; d0: 04 03 13 1e&nbsp; 48 61 72 64&nbsp; 63 6f 72 65&nbsp; 20 43 65 72&nbsp; | ....Hardcore Cer<br>
+&nbsp;&nbsp;&nbsp; e0: 74 69 66 69&nbsp; 63 61 74 65&nbsp; 20 53 65 72&nbsp; 76 65 72 20&nbsp; | tificate Server<br>
+&nbsp;&nbsp;&nbsp; f0: 49 49 30 1e&nbsp; 17 0d 39 38&nbsp; 30 35 31 36&nbsp; 30 31 30 33&nbsp; | II0...9805160103<br>
+&nbsp;&lt;additional data lines&gt;<br>
+&nbsp;]<br>
+&nbsp;&lt;additional records in same format&gt;<br>
+&nbsp;Server socket closed.<br>
+<br>
+&nbsp;&nbsp; Example 4<br>
+<br>
+&nbsp;&nbsp; In this example, the -s option turns on SSL parsing, and the -h option<br>
+&nbsp;&nbsp; turns on hex/ASCII format. Both formats are shown for each record. The<br>
+&nbsp;&nbsp; output is routed to a text file.<br>
+<br>
+&nbsp;$ ssltap -hs -p 444 interzone.mcom.com:443 &gt; hs.txt<br>
+<br>
+&nbsp;&nbsp; Output<br>
+<br>
+&nbsp;Connected to interzone.mcom.com:443<br>
+&nbsp;--&gt; [<br>
+&nbsp;&nbsp;&nbsp; 0: 80 3d 01 03&nbsp; 00 00 24 00&nbsp; 00 00 10 01&nbsp; 00 80 02 00&nbsp; | .=....$.........<br>
+&nbsp;&nbsp;&nbsp; 10: 80 03 00 80&nbsp; 04 00 80 06&nbsp; 00 40 07 00&nbsp; c0 00 00 04&nbsp; | .........@......<br>
+&nbsp;&nbsp;&nbsp; 20: 00 ff e0 00&nbsp; 00 0a 00 ff&nbsp; e1 00 00 09&nbsp; 00 00 03 03&nbsp; | ........á.......<br>
+&nbsp;&nbsp;&nbsp; 30: 55 e6 e4 99&nbsp; 79 c7 d7 2c&nbsp; 86 78 96 5d&nbsp; b5 cf e9&nbsp;&nbsp;&nbsp;&nbsp; |U..yÇ\xb0 ,.x.]µÏé<br>
+&nbsp;alloclen = 63 bytes<br>
+&nbsp;&nbsp;&nbsp; [ssl2]&nbsp; ClientHelloV2 {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; version = {0x03, 0x00}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cipher-specs-length = 36 (0x24)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sid-length = 0 (0x00)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; challenge-length = 16 (0x10)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cipher-suites = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x010080) SSL2/RSA/RC4-128/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x020080) SSL2/RSA/RC4-40/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x030080) SSL2/RSA/RC2CBC128/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x040080) SSL2/RSA/RC2CBC40/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x060040) SSL2/RSA/DES64CBC/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x0700c0) SSL2/RSA/3DES192EDE-CBC/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x000004) SSL3/RSA/RC4-128/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x00ffe0) SSL3/RSA-FIPS/3DES192EDE-CBC/SHA<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x00000a) SSL3/RSA/3DES192EDE-CBC/SHA<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x00ffe1) SSL3/RSA-FIPS/DES64CBC/SHA<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x000009) SSL3/RSA/DES64CBC/SHA<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (0x000003) SSL3/RSA/RC4-40/MD5<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; session-id = { }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; challenge = { 0x0355 0xe6e4 0x9979 0xc7d7 0x2c86 0x7896 0x5db<br>
+<br>
+&nbsp;0xcfe9 }<br>
+&nbsp;}<br>
+&nbsp;]<br>
+&nbsp;&lt;additional records in same formats&gt;<br>
+&nbsp;Server socket closed.<br>
+<br>
+Usage Tips<br>
+<br>
+&nbsp;&nbsp; When SSL restarts a previous session, it makes use of cached information<br>
+&nbsp;&nbsp; to do a partial handshake. If you wish to capture a full SSL handshake,<br>
+&nbsp;&nbsp; restart the browser to clear the session id cache.<br>
+<br>
+&nbsp;&nbsp; If you run the tool on a machine other than the SSL server to which you<br>
+&nbsp;&nbsp; are trying to connect, the browser will complain that the host name you<br>
+&nbsp;&nbsp; are trying to connect to is different from the certificate. If you are<br>
+&nbsp;&nbsp; using the default BadCert callback, you can still connect through a<br>
+&nbsp;&nbsp; dialog. If you are not using the default BadCert callback, the one you<br>
+&nbsp;&nbsp; supply must allow for this possibility.<br>
+<br>
+See Also<br>
+<br>
+&nbsp;&nbsp; The NSS Security Tools are also documented at<br>
+&nbsp;&nbsp; [1]<a class="external" href="https://www.mozilla.org/projects/security/pki/nss/" rel=" noopener">http://www.mozilla.org/projects/security/pki/nss/</a>.<br>
+<br>
+Additional Resources<br>
+<br>
+&nbsp;&nbsp; NSS is maintained in conjunction with PKI and security-related projects<br>
+&nbsp;&nbsp; through Mozilla dn Fedora. The most closely-related project is Dogtag PKI,<br>
+&nbsp;&nbsp; with a project wiki at [2]<a class="external" href="http://pki.fedoraproject.org/wiki/" rel=" noopener">http://pki.fedoraproject.org/wiki/</a>.<br>
+<br>
+&nbsp;&nbsp; For information specifically about NSS, the NSS project wiki is located at<br>
+&nbsp;&nbsp; [3]<a class="external" href="https://www.mozilla.org/projects/security/pki/nss/" rel=" noopener">http://www.mozilla.org/projects/security/pki/nss/</a>. The NSS site relates<br>
+&nbsp;&nbsp; directly to NSS code changes and releases.<br>
+<br>
+&nbsp;&nbsp; Mailing lists: <a class=" link-mailto" href="mailto:pki-devel@redhat.com">pki-devel@redhat.com</a> and <a class=" link-mailto" href="mailto:pki-users@redhat.com">pki-users@redhat.com</a><br>
+<br>
+&nbsp;&nbsp; IRC: Freenode at #dogtag-pki<br>
+<br>
+Authors<br>
+<br>
+&nbsp;&nbsp; The NSS tools were written and maintained by developers with Netscape and<br>
+&nbsp;&nbsp; now with Red Hat and Sun.<br>
+<br>
+&nbsp;&nbsp; Authors: Elio Maldonado &lt;<a class=" link-mailto" href="mailto:emaldona@redhat.com">emaldona@redhat.com</a>&gt;, Deon Lackey<br>
+&nbsp;&nbsp; &lt;<a class=" link-mailto" href="mailto:dlackey@redhat.com">dlackey@redhat.com</a>&gt;.<br>
+<br>
+Copyright<br>
+<br>
+&nbsp;&nbsp; (c) 2010, Red Hat, Inc. Licensed under the GNU Public License version 2.<br>
+<br>
+References<br>
+<br>
+&nbsp;&nbsp; Visible links<br>
+&nbsp;&nbsp; 1. <a class="external" href="https://www.mozilla.org/projects/security/pki/nss/tools" rel=" noopener">http://www.mozilla.org/projects/secu.../pki/nss/tools</a><br>
+&nbsp;&nbsp; 2. <a class="external" href="http://pki.fedoraproject.org/wiki/" rel=" noopener">http://pki.fedoraproject.org/wiki/</a><br>
+&nbsp;&nbsp; 3. <a class="external" href="https://www.mozilla.org/projects/security/pki/nss/" rel=" noopener">http://www.mozilla.org/projects/security/pki/nss/</a></p></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/tools/ssltap/index.html" title="Folder: en-us/mozilla/projects/nss/tools/ssltap (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FTools%2Fssltap%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Ftools%2Fssltap%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FTools%2Fssltap%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Ftools%2Fssltap%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2F850896e76a64ceab3fef10dce6acfc8851863859%0A*+Document+last+modified%3A+2021-01-26T08%3A53%3A20.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22NSS+tools+%3A+ssltap%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2021-01-26T08:53:20.000Z">Jan 26, 2021</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/Tools/ssltap/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>

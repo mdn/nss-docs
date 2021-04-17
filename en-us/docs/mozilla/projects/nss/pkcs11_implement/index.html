@@ -1,0 +1,243 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>PKCS11 Implement - Mozilla | MDN</title></head><body><main><article class="main-page-content" lang="en-US"><h1>PKCS11 Implement</h1><h2 id="implementing_pkcs_.2311_for_nss"><a href="#implementing_pkcs_.2311_for_nss" title="Permalink to  Implementing PKCS #11 for NSS "> Implementing PKCS #11 for NSS </a></h2><div><p><b>NOTE:</b> This document was originally for the Netscape Security Library that came with Netscape Communicator 4.0. This note will be removed once the document is updated for the current version of NSS.
+</p><p>This document supplements the information in PKCS #11: Cryptographic Token Interface Standard, version 2.0 with guidelines for implementors of cryptographic modules who want their products to work with Mozilla client software:
+</p>
+<ul><li> How NSS Calls PKCS #11 Functions. Function-specific information organized in the same categories as the PKCS #11 specification.
+</li><li> Functions for Different Kinds of Tokens. Summarizes the support NSS expects from different kinds of tokens.
+</li><li> Installation. Installing modules and informing the user of changes in the Cryptographic Modules settings.
+</li><li> Semantics Unique to NSS. Miscellaneous NSS semantics that affect module implementation. </li></ul>
+<p>Future versions of Netscape server products will also support of PKCS #11 version 2.0.
+</p><p>How NSS Calls PKCS #11 Functions
+This section is organized according to the categories used in PKCS #11: Cryptographic Token Interface Standard, version 2.0. To understand this section, you should be familiar with the standard specification.
+</p></div><h3 id="general-purpose_functions"><a href="#general-purpose_functions" title="Permalink to  General-Purpose Functions "> General-Purpose Functions </a></h3><div><h4 id="c_initialize"> C_Initialize </h4>
+<p>The NSS calls C_Initialize on startup or when it loads a new module. The NSS always passes NULL, as required by the PKCS #11 specification, in the single C_Initialize parameter pReserved.
+</p>
+<h4 id="c_finalize"> C_Finalize </h4>
+<p>The NSS calls C_Finalize on shutdown and whenever it unloads a module.
+</p>
+<h4 id="c_getfunctionlist"> C_GetFunctionList </h4>
+<p>The NSS calls C_GetFunctionList on startup or when it loads a new module. The function list returned should include all the PKCS 2.0 function calls. If you don't implement a function, you should still provide a stub that returns CKR_FUNCTION_NOT_SUPPORTED.
+</p>
+<h4 id="c_getinfo"> C_GetInfo </h4>
+<p>The NSS calls C_GetInfo on startup or when it loads a new module. The version numbers, manufacturer IDs, and so on are displayed when the user views the information. The supplied library names are used as the default library names; currently, these names should not include any double quotation marks. (This is more restrictive than PKCS 2.0 and may change in future versions of NSS.).
+</p></div><h3 id="slot_and_token_management"><a href="#slot_and_token_management" title="Permalink to  Slot and Token Management "> Slot and Token Management </a></h3><div><h4 id="c_getslotlist"> C_GetSlotList </h4>
+<p>The NSS calls C_GetSlotList on startup or when it loads a new module, requests all the module's slots, and keeps track of the list from that point on. The slots are expected to remain static: that is, the module never has more slots or fewer slots than the number on the original list.
+</p>
+<h4 id="c_getslotinfo"> C_GetSlotInfo </h4>
+<p>The NSS calls C_GetSlotInfo on startup or when it loads a new module and reads in the information that can be viewed on the slot information page. If the CKF_REMOVABLE_DEVICE flag is set, NSS also calls C_GetSlotInfo whenever it looks up slots to make sure the token is present. If the CKF_REMOVABLE_DEVICE flag is not set, NSS uses that token information without checking again.
+</p><p>If the CKF_REMOVABLE_DEVICE flag is not set, the CKF_TOKEN_PRESENT flag must be set, or else NSS marks the slot as bad and will never use it.
+</p><p>The NSS doesn't currently use the CKF_HW_SLOT flag.
+</p>
+<h4 id="c_gettokeninfo"> C_GetTokenInfo </h4>
+<p>If a token is a permanent device (that is, if the CKF_REMOVABLE_DEVICE flag is not set), NSS calls C_GetTokenInfo only on startup or when it loads a new module. If the token is a removable device, NSS may call C_GetTokenInfo anytime it's looking for a new token to check whether the token is write protected, whether it can generate random numbers, and so on.
+</p><p>The NSS expects CK_TOKEN_INFO.label to contain the name of the token.
+</p><p>If the CKF_WRITE_PROTECTED flag is set, NSS won't use the token to generate keys.
+</p><p>The NSS interprets the combination of the CKF_LOGIN_REQUIRED and CKF_USER_PIN_INITIALIZED flags as shown in Table 1.1.
+</p>
+<table>
+<tbody><tr>
+<td colspan="3" style="border-width: 0px; font-size: large; background-color: #f0f0f0;"> NSS's interpretation of the CKF_LOGIN_REQUIRED and CKF_USER_PIN_INITIALIZED flags
+</td></tr>
+<tr>
+<th> CFK_LOGIN_REQUIRED </th><th>CFK_USER_PIN_INITIALIZED </th><th>NSS assumes that:
+</th></tr>
+<tr>
+<td> FALSE </td><td> FALSE </td><td> This is a general access device. The NSS will use it without prompting the user for a PIN.
+</td></tr>
+<tr>
+<td> TRUE </td><td> FALSE </td><td> The device is uninitialized. The NSS attempts to initialize the device only if it needs to generate a key or needs to set the user PIN. The NSS calls C_InitPIN to initialize the device and set the user PIN; if these calls are successful, the key is generated and at that point the CFK_USER_PIN_INITIALIZED flag should change from FALSE to TRUE.
+</td></tr>
+<tr>
+<td> FALSE </td><td> TRUE </td><td> This is a general access device that can have a PIN set on it. Because it's a general access device, NSS never prompts for the PIN, even though it's possible to set a PIN with C_SetPIN. If the PIN is set successfully, the CFK_LOGIN_REQUIRED flag should change to TRUE. The NSS uses this combination of flags for its internal token when the key database password is NULL. These are not standard PKCS #11 semantics; they are intended for NSS's internal use only.
+</td></tr>
+<tr>
+<td> TRUE </td><td> TRUE </td><td> The device has been initialized and requires authentication. The NSS checks whether the user is logged on, and if not prompts the user for a PIN.
+</td></tr></tbody></table>
+
+<h4 id="c_getmechanismlist"> C_GetMechanismList </h4>
+<p>The NSS calls C_GetMechanismList fairly frequently to identify the mechanisms supported by a token.
+</p>
+<h4 id="c_getmechanisminfo"> C_GetMechanismInfo </h4>
+<p>The NSS currently doesn't call C_GetMechanismInfo. This function may be called in the future, so you should implement it anyway.
+</p>
+<h4 id="c_inittoken"> C_InitToken </h4>
+<p>The NSS never calls C_InitToken.
+</p>
+<h4 id="c_initpin"> C_InitPIN </h4>
+<p>The NSS calls C_InitPIN only in the key generation case, as noted in this document under C_GetTokenInfo, when CFK_LOGIN_REQUIRED = TRUE and CFK_USER_PIN_INITIALIZED = FALSE.
+</p>
+<h4 id="c_setpin"> C_SetPIN </h4>
+<p>Called only in the key generation case, as noted in this document under C_GetTokenInfo, when CFK_LOGIN_REQUIRED = TRUE and CFK_USER_PIN_INITIALIZED = FALSE.
+</p></div><h3 id="session_management"><a href="#session_management" title="Permalink to  Session Management "> Session Management </a></h3><div><h4 id="c_opensession"> C_OpenSession </h4>
+<p>The NSS calls C_OpenSession whenever it initializes a token and keeps the session open as long as possible. The NSS almost never closes a session after it finishes doing something with a token. It uses a single session for all single-part RSA operations such as logging in, logging out, signing, verifying, generating keys, wrapping keys, and so on.
+</p><p>The NSS opens a separate session for each part of a multipart encryption (bulk encryption). If it runs out of sessions, it uses the initial session for saves and restores.
+</p>
+<h4 id="c_closesession"> C_CloseSession </h4>
+<p>The NSS calls C_CloseSession to close sessions created for bulk encryption.
+</p>
+<h4 id="c_closeallsessions"> C_CloseAllSessions </h4>
+<p>The NSS may call C_CloseAllSessions when it closes down a slot.
+</p>
+<h4 id="c_getsessioninfo"> C_GetSessionInfo </h4>
+<p>The NSS calls C_GetSessionInfo frequently.
+</p><p>If a token has been removed during a session, C_GetSessionInfo should return either CKR_SESSION_CLOSED or CKR_SESSION_HANDLE_INVALID. If a token has been removed and then the same or another token is inserted, C_GetSessionInfo should return CKR_SESSION_HANDLE_INVALID.
+</p>
+<h4 id="c_login"> C_Login </h4>
+<p>The NSS calls C_Login on a token's initial session whenever CKF_LOGIN_REQUIRED is TRUE and the user state indicates that the user isn't logged in.
+</p>
+<h4 id="c_logout"> C_Logout </h4>
+<p>The NSS calls C_Logout on a token's initial session
+</p>
+<ul><li> when the password is timed out
+</li><li> when performing any kind of private key operation if "ask always" is turned on
+</li><li> when changing a password
+</li><li> when the user logs out </li></ul></div><h3 id="object_management"><a href="#object_management" title="Permalink to  Object Management "> Object Management </a></h3><div><h4 id="c_createobject"> C_CreateObject </h4>
+<p>The NSS calls C_CreateObject when loading new private keys and new certificates into a token. Typically, NSS uses C_CreateObject for creating a new private key if PKCS #12 is operating or if your writable token doesn't support C_GenerateKeyPair. Currently PKCS #12 isn't allowed to import onto a token.
+</p><p>The NSS also uses C_CreateObject to create new session keys. The NSS sometimes loads raw key data and builds a key from that.
+</p><p>The NSS will be doing more and more session key generation on tokens in the future. It's also possible for NSS to load a key if the private key that decrypted the key is located on a different slot. For example, if a particular token can't do DES encryption, NSS decrypts the key, then copies it over to the token that can do DES encryption.
+</p><p>The NSS creates certificates as token objects. It loads the token object only if the private key for that certificate exists on the token and was generated by NSS. All the fields defined by PKCS #11 for certificates are set.
+</p><p>The NSS also sets the CKA_ID and CKA_LABEL attributes for the token. Currently, the CKA_ID attribute is set to the modulus for RSA or to the public value on DSA. The NSS may hash this value in the future. In either case, NSS does set the CKA_ID attribute and expects it to remain the same. If a certificate is loaded, the value of the certificate's CKA_ID attribute must match the value of the CKA_ID attribute for the corresponding private key, and the value of the certificate's CKA_LABEL attribute must also match the value of the CKA_LABEL attribute for the private key. For private keys that don't include certificates, NSS doesn't set the CKA_LABEL attribute, or sets it to NULL, until it receives the certificate.
+</p>
+<h4 id="c_copyobject"> C_CopyObject </h4>
+<p>The NSS rarely calls C_CopyObject but may sometimes do so for non-token private keys.
+</p>
+<h4 id="c_destroyobject"> C_DestroyObject </h4>
+<p>The NSS calls C_DestroyObject to destroy certificates and keys on tokens.
+</p>
+<h4 id="c_getobjectsize"> C_GetObjectSize </h4>
+<p>The NSS never calls C_GetObjectSize.
+</p>
+<h4 id="c_getattributevalue"> C_GetAttributeValue </h4>
+<p>The NSS calls C_GetAttributeValue to get the value of attributes for both single objects and multiple objects. This is useful for extracting public keys, nonsecret bulk keys, and so on.
+</p>
+<h4 id="c_setattributevalue"> C_SetAttributeValue </h4>
+<p>The NSS uses C_SetAttributeValue to change labels on private keys.
+</p>
+<h4 id="c_findobjectsinit.2c_c_findobjects.2c_c_findfinal"> C_FindObjectsInit, C_FindObjects, C_FindFinal </h4>
+<p>The NSS calls these functions frequently to look up objects by CKA_ID or CKA_LABEL. These values must match the equivalent values for related keys and certificates and must be unique among key pairs on a given token.
+</p><p>The NSS also looks up certificates by CK_ISSUER and CK_SERIAL. If those fields aren't set on the token, S/MIME won't work.
+</p><p>Functions for Different Kinds of Tokens
+The NSS expects different kinds of PKCS #11 support from four different kinds of tokens:
+</p>
+<ul><li> External key distribution tokens are used with corresponding plug-ins to distribute private keys.
+</li><li> Signing tokens include a signing certificate and are used to sign objects or messages or to perform SSL authentication. They cannot be used for encrypted S/MIME, because they can't decrypt messages.
+</li><li> Signing and decryption tokens can be used for S/MIME and for encrypted transactions over unsecured networks such as the Internet.
+</li><li> Multipurpose tokens provide the full range of cryptographic services. They can be thought of as cryptographic accelerator cards. Future releases of NSS will also support multipurpose tokens that are FIPS-140 compliant. </li></ul>
+<p>Table 1.2 summarizes the PKCS #11 functions (in addition to the other functions described in this document) that NSS expects each type of token to support.
+</p>
+<table>
+<tbody><tr>
+<td colspan="4" style="border-width: 0px; font-size: large; background-color: #f0f0f0;"> PKCS #11 functions required for different kinds of tokens
+</td></tr>
+<tr>
+<th> External key distribution tokens </th><th> Signing tokens </th><th> Signing and decryption tokens </th><th> Multipurpose tokens
+</th></tr>
+<tr>
+<td></td><td></td><td></td><td> C_Encrypt
+</td></tr>
+<tr>
+<td> C_Decrypt
+<ul><li>CKM_RSA_PKCS </li><li>CKM_RSA_X_509 (SSL 2.0 server only)
+</li></ul>
+</td><td></td><td> C_Decrypt
+<ul><li>CKM_RSA_PKCS </li><li>CKM_RSA_X_509 (SSL 2.0 server only)
+</li></ul>
+</td><td> C_Decrypt
+</td></tr>
+<tr>
+<td> C_Sign
+<ul><li>CKM_RSA_PKCS </li><li>CKM_DSA </li></ul>
+</td><td> C_Sign
+<ul><li>CKM_RSA_PKCS </li><li>CKM_DSA
+</li></ul>
+</td><td> C_Sign
+<ul><li>CKM_RSA_PKCS </li><li>CKM_DSA
+</li></ul>
+</td><td> C_Sign
+<ul><li>CKM_RSA_PKCS </li><li>CKM_DSA
+</li></ul>
+</td></tr>
+<tr>
+<td></td><td></td><td></td><td> C_Verify
+<ul><li>CKM_RSA_PKCS
+</li><li>CKM_DSA
+</li></ul>
+</td></tr>
+<tr>
+<td></td><td></td><td></td><td> C_VerifyRecover
+<ul><li>CKM_RSA_PKCS
+</li></ul>
+</td></tr>
+<tr>
+<td></td><td></td><td></td><td> C_GenerateKey
+</td></tr>
+<tr>
+<td>C_GenerateKeyPair (if token is read/write)</td><td>C_GenerateKeyPair (if token is read/write)
+</td><td>C_GenerateKeyPair (if token is read/write)</td><td>C_GenerateKeyPair (if token is read/write)
+</td></tr>
+<tr>
+<td></td><td></td><td></td><td> C_WrapKey
+</td></tr>
+<tr>
+<td>C_UnwrapKey
+<ul><li>CKM_RSA_PKCS
+</li></ul>
+</td><td>C_UnwrapKey
+<ul><li>CKM_RSA_PKCS
+</li></ul>
+</td><td>C_UnwrapKey
+<ul><li>CKM_RSA_PKCS
+</li></ul>
+</td><td>C_UnwrapKey
+<ul><li>CKM_RSA_PKCS
+</li></ul>
+</td></tr>
+<tr>
+<td></td><td></td><td></td><td> C_GenerateRandom
+</td></tr>
+<tr>
+<td></td><td></td><td></td><td> C_Save (when token runs out of sessions)
+</td></tr>
+<tr>
+<td></td><td></td><td></td><td> C_Restore (when token runs out of sessions)
+</td></tr></tbody></table>
+<p>External key tokens need to support C_Decrypt and C_Sign. If they have a read/write value and can't generate a key pair, NSS uses its own C_GenerateKeyPair and loads the key with C_CreateObject.
+</p><p>Signing tokens just need to support C_Sign and possibly C_GenerateKeyPair.
+</p><p>In addition to C_Sign and C_GenerateKeyPair, signing and decryption tokens should also support C_Decrypt and, optionally, C_UnwrapKey.
+</p><p>Multipurpose tokens should support all the functions listed in Table 1.2, except that C_WrapKey and C_UnwrapKey are optional. The NSS always attempts to use these two functions but uses C_Encrypt and C_Decrypt instead if C_WrapKey and C_UnwrapKey aren't implemented.
+</p></div><h3 id="installation"><a href="#installation" title="Permalink to  Installation "> Installation </a></h3><div><p>You can install your module in any convenient location on the user's hard disk, but you must tell the user to type the module name and location in the Cryptographic Modules portion of the Communicator Security Info window. To do so, the user should follow these steps:
+</p>
+<ol><li> Click the Security icon near the top of any Communicator window.
+</li><li> In the Security Info window, click Cryptographic Modules.
+</li><li> In the Cryptographic Modules frame, click Add.
+</li><li> In the Create a New Security Module dialog box, add the Security Module Name for your module and the full pathname for the Security Module File. </li></ol>
+<p>To avoid requiring the user to type long pathnames, make sure your module is not buried too deeply.
+</p></div><h3 id="semantics_unique_to_nss"><a href="#semantics_unique_to_nss" title="Permalink to  Semantics Unique to NSS "> Semantics Unique to NSS </a></h3><div><p>These sections describe semantics required by NSS but not specified by PKCS #11.
+</p>
+<h4 id="supporting_multiple_sessions"> Supporting Multiple Sessions </h4>
+<p>If you support multiple sessions simultaneously and if you wish to support C_InitPIN, C_SetPIN, or C_GenerateKeyPair, you must support simultaneous read-only and read/write sessions.
+</p>
+<h4 id="random-number_generation_and_simple_digesting"> Random-Number Generation and Simple Digesting </h4>
+<p>The NSS requires that the following functions operate without authenticating to the token: C_SeedRandom, C_GenerateRandom, and C_Digest (for SHA, MD5, and MD2). If your token requires authentication before executing these functions, your token cannot provide the default implementation for them. (You can still use your token for other default functions.) NSS does not support replacement of default functions. Later versions will provide such support.
+</p>
+<h4 id="read.2fwrite_and_read-only_requirements"> Read/Write and Read-Only Requirements </h4>
+<p>The NSS assumes that the following operations always require a read/write session:
+</p>
+<ul><li> creating a token object, such as with C_CreateObject (token) or C_DestroyObject (token)
+</li><li> changing a password
+</li><li> initializing a token </li></ul>
+<p>Creating session objects must work with a read-only session.
+</p>
+<h4 id="creating_an_rsa_private_key"> Creating an RSA Private Key </h4>
+<p>When NSS creates an RSA private key with C_CreateObject, it writes the entire set of RSA components. It expects to be able to read back the modulus and the value of the CKA_ID attribute. It also expects to be able to set the label and the subject on the key after creating it.
+</p>
+<h4 id="encrypting_email"> Encrypting Email </h4>
+<p>If you wish to support encrypted email, your token must be able to look up a certificate by the issuer and serial number attributes. When NSS loads a certificate, it sets these attributes correctly. Token initialization software that you supply should also set these fields.
+</p>
+<h4 id="use_of_key_ids"> Use of Key IDs </h4>
+<p>The NSS associates a key with its certificates by its key ID (CKA-ID). It doesn't matter how the key ID is generated, as long as it is unique for the token and maps to a certificate to it associated private key. More than one certificate can point to the same private key.
+</p><p>The only exception to this requirement involves key generation for a new certificate, during which an orphan key waits for a brief time for a matching certificate. The NSS uses part of the public key (modulus for RSA, value for DSA) as the key ID during this time.
+</p><p>NSS doesn't require token public keys, but if they exist, NSS expects the value of the CKA_ID attribute to be associated with private key and any related certificates.
+</p>
+<h4 id="sessions_and_session_objects"> Sessions and Session Objects </h4>
+<p>The NSS depends on a PKCS #11 v. 2.0 semantic requiring all session objects to be visible in all of a token's sessions.
+</p></div></article><aside class="metadata"><div class="metadata-content-container"><div id="on-github" class="on-github"><h4>Found a problem with this page?</h4><ul><li><a href="https://github.com/mdn/content/blob/main/files/en-us/mozilla/projects/nss/pkcs11_implement/index.html" title="Folder: en-us/mozilla/projects/nss/pkcs11_implement (Opens in a new tab)" target="_blank" rel="noopener noreferrer">Source on <b>GitHub</b></a></li><li><a href="https://github.com/mdn/content/issues/new?body=MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FPKCS11_Implement%0A%0A%23%23%23%23+What+information+was+incorrect%2C+unhelpful%2C+or+incomplete%3F%0A%0A%0A%23%23%23%23+Specific+section+or+headline%3F%0A%0A%0A%23%23%23%23+What+did+you+expect+to+see%3F%0A%0A%0A%23%23%23%23+Did+you+test+this%3F+If+so%2C+how%3F%0A%0A%0A%3C%21--+Do+not+make+changes+below+this+line+--%3E%0A%3Cdetails%3E%0A%3Csummary%3EMDN+Content+page+report+details%3C%2Fsummary%3E%0A%0A*+Folder%3A+%60en-us%2Fmozilla%2Fprojects%2Fnss%2Fpkcs11_implement%60%0A*+MDN+URL%3A+https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FMozilla%2FProjects%2FNSS%2FPKCS11_Implement%0A*+GitHub+URL%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fblob%2Fmain%2Ffiles%2Fen-us%2Fmozilla%2Fprojects%2Fnss%2Fpkcs11_implement%2Findex.html%0A*+Last+commit%3A+https%3A%2F%2Fgithub.com%2Fmdn%2Fcontent%2Fcommit%2F6964d5e98e1a4d0a71e1a2e8a5e5b38e0d8e317c%0A*+Document+last+modified%3A+2021-03-18T10%3A19%3A37.000Z%0A%0A%3C%2Fdetails%3E&amp;title=Issue+with+%22PKCS11+Implement%22%3A+%28short+summary+here+please%29&amp;labels=Content%3AOther%2Cneeds-triage" title="This will take you to https://github.com/mdn/content to file a new issue" target="_blank" rel="noopener noreferrer">Report a problem with this content on <b>GitHub</b></a></li><li>Want to fix the problem yourself? See<!-- --> <a href="https://github.com/mdn/content/blob/main/README.md" target="_blank" rel="noopener noreferrer">our Contribution guide</a>.</li></ul></div><p class="last-modified-date"><b>Last modified:</b> <time datetime="2021-03-18T10:19:37.000Z">Mar 18, 2021</time>,<!-- --> <a href="/en-US/docs/Mozilla/Projects/NSS/PKCS11_Implement/contributors.txt">by MDN contributors</a></p></div></aside></main></body></html>
