@@ -1,0 +1,14 @@
+<h1>NSS 3.63.1 release notes</h1><h2 id="introduction"><a href="#introduction" title="Permalink to Introduction">Introduction</a></h2><div><p>Network Security Services (NSS) 3.63.1 was released on <strong>6 April 2021</strong>.</p></div><h2 id="distribution_information"><a href="#distribution_information" title="Permalink to Distribution Information">Distribution Information</a></h2><div><p>The HG tag is NSS_3_63_1_RTM. NSS 3.63.1 requires NSPR 4.30 or newer.</p>
+
+<p>NSS 3.63.1 source distributions are available on ftp.mozilla.org for secure HTTPS download:</p>
+
+<ul>
+ <li>Source tarballs:<br>
+  <a href="https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_63_1_RTM/src/" class="external" rel=" noopener">https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/NSS_3_63_1_RTM/src/</a></li>
+</ul>
+
+<p>Other releases are available <a href="/en-US/docs/Mozilla/Projects/NSS/NSS_Releases">in NSS Releases</a>.</p></div><h2 id="bugs_fixed_in_nss_3.63.1"><a href="#bugs_fixed_in_nss_3.63.1" title="Permalink to Bugs fixed in NSS 3.63.1">Bugs fixed in NSS 3.63.1</a></h2><div><ul>
+  <li> REVERTING Bug 1692094 - Turn off Websites Trust Bit for 'Chambers of Commerce Root - 2008' and 'Global Chambersign Root - 2008’.</li>
+</ul></div><h2 id="compatibility"><a href="#compatibility" title="Permalink to Compatibility">Compatibility</a></h2><div><p>NSS 3.63.1 shared libraries are backwards-compatible with all older NSS 3.x shared libraries. A program linked with older NSS 3.x shared libraries will work with NSS 3.63.1 shared libraries without recompiling or relinking. Furthermore, applications that restrict their use of NSS APIs to the functions listed in NSS Public Functions will remain compatible with future versions of the NSS shared libraries.</p></div><h2 id="feedback"><a href="#feedback" title="Permalink to Feedback">Feedback</a></h2><div><p>Bugs discovered should be reported by filing a bug report on <a href="https://bugzilla.mozilla.org/enter_bug.cgi?product=NSS" class="external" rel=" noopener">bugzilla.mozilla.org</a> (product NSS).</p></div><h2 id="notes"><a href="#notes" title="Permalink to Notes">Notes</a></h2><div><p>This version of NSS contains a minor update to the root CAs due to a delay in deprecation.</p>
+
+<p>This revert is temporary in order to prevent breaking websites with Firefox 88 and the change has been reinstated in NSS 3.64 for Firefox 89.</p></div>
